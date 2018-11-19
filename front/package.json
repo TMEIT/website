@@ -1,0 +1,25 @@
+{
+  "name": "tmeit-frontend",
+  "version": "0.1.0",
+  "description": "Front-end for the TMEIT website.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "repository": "github:TMEIT/website",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-router-dom": "^4.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "babel-loader": "^8.0.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^4.25.1",
+    "webpack-dev-server": "^3.1.10"
+  }
+}
