@@ -1,3 +1,9 @@
+#JetBrains Webstorm project folder
+.idea/
+
+#compiled js
+dist/
+
 # Logs
 logs
 *.log
