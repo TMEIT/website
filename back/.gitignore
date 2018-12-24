@@ -1,0 +1,6 @@
+# local virtual environment folder
+venv
+# Python bytecode cache
+__pycache__
+# sqlite databases from development
+*.sqlite3
