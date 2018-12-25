@@ -3,6 +3,7 @@ import flask_sqlalchemy
 import flask_restless
 
 import models
+from auth import login
 
 # Create the Flask application and the Flask-SQLAlchemy object.
 app = flask.Flask(__name__)

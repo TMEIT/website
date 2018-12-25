@@ -8,6 +8,7 @@ Jinja2==2.10
 MarkupSafe==1.1.0
 mimerender==0.6.0
 promise==2.2.1
+PyJWT==1.7.1
 python-dateutil==2.7.5
 python-mimeparse==1.6.0
 Rx==1.6.1

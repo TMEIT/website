@@ -4,3 +4,7 @@ venv
 __pycache__
 # sqlite databases from development
 *.sqlite3
+# JWT secret
+jwt_secret.txt
+# Token cutoff date file
+jwt_expired_date.txt
