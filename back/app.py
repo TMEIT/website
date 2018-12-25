@@ -10,12 +10,13 @@ app = flask.Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
 
+db = models.get_db()
 
 # Init Flask-SQLAlchemy
-db = flask_sqlalchemy.SQLAlchemy(app)
+db.init_app(app)
 
 # Generate our data models
-api_models = models.generate_models(db)
+api_models = models.get_models()
 
 # Create references to our models
 Workteam = api_models['workteam']
