@@ -125,20 +125,3 @@ class Member(db.Model):
     workteams = db.relationship('Workteam', secondary=memberworkteam_table, back_populates="members")
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
 
-
-def get_db() -> flask_sqlalchemy.SQLAlchemy:
-    """Retrieves our db so it can initialized and so its session can be manipulated"""
-
-    return db
-
-
-def get_models():
-    """Returns a dict of references to our SQL Alchemy models.
-
-    db.init_app(app) must be called to initialize the db session before using the models!
-    """
-
-    return {
-        'workteam': Workteam,
-        'member': Member
-    }
