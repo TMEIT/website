@@ -101,6 +101,7 @@ class Member(db.Model):
         fest: Whether the member has attended FEST "training", if we know.
         liquor_permit: Whether the member is on our liquor permit.
         role: What role the member has in TMEIT. Stored as a string or an int that corresponde to a value in RoleEnum.
+        *_date: the date that the member joined TMEIT, became a marskalk, or left TMEIT.
         titles: A CSV of the roles the member has had, with an optional year for each role.
         workteams: The workteams that the member has been in.
         workteams_leading: The workteams that the member has also been a team leader for.
@@ -117,6 +118,9 @@ class Member(db.Model):
     fest = db.Column(db.Boolean)
     liquor_permit = db.Column(db.Boolean, nullable=False)
     role = db.Column(db.Enum(RoleEnum), nullable=False)
+    prao_date = db.Column(db.Date)
+    marskalk_date = db.Column(db.Date)
+    vraq_ex_date = db.Column(db.Date)
     titles = db.Column(db.Unicode)
     workteams = db.relationship('Workteam', secondary=memberworkteam_table, back_populates="members")
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
