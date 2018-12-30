@@ -17,8 +17,8 @@ class PeriodEnum(enum.IntEnum):
     fall = 1
 
 
-class RoleEnum(enum.IntEnum):  # TMEIT roles for members
-    """Used to define what role a member has. Negative numbers are non-members."""
+class CurrentRoleEnum(enum.IntEnum):  # TMEIT roles for members
+    """Used to define what role a member *currently* has. Negative numbers are non-members."""
     master = 0
     marshal = 1
     prao = 2
@@ -26,7 +26,60 @@ class RoleEnum(enum.IntEnum):  # TMEIT roles for members
     ex = 4
     inactive = 5
     exprao = -1
-    pajas = 6  # klaengs special role
+
+
+class RoleOrTitle(enum.IntEnum):
+    """Used to state the Role or Title for a RoleHistory.
+
+    New values should be added as new roles or titles are created.
+
+    Generic roles = 1000
+    Master roles = 2000
+    Official Titles = 3000
+    Misc Titles = 4000
+    """
+
+    # Generic Roles #
+    prao = 1000
+    marskalk = 1001
+    inactive = 1003
+    ex = 1004
+    vraq = 1005
+
+    # Master Roles #
+    TraditionsMästare = 2000
+    Vice_TraditionsMästare = 2001
+    SkattMästare = 2002
+    PubMästare = 2003
+    SkriptMästare = 2004
+
+    # Official Titles #
+    # Junk
+    JunkPrao = 3000
+    JunkMarskalk = 3001
+    JunkMaster = 3002
+    JunkVraq = 3003
+    # Gourmet
+    GourmetPrao = 3010
+    GourmetMarskalk = 3011
+    GourmetMaster = 3012
+    GourmetVraq = 3013
+    # Webb (the coolest title)
+    WebbPrao = 3200
+    WebbMarskalk = 3021
+    WebbMaster = 3022
+    WebbWraq = 3023
+    # Helrör
+    Helrör = 3030
+
+    # Misc Titles #
+    pajas = 4000
+    driver = 4001
+    sect = 4002
+    pixel_artist = 4003
+    rock_on = 4004
+
+
 ###############################
 
 
@@ -79,7 +132,8 @@ class Member(db.Model):
 
     TMEIT members are stored in the database by their email address. (Usually a KTH email, but this may be a Gmail
     address if they are not a KTH student)
-    Members can have a number of different roles in the klubbmästeri, both actively working or no longer active.
+    Members have a current role, which describes their current position in TMEIT and their website permissions.
+    They can also can have a number of different roles and titles in the klubbmästeri.
 
     Members can belong to many different workteams but should only be in one active workteam. Members can be given a
     nickname that they have earned, or have chosen themselves. We keep track of a member's phone number, what
@@ -100,9 +154,10 @@ class Member(db.Model):
         stad: Whether the member has STAD qualifications, if we know.
         fest: Whether the member has attended FEST "training", if we know.
         liquor_permit: Whether the member is on our liquor permit.
-        role: What role the member has in TMEIT. Stored as a string or an int that corresponde to a value in RoleEnum.
-        *_date: the date that the member joined TMEIT, became a marskalk, or left TMEIT.
-        titles: A CSV of the roles the member has had, with an optional year for each role.
+        current_role: What role the member currently has in TMEIT. Defines the member's permissions on the TMEIT
+            website. Stored as a string or an int that corresponds to a value in RoleEnum.
+        role_histories: A list of RoleHistories for the member, describing past or current roles or titles that they
+            have held, and the dates that they have held them.
         workteams: The workteams that the member has been in.
         workteams_leading: The workteams that the member has also been a team leader for.
     """
@@ -117,11 +172,38 @@ class Member(db.Model):
     stad = db.Column(db.Boolean)
     fest = db.Column(db.Boolean)
     liquor_permit = db.Column(db.Boolean, nullable=False)
-    role = db.Column(db.Enum(RoleEnum), nullable=False)
-    prao_date = db.Column(db.Date)
-    marskalk_date = db.Column(db.Date)
-    vraq_ex_date = db.Column(db.Date)
-    titles = db.Column(db.Unicode)
+    current_role = db.Column(db.Enum(CurrentRoleEnum), nullable=False)
+    role_histories = db.relationship('RoleHistory', back_populates='owner')
+    # role = db.Column(db.Enum(RoleEnum), nullable=False)
+    # prao_date = db.Column(db.Date)
+    # marskalk_date = db.Column(db.Date)
+    # vraq_ex_date = db.Column(db.Date)
+    # titles = db.Column(db.Unicode)
     workteams = db.relationship('Workteam', secondary=memberworkteam_table, back_populates="members")
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
+
+
+class RoleHistory(db.model):
+    """ SQL Alchemy model to track "Role Histories", the roles and titles of TMEIT members.
+
+    Each Role History belongs to a TMEIT member, and it states the role or title that they had, the date that they
+    recieved that role or title, and once that role or title has ended, the end date for that role or title.
+
+    Roles and titles are listed in the Role or Title enum.
+
+
+    Columns:
+        owner/owner_email: The member that this RoleHistory belongs to.
+        role: The role or title the member had, defined by the RoleOrTitle enum.
+        start_date: The date that the member gained the role or title.
+        end_date: The date that the member finished the role or title.
+    """
+
+    __tablename__ = 'role_histories'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    owner_email = db.Column(db.Integer, db.ForeignKey('members.email'))
+    owner = db.relationship('Member', back_populates='role_histories')
+    role = db.Column(db.Enum(RoleOrTitle), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date)
 

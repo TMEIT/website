@@ -31,4 +31,5 @@ def create_all():
 
     Run this manually from the Python Shell, it should not be done automatically.
     """
-    models.db.create_all(app=app)  # app=app is used to push the app context <http://flask-sqlalchemy.pocoo.org/2.3/contexts/>
+    models.db.create_all(app=app)
+    # (app=app is used to push the app context <http://flask-sqlalchemy.pocoo.org/2.3/contexts/>)
