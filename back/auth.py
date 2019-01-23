@@ -1,68 +1,95 @@
 import datetime
-import dateutil.parser
 
 import jwt
 
-import sqlalchemy
+import models
 
-# load secret from secret_file
-with open('jwt_secret.txt') as secret_file:
-    secret = secret_file.read()
-if len(secret) < 30:
-    raise RuntimeError("jwt_secret.txt is too weak.")
-
-# Load in an optional global cutoff date for JWT tokens
-try:
-    with open('jwt_expired_date.txt') as expired_date_file:
-        expired_date = dateutil.parser.parse(expired_date_file.read())
-except FileNotFoundError:
-    expired_date = None
-
-# issuer field for our JWT tokens
+# Issuer ('iss') field for our JWT tokens
 ISSUER = 'TraditionsMEsterIT'
 
 
-def login():
-    """Accepts a user's login token and grants jwt token to stay logged in.
+# Authentication Exceptions #
+class InvalidExternalTokenError(RuntimeError):
+    """Raised when a user tries to login with a external token that is invalid."""
+    pass
 
-    Throws exceptions if the token is invalid or if the user is not registered.
+
+class UserDoesNotExistError(RuntimeError):
+    """Raised when a user tries to login with a JWT or external token that does not correspond to an existing user.
+
+    Args:
+        message: Standard human-readable Error message
+        invalid_user: Name that the user tried to login with, in the format "Full Name (email@address.com)".
     """
-
-    # TODO accept and validate SAML and OAUTH tokens
-    email = 'joe@gmail.com'
-
-    payload = {
-        'iss': ISSUER,  # Token Issuer
-        'iat': datetime.datetime.utcnow(),  # Token Issue Time
-        'sub': email,  # Token Recipient
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=90)  # Token Expiration Time
-    }
-
-    return jwt.encode(payload, secret, algorithm='HS256')
+    def __init__(self, message: str, invalid_user: str):
+        super().__init__(message)
+        self.invalid_user = invalid_user
 
 
-def verify_token(token: str, member_model) -> str:
-    """ Verifies an incoming JWT token and returns the user's Email address.
+# Functions for external tokens #
+# TODO accept and validate SAML and OAUTH tokens
+def verify_google_token(token):  # Decode and verify Google oauth tokens
+    return {'email': 'joe@gmail.com',
+            'full_name': 'Joe Schmoe'}
 
-    Issuer must match the issuer string defined in the {ISSUER} constant. Issue and Expiration timestamps are given a
-    60-second leeway to allow for clock skew.
-    We do not accept tokens made before the cutoff date set in jwt_expired_date.txt, which allows us to expire all
-    old tokens if needed.
 
-    Raises:
-        jwt.exceptions.InvalidTokenError: Token received is not valid. Note that this function will mainly throw a
-            subclass of this exception.
-    """
+def verify_kth_token(token):  # Decode and verify KTH SAML tokens
+    raise NotImplementedError("KTH login is not implemented yet.")
 
-    # pyJWT does validation for us, and we select validation settings here.
-    decoded_token = jwt.decode(jwt, secret, issuer=ISSUER, leeway=60, algorithms='HS256')
 
-    # Check the token's issue time if we have a cutoff date set
-    if expired_date is not None:
-        token_issue_time = decoded_token['iss']
-        if datetime.utcfromtimestamp(token_issue_time) < expired_date:
-            raise jwt.exceptions.ExpiredSignatureError()
+class Authenticator:
 
-    #TODO: validate email address from token
+    def __init__(self):
+        # load secret from secret_file
+        with open('jwt_secret.txt') as secret_file:
+            self.secret = secret_file.read()
+        if len(self.secret) < 30:
+            raise RuntimeError("jwt_secret.txt is too weak.")
 
-    return decoded_token['sub']
+    def login(self, ext_token, login_type: str) -> str:
+        """Accepts a user's login token and grants them a jwt token to stay logged in.
+
+        Raises RuntimeErrors if the token is invalid or if the user is not registered.
+        """
+
+        if login_type == 'google':
+            user = verify_google_token(ext_token)
+        elif login_type == 'kth':
+            user = verify_kth_token(ext_token)
+        else:
+            raise InvalidExternalTokenError("Unknown login type!")
+
+        # TODO: Verify that user exists
+        if False:
+            raise UserDoesNotExistError(invalid_user=user['full_name'] + '(' + user['email'] + ')')
+
+        payload = {
+            'iss': ISSUER,  # Token Issuer
+            'iat': datetime.datetime.utcnow(),  # Token Issue Time
+            'sub': user['email'],  # Token Recipient
+            'name': user['full_name'],  # Recipients' full name
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=90)  # Token Expiration Time
+        }
+
+        return jwt.encode(payload, self.secret, algorithm='HS256')
+
+    def verify_token(self, token: str, member_model: models.Member):
+        """ Verifies an incoming JWT token and returns the user's database object.
+
+        Tokens must be signed with our secret, and the 'iss' field must match {ISSUER}. Tokens must not be issued from
+        the future, and must not be expired.
+
+        Args:
+            token: The user's JWT to be verified
+            member_model: Our Flask-SQLAlchemy model for Members, so that we can look up the member in the database.
+
+        Raises:
+            jwt.exceptions.InvalidTokenError: Token received is not valid. Note that subclasses of this exception
+            are often used that specify the exact issue with the token.
+        """
+
+        # pyJWT does validation for us, and we select validation settings here.
+        decoded_token = jwt.decode(token, self.secret, issuer=ISSUER, algorithms='HS256')
+
+        # return the user's Member object from the database
+        return member_model.query.get(decoded_token['sub'])
