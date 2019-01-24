@@ -183,7 +183,7 @@ class Member(db.Model):
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
 
 
-class RoleHistory(db.model):
+class RoleHistory(db.Model):
     """ SQL Alchemy model to track "Role Histories", the roles and titles of TMEIT members.
 
     Each Role History belongs to a TMEIT member, and it states the role or title that they had, the date that they
