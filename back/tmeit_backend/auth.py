@@ -2,7 +2,7 @@ import datetime
 
 import jwt
 
-import models
+from tmeit_backend import models
 
 # Issuer ('iss') field for our JWT tokens
 ISSUER = 'TraditionsMEsterIT'

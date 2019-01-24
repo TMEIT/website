@@ -2,9 +2,9 @@
 venv
 # Python bytecode cache
 __pycache__
+# local python package installations
+*.egg-info
 # sqlite databases from development
 *.sqlite3
 # JWT secret
 jwt_secret.txt
-# Token cutoff date file
-jwt_expired_date.txt

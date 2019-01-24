@@ -1,9 +1,7 @@
 import flask
-import flask_sqlalchemy
 import flask_restless
 
-import models
-from auth import login
+from tmeit_backend import models
 
 # Create the Flask application and the Flask-SQLAlchemy object.
 app = flask.Flask(__name__)
