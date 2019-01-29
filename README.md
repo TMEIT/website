@@ -1,4 +1,5 @@
 # website
+[![Build Status](https://travis-ci.org/TMEIT/website.svg?branch=master)](https://travis-ci.org/TMEIT/website)
 A new website created by and for TMEIT
 
 
