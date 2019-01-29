@@ -1,0 +1,19 @@
+matrix:
+    include:
+    
+    # Backend #
+      - language: python
+        python:
+            - "3.6"
+        before_script:
+            - cd back
+        install:
+            - pip install -r requirements.txt  # Install deps
+            - pip install .  # Install our internal backend package
+        script: pytest tests  # Specify test dir to save time
+        
+    # Frontend #
+#      - language: node_js
+#        node_js:
+#            - "node"  # Use latest Node.js stable release
+            
