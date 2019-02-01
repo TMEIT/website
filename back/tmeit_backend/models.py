@@ -122,9 +122,9 @@ class Workteam(db.Model):
     team_leaders = db.relationship('Member', secondary=workteamleader_table, back_populates="workteams_leading")
     members = db.relationship('Member', secondary=memberworkteam_table, back_populates="workteams")
     active = db.Column(db.Boolean, nullable=False)
-    active_year = db.Column(db.Integer)  # Year that the workteam was or is active
+    active_year = db.Column(db.Integer)  # Year that the workteam was or is active (Purely cosmetic)
     active_period = db.Column(
-        db.Enum(PeriodEnum))  # Part of the year that the workteam was active, (i.e. fall/spring)
+        db.Enum(PeriodEnum))  # Part of the year that the workteam was active, (i.e. fall/spring, also cosmetic)
 
 
 class Member(db.Model):
