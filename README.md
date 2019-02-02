@@ -1,8 +1,15 @@
 # website
-[![Build Status](https://travis-ci.org/TMEIT/website.svg?branch=master)](https://travis-ci.org/TMEIT/website)
 
 A new website created by and for TMEIT
 
+### Production Branch Status
+
+[![Build Status](https://travis-ci.org/TMEIT/website.svg?branch=master)](https://travis-ci.org/TMEIT/website)
+[![Coverage Status](https://coveralls.io/repos/github/TMEIT/website/badge.svg?branch=backend-token-processing)](https://coveralls.io/github/TMEIT/website?branch=backend-token-processing)
+
+### Dev Branch Status
+
+WIP
 
 ## Sitemap and page design ideas
 
