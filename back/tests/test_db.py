@@ -1,4 +1,4 @@
-import dummy_entries
+from tests import dummy_entries
 from tmeit_backend import models
 
 
