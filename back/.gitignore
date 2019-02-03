@@ -1,10 +1,19 @@
 # local virtual environment folder
 venv
+
 # Python bytecode cache
 __pycache__
+
 # local python package installations
 *.egg-info
+
+
+# Coverage data
+.coverage
+
+
 # sqlite databases from development
 *.sqlite3
+
 # JWT secret
 jwt_secret.txt
