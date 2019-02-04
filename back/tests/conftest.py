@@ -8,14 +8,12 @@ from tmeit_backend import models
 
 
 @pytest.fixture(scope="session")
-def dummy_database(tmp_path_factory):
-    """Creates a dummy database in a tmpdir for testing."""
+def dummy_database():
+    """Creates a dummy database session in memory."""
 
-    # Put Flask into testing mode and set the database to use the temp file
+    # Put Flask into testing mode and run the database in memory
     os.environ["FLASK_TESTING"] = "true"
-    from tmeit_backend import flask_cfg
-    flask_cfg.TestingConfig.SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///{}database.sqlite3'.format(tmp_path_factory.mktemp("db"))
+    os.environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
 
     from tmeit_backend import app
 
