@@ -1,12 +1,17 @@
 import flask
 import flask_restless
 
+import os
+
 from tmeit_backend import models
 
 # Create the Flask application and the Flask-SQLAlchemy object.
 app = flask.Flask(__name__)
-app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
+
+if os.environ["FLASK_TESTING"] == "true":
+    app.config.from_object("tmeit_backend.flask_cfg.TestingConfig")
+elif flask.config['env'] == "development":
+    app.config.from_object("tmeit_backend.flask_cfg.DevelopmentConfig")
 
 # Init Flask-SQLAlchemy
 models.db.init_app(app)

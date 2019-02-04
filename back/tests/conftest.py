@@ -1,5 +1,5 @@
 import pytest
-import flask
+import os
 
 from tests.dummy_entries import TEST_TEAM_NAME, TEST_SYMBOL, TEST_ACTIVE, TEST_ACTIVE_YEAR, TEST_ACTIVE_PERIOD, \
     TEST_EMAIL, TEST_FIRST_NAME, TEST_NICKNAME, TEST_LAST_NAME, TEST_PHONE, TEST_DRIVERS_LICENSE, TEST_STAD, TEST_FEST, \
@@ -10,13 +10,16 @@ from tmeit_backend import models
 @pytest.fixture(scope="session")
 def dummy_database(tmp_path_factory):
     """Creates a dummy database in a tmpdir for testing."""
-    app = flask.Flask(__name__)
-    app.config['DEBUG'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}database.sqlite3'.format(tmp_path_factory.mktemp("db"))
 
-    # Init Flask-SQLAlchemy
-    models.db.init_app(app)
-    models.db.create_all(app=app)
+    # Put Flask into testing mode and set the database to use the temp file
+    os.environ["FLASK_TESTING"] = "true"
+    from tmeit_backend import flask_cfg
+    flask_cfg.TestingConfig.SQLALCHEMY_DATABASE_URI = \
+        'sqlite:///{}database.sqlite3'.format(tmp_path_factory.mktemp("db"))
+
+    from tmeit_backend import app
+
+    models.db.create_all(app=app.app)
 
     test_team = models.Workteam(
         name=TEST_TEAM_NAME,
@@ -41,9 +44,9 @@ def dummy_database(tmp_path_factory):
         workteams_leading=[test_team]
     )
 
-    with app.app_context():
+    with app.app.app_context():
         models.db.session.add(test_team)
         models.db.session.add(test_user)
         models.db.session.commit()
 
-    return app
+    return app.app
