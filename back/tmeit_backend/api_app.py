@@ -1,9 +1,9 @@
+# api_app.py
+# Factory for our Flask app that implements our backend API
+
 import flask
-import flask_restless
 
-import os
-
-from tmeit_backend import models, auth
+from tmeit_backend import models, auth, crud_api
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
@@ -48,13 +48,8 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     # Init Flask-SQLAlchemy plugin
     models.db.init_app(app)
 
-    # Create the Flask-Restless API manager
-    manager = flask_restless.APIManager(app, flask_sqlalchemy_db=models.db)
-
-    # Create API endpoints with our models, which will be available at /api/<tablename> by
-    # default. Allowed HTTP methods can be specified as well
-    manager.create_api(models.Workteam, methods=['GET'])
-    manager.create_api(models.Member, methods=['GET'])
+    # Add crud routes (Will be under /api/)
+    crud_api.add_crud_routes(app)
 
     return app
 

@@ -4,7 +4,6 @@
 
 import flask_sqlalchemy
 import enum
-from typing import Dict
 
 
 db = flask_sqlalchemy.SQLAlchemy()  # see documentation in class definition from flask_sqlalchemy

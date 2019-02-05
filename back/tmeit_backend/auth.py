@@ -1,3 +1,6 @@
+# auth.py
+# Handles token generation and verification
+
 import flask
 import jwt
 import requests
