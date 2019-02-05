@@ -54,6 +54,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     # Create API endpoints with our models, which will be available at /api/<tablename> by
     # default. Allowed HTTP methods can be specified as well
     manager.create_api(models.Workteam, methods=['GET'])
+    manager.create_api(models.Member, methods=['GET'])
 
     return app
 
