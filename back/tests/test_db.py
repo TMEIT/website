@@ -1,7 +1,6 @@
 from tests import dummy_entries
 from tmeit_backend import models
 
-
 def test_gen_db_and_retrieve(app):
     """Test that we can start from an empty database in memory and create our tables, and put data into it."""
 

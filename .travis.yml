@@ -11,7 +11,7 @@ matrix:
             - pip install -r requirements.txt  # Install deps
             - pip install .  # Install our internal backend package
         before_script:
-            mv tests/testing.sqlite3 tmeit_backend/testing.sqlite3
+            - mv tests/testing.sqlite3 tmeit_backend/testing.sqlite3
         script: pytest --cov=tmeit_backend tests  # Specify test dir to save time
         after_success:
             - coveralls
