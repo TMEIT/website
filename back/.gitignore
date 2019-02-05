@@ -12,8 +12,5 @@ __pycache__
 .coverage
 
 
-# sqlite databases from development
-*.sqlite3
-
 # JWT secret
 tmeit_backend/jwt_secret.txt
