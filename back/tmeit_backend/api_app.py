@@ -10,7 +10,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     # Create the Flask application and the Flask-SQLAlchemy object.
     app = flask.Flask(__name__)
 
-    # configuration
+    # FLASK CONFIGURATION #
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     if debug is True:
         app.config['ENV'] = 'development'
@@ -19,15 +19,25 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     app.config['TESTING'] = testing
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable a depreciated feature in flask_sqlalchemy
+
+    # We always use HMAC SHA-256 to sign our JWTs
+    app.config['JWT_ALGORITHM'] = 'HS256'
+    # Google Client ID for verifying that Google JWTs are ours ('aud' claim in Google's id_client JWTs)
+    app.config['GOOGLE_CLIENT_ID'] = '497107500705-ngsmiiqi3p6r1l5pp0gpfgnfqf7b8jcb.apps.googleusercontent.com'
+    # Issuer ('iss') claim for our JWT tokens
+    app.config['JWT_ISSUER'] = 'TraditionsMEsterIT'
+
+    # Set our JWT secret
     if app.config['ENV'] == "development":
-        app.config['JWT_SECRET_KEY'] = 'dev'  # Set a default JWT secret
+        app.config['JWT_SECRET_KEY'] = 'dev'  # Default JWT secret
     else:
-        # Get secret for our JWT tokens from jwt_secret.txt when running in production
+        # Always get secret for our JWT tokens from jwt_secret.txt when running in production
         try:
             with open('jwt_secret.txt') as secret_file:
                 app.config['JWT_SECRET_KEY'] = secret_file.read()
         except FileNotFoundError:
-            print("When running in production, we need a jwt_secret.txt to sign JWTs with.")
+            print("When running in production, we need a jwt_secret.txt to sign JWTs with.\n"
+                  "jwt_secret.txt should be a file with at least 30 random characters generated from /dev/random")
             raise
         if len(app.config['JWT_SECRET_KEY']) < 30:
             raise RuntimeError("jwt_secret.txt is too weak.")
