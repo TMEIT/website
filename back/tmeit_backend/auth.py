@@ -29,7 +29,7 @@ def login():
             return flask.jsonify({"msg": str(e)}), 401  # Invalid token
         except requests.exceptions.RequestException as e:
             return flask.jsonify({"msg": "Error verifying JWT on Google's servers.",
-                                  "response": e.response}), 502  # HTTP error using Google's varification API
+                                  "response": e.response}), 502  # HTTP error using Google's verification API
 
     elif flask.request.content_type == "application/xml":  # SAML token in XML payload, aka a KTH SAML token
         # TODO: Not implemented
@@ -40,9 +40,9 @@ def login():
         return flask.jsonify({"msg": "KTH login is not implemented yet"}), 501
 
     else:
-        return flask.jsonify({"msg": "Invalid login token"}), 400  # Request didnt have JSON or XML data, invalid format
+        return flask.jsonify({"msg": "Bad Request"}), 400  # Request didnt have JSON or XML data, invalid format
 
-    user['email'] = str.lower(user['email'])  # Convert incoming logging-in email address to lowercase
+    user['email'] = str.lower(user['email'])
 
     if models.Member.query.get(user['email']) is None:  # User isn't registered with TMEIT with that email
         return flask.jsonify({"msg": "{} ({}) is not registered".format(user['name'], user['email'])}), 403
