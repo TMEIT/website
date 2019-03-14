@@ -1,42 +1,55 @@
 import pytest
-import flask
+import os
 
-from tests.dummy_entries import TEST_TEAM_NAME, TEST_SYMBOL, TEST_ACTIVE, TEST_ACTIVE_YEAR, TEST_ACTIVE_PERIOD, \
-    TEST_EMAIL, TEST_FIRST_NAME, TEST_NICKNAME, TEST_LAST_NAME, TEST_PHONE, TEST_DRIVERS_LICENSE, TEST_STAD, TEST_FEST, \
-    TEST_LIQUOR_PERMIT, TEST_CURRENT_ROLE
-from tmeit_backend import models
+from tmeit_backend import models, api_app
+from tests import dummy_entries
+
+
+@pytest.fixture
+def app_nodb():
+    """
+        Creates an app session for testing, using an empty db in memory.
+        app = api_app.create_app('sqlite:///{}/testing.sqlite3'.format(tmp_path), debug=True, testing=True)
+    """
+    app = api_app.create_app('sqlite://', debug=True, testing=True)
+
+    with app.app_context():
+        models.db.create_all()
+
+    return app
+
 
 
 @pytest.fixture(scope="session")
-def dummy_database(tmp_path_factory):
-    """Creates a dummy database in a tmpdir for testing."""
-    app = flask.Flask(__name__)
-    app.config['DEBUG'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}database.sqlite3'.format(tmp_path_factory.mktemp("db"))
+def app(tmp_path_factory):
+    """
+    Creates an app session for testing, and creates and uses a new database file with a test workteam and user.
+    """
+    tmp_path = tmp_path_factory.mktemp("tmeit-db")
+    app = api_app.create_app('sqlite:///{}/testing.sqlite3'.format(tmp_path), debug=True, testing=True)
 
-    # Init Flask-SQLAlchemy
-    models.db.init_app(app)
-    models.db.create_all(app=app)
+    with app.app_context():
+        models.db.create_all()
 
     test_team = models.Workteam(
-        name=TEST_TEAM_NAME,
-        symbol=TEST_SYMBOL,
-        active=TEST_ACTIVE,
-        active_year=TEST_ACTIVE_YEAR,
-        active_period=TEST_ACTIVE_PERIOD
+        name=dummy_entries.TEST_TEAM_NAME,
+        symbol=dummy_entries.TEST_SYMBOL,
+        active=dummy_entries.TEST_ACTIVE,
+        active_year=dummy_entries.TEST_ACTIVE_YEAR,
+        active_period=dummy_entries.TEST_ACTIVE_PERIOD
     )
 
     test_user = models.Member(
-        email=TEST_EMAIL,
-        first_name=TEST_FIRST_NAME,
-        nickname=TEST_NICKNAME,
-        last_name=TEST_LAST_NAME,
-        phone=TEST_PHONE,
-        drivers_license=TEST_DRIVERS_LICENSE,
-        stad=TEST_STAD,
-        fest=TEST_FEST,
-        liquor_permit=TEST_LIQUOR_PERMIT,
-        current_role=TEST_CURRENT_ROLE,
+        email=dummy_entries.TEST_EMAIL,
+        first_name=dummy_entries.TEST_FIRST_NAME,
+        nickname=dummy_entries.TEST_NICKNAME,
+        last_name=dummy_entries.TEST_LAST_NAME,
+        phone=dummy_entries.TEST_PHONE,
+        drivers_license=dummy_entries.TEST_DRIVERS_LICENSE,
+        stad=dummy_entries.TEST_STAD,
+        fest=dummy_entries.TEST_FEST,
+        liquor_permit=dummy_entries.TEST_LIQUOR_PERMIT,
+        current_role=dummy_entries.TEST_CURRENT_ROLE,
         workteams=[test_team],
         workteams_leading=[test_team]
     )

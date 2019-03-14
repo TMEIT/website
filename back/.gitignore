@@ -15,5 +15,6 @@ __pycache__
 # sqlite databases from development
 *.sqlite3
 
+
 # JWT secret
-jwt_secret.txt
+tmeit_backend/jwt_secret.txt

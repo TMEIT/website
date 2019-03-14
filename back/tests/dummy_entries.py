@@ -1,10 +1,13 @@
 from tmeit_backend import models
 
+# Dummy workteam entry
 TEST_TEAM_NAME = "Web Crew"
 TEST_SYMBOL = "W"
 TEST_ACTIVE = True
 TEST_ACTIVE_YEAR = 2019
 TEST_ACTIVE_PERIOD = models.PeriodEnum.spring
+
+# Dummy member entry
 TEST_EMAIL = "testtmeit@gmail.com"
 TEST_FIRST_NAME = "Test"
 TEST_NICKNAME = "TT"
