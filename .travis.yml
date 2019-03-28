@@ -18,10 +18,17 @@ matrix:
         script: pytest --cov=tmeit_backend tests
         after_success:
             - coveralls
-            # (ssh to server)
-            # (deploy to server)
-            # (build Docker container on server)
-            # (restart services)
+        deploy:
+            - provider: script
+            script: echo deployed master
+            on:
+                branch: master
+            - provider: script
+            script: echo deployed testing
+            on:
+                branch: auto-deploy
+            # (build docker image)
+            # (push image to registry)
 
     # Frontend #
 #      - language: node_js
