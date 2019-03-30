@@ -1,6 +1,13 @@
 env:
     global:
-        - secure: "W+60WPp/apDERyy4SI2xFSctwNdTwAaLKD7rCB154UnFHvyC+aXfyp2Cl930cuUpMDMAQ6BEVlfetPfaVXQTiHVSqR1DQSQJRal+g+ihLlPMquWaVADpjcGLdsO9XpPATFuYlwax8A/y1Jcl0nfAHoWZQYpygSskEnwCF4lKTIwB+YQaC+G/ouE9wc5UAzITxrBr/c+ZxL/oGppV/qbLg5qPHZG+79RIBcFyA+drHf/uQe6quW5ClqJTZU9UyKdaSNReayFqVCqloZ6yVlj+Sc3dALmCXn2Snn4Scux5RADdpn166ehsRWajE2yI4yNGuvrcy4Ys+SpJwK2qTi74sl1RRZS93gwRwIKBqudenlEiO5ZCCQPYfQYjaDauTPAybyHZyTAMQc3HMZTKdfamso0QLhWc7ekohbKEBDlZ/aHYXkXrt+/rr/f35dIS4wZUz/ulAc+2A1lqV8LlL9yBM7MUJOkbOXHBHETANV+ncIg5BuVjL/sT+mBagx3Bz/KeGGlzyW4AUoecyDxk1XjgMJcBbikG/7187XJ/ZlLsNYYO9efu4HaAIiqXUxG89fHpCZIxuevIJXHECTwdoIM0+PbSu7Sj5AjThQTR/lKx8M8anNs46EGc24VRddJxKyGjLyuO7JNSGO0yCRS0UEV9IMiYgu/+jNwA7PsDc6D1jJU="
+# SSH (Probably not going to be used)
+#        - secure: "W+60WPp/apDERyy4SI2xFSctwNdTwAaLKD7rCB154UnFHvyC+aXfyp2Cl930cuUpMDMAQ6BEVlfetPfaVXQTiHVSqR1DQSQJRal+g+ihLlPMquWaVADpjcGLdsO9XpPATFuYlwax8A/y1Jcl0nfAHoWZQYpygSskEnwCF4lKTIwB+YQaC+G/ouE9wc5UAzITxrBr/c+ZxL/oGppV/qbLg5qPHZG+79RIBcFyA+drHf/uQe6quW5ClqJTZU9UyKdaSNReayFqVCqloZ6yVlj+Sc3dALmCXn2Snn4Scux5RADdpn166ehsRWajE2yI4yNGuvrcy4Ys+SpJwK2qTi74sl1RRZS93gwRwIKBqudenlEiO5ZCCQPYfQYjaDauTPAybyHZyTAMQc3HMZTKdfamso0QLhWc7ekohbKEBDlZ/aHYXkXrt+/rr/f35dIS4wZUz/ulAc+2A1lqV8LlL9yBM7MUJOkbOXHBHETANV+ncIg5BuVjL/sT+mBagx3Bz/KeGGlzyW4AUoecyDxk1XjgMJcBbikG/7187XJ/ZlLsNYYO9efu4HaAIiqXUxG89fHpCZIxuevIJXHECTwdoIM0+PbSu7Sj5AjThQTR/lKx8M8anNs46EGc24VRddJxKyGjLyuO7JNSGO0yCRS0UEV9IMiYgu/+jNwA7PsDc6D1jJU="
+# Docker Hub
+         - secure: "iAvW8bYw+GRnryXdJRR5AG4u9CqIzl6dh8CyUCY52c2zjkdKyrFu6NeZY89Y+czCC0CtM387SDTQojbDqPyoMrfveJpiuHwai/7Z88uovibWsiltg1GFRs/ErT5K9wEh6psuIWiTkRQ9GyZRO0hcrrurYGsYfabRlLCtq8P9RNcVDAVVb4eN3JNTbwnHMCeSKTp3XlYNnd9q3/93blepmVaXfJBZrN9WYgnwmDTz++P6IVfqffYNc1BRbnwL8gUJFfwAWL6HlHQ2679sv7ARTOHBCnptT8nVzeRpgy/2BY7hMDZOtwixylGTbIZEl5IrrdBPc9+6vvElPpdaOENutmwgy9zAIDXhdRfwXfhRy/kYBAsHV7afBEopS6RbolqFmhVv7UcrTgd3qZouc5vNFOVlLRanRcl/ooj2TpE336J5tJuNHUO3/fXxug1gkjGJe/21pO+zFt4UcGrKuU9H25lrtq8gBkKVZXh2I7tR8Ybxx1fNipdK/mSMStAJ1Zh0x1gts2s7yY2irPYnVXvJG/ek7q1PDD6lKs/SjXGKHz4IXTrctJGfsGZpP+0HuqBUJIv9V1RhhHn8LTeBwhzllnGRviEPi+F+G74pWHFvEFpnquksl9Lxp+m4595IjsZlWguCWEq/Gf/zDgft+oQ6ZXqYiGeA2K9WEjkDizbjGKI="
+         - secure: "rqnwAC/InwFpMtfc/0m4i45F0sp9XLRLCR95fQZD+HaGEHnFUYJ9LIODW1YWxKqnyMyfu+WoFAojYxvHiSv3EmxYuJWhUoh1jAvzxtuKc9CCXJiXU+Krhc0ugSJifw2DTO7Dvm+lkOzXVN7khrR/qtKunsuhlM3opiVEuFXQ3Z1pWyB1W+Bz6sH7UIWQpaJnSz2qsa0yHN5iwsYjw2JEeF27lh7sS+hUjj9UG8+7AUFPtasvaJs/iX1ntpAq4NZYfxL/GPEtIfsYxpqU8HdartGVm+gS9zyhogHkOVId2ZVLT1USN7Y1K6CPENl5INZB1s6UdHhGfGg9XozPuhGdouW12s4aSp9+uSQiaR7BZV4PxE6KACCaO8L4oT77xJE2vMhPdbE/90b4texcCPGYXiv2uZQwU4hnkJhBoCjtBYEBXkMxn+DzfPNsNQ6+CxZ01Cvv/es27y3hhiM5lyxnip8Xp+PL1cxqzXsWaMvmoMFZnGt1ymOleJvjvg24Ky21qwu8aqSZa/M1rGrqyCgKdJhfwS1LlP9Xx81G++WJ5X/u2FzBusD2RjbNFM6Z+Vg83x3MWgRcrQx6B0OPA+pxuzipNbIWuzFzWW+Os6iUoH/VSOqIpb1pMPOatYx1P59HqoReI4Fn20TnimzkmX32SumHSLPcuJFSM06u4qtqQBI="          
+
+services:
+    - docker
 
 matrix:
     include:
@@ -14,21 +21,21 @@ matrix:
         install:
             - pip install -r requirements.txt  # Install deps
             - pip install -r requirements_test.txt  # Install testing deps
-            - pip install .  # Install our backend package
+            - pip install .  # Install our backend package for tests to run against
         script: pytest --cov=tmeit_backend tests
         after_success:
             - coveralls
         deploy:
+        # Production deploy on releases
+#          - provider: script
+#            script: bash docker_push.sh
+#            on:
+#                tags: true
+        # Development deploy on master commits
           - provider: script
-            script: echo deployed master
+            script: bash docker_push_dev.sh
             on:
                 branch: master
-          - provider: script
-            script: echo deployed testing
-            on:
-                branch: auto-deploy
-            # (build docker image)
-            # (push image to registry)
 
     # Frontend #
 #      - language: node_js
