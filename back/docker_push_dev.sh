@@ -3,7 +3,7 @@
 # Builds dev version of backend docker container and pushes to Docker Hub
 
 # Truncate commit hash to 7 chars
-tag="echo $TRAVIS_COMMIT | sed 's/^\(.......\).*/\1/'"
+tag=`echo "$TRAVIS_COMMIT" | sed "s/^\(.......\).*/\1/"`
 
 # Build and tag with commit hash
 docker build -t justinlex/tmeit-website-dev:$tag .
