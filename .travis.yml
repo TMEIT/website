@@ -39,7 +39,21 @@ matrix:
                 branch: master
 
     # Frontend #
-#      - language: node_js
-#        node_js:
-#            - "node"  # Use latest Node.js stable release
-            
+      - language: node_js
+        node_js:
+            - "node"  # Use latest Node.js stable release
+        before_install:
+            - cd front
+        # Eventually do Jest testing here
+        deploy:
+        # Production deploy on releases
+#          - provider: script
+#            script: bash deploy.sh
+#            on:
+#                tags: true
+        # Development deploy on master commits
+          - provider: script
+            script: bash deploy_dev.sh
+            on:
+                branch: master
+
