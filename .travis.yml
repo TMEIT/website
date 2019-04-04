@@ -29,7 +29,7 @@ matrix:
         deploy:
         # Production deploy on releases
 #          - provider: script
-#            script: bash deploy_push.sh
+#            script: bash deploy.sh
 #            on:
 #                tags: true
         # Development deploy on master commits
