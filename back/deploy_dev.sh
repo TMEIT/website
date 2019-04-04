@@ -20,7 +20,7 @@ echo $SFTP_KEY > /tmp/sftp_key
 # Upload Python code to server
 # https://stackoverflow.com/questions/14019890/uploading-all-of-files-in-my-local-directory-with-curl
 find tmeit_backend -type f -exec curl --ftp-create-dirs --key /tmp/sftp_key -T {} \
-    sftp://$SSH_CONNECTION/www-tmeit/development/py/tmeit_backend/{} \;
+    sftp://$SSH_CONNECTION/www-tmeit/development/py/{} \;
 
 # Touch reload-uwsgi on server to reload python code
 touch /tmp/reload-uwsgi
