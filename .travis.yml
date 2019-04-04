@@ -29,12 +29,12 @@ matrix:
         deploy:
         # Production deploy on releases
 #          - provider: script
-#            script: bash docker_push.sh
+#            script: bash deploy_push.sh
 #            on:
 #                tags: true
         # Development deploy on master commits
           - provider: script
-            script: bash docker_push_dev.sh
+            script: bash deploy_dev.sh
             on:
                 branch: master
 
