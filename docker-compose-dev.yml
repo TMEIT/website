@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  backend:
+    image: justinlex/tmeit-website-dev
+    restart: unless-stopped # Restart even after server reboot
+    volumes:
+      - /home/in/tmeit-website-persistent/dev/jwt_secret.txt:/srv/api/jwt_secret.txt
+      - /home/in/tmeit-website-persistent/dev/database.sqlite3:/srv/api/database.sqlite3
+      - /srv/www-tmeit/development/py/tmeit_backend:/srv/api/tmeit_backend
+      - /srv/www-tmeit/development/reload-uwsgi:/srv/api/reload-uwsgi
+
+  frontend:
+    image: nginx:stable-alpine
+    restart: unless-stopped # Restart even after server reboot
+    volumes:
+      - /srv/www-tmeit/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /srv/www-tmeit/development/www:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
+    ports:
+      - 80:80
+
