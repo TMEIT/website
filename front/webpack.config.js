@@ -2,7 +2,7 @@
 
 const path = require("path");
 
-const DIST_DIR = path.resolve(__dirname, "dist");
+const DIST_DIR = path.resolve(__dirname, "www");
 const SRC_DIR = path.resolve(__dirname, "src");
 
 module.exports = {
@@ -28,6 +28,6 @@ module.exports = {
         ]
     },
     devServer: {
-        contentBase: './dist'
+        contentBase: './www'
     }
 };

@@ -2,7 +2,7 @@
 .idea/
 
 #compiled js
-dist/
+www/
 
 # Logs
 logs
