@@ -4,7 +4,7 @@
   "description": "Front-end for the TMEIT website.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "start": "npm run build",
     "build": "webpack -d && cp src/index.html www/index.html && webpack-dev-server --content-base src/ --inline --hot",
     "build:prod": "webpack -p && cp src/index.html www/index.html "
