@@ -18,9 +18,9 @@ docker push justinlex/tmeit-website-dev
 echo $SFTP_KEY > /tmp/sftp_key
 
 # Upload Python code to server
-sftp -i /tmp/sftp_key $SSH_CONNECTION:/www-tmeit/development/py/ <<< $'put -r tmeit_backend'
+sftp -i /tmp/sftp_key -o StrictHostKeyChecking=no $SSH_CONNECTION:/www-tmeit/development/py/ <<< $'put -r tmeit_backend'
 
 # Touch reload-uwsgi on server to reload python code
 touch /tmp/reload-uwsgi
-sftp -i /tmp/sftp_key $SSH_CONNECTION:/www-tmeit/development/ <<< $'put /tmp/reload-uwsgi'
+sftp -i /tmp/sftp_key  -o StrictHostKeyChecking=no $SSH_CONNECTION:/www-tmeit/development/ <<< $'put /tmp/reload-uwsgi'
 
