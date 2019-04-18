@@ -16,6 +16,7 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker push justinlex/tmeit-website-dev
 
 echo $SFTP_KEY > /tmp/sftp_key
+chmod 600 /tmp/sftp_key
 
 # Upload Python code to server
 sftp -i /tmp/sftp_key -o StrictHostKeyChecking=no $SSH_CONNECTION:/www-tmeit/development/py/ <<< $'put -r tmeit_backend'
