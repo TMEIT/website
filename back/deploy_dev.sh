@@ -15,7 +15,9 @@ docker tag justinlex/tmeit-website-dev:$tag justinlex/tmeit-website-dev:latest
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker push justinlex/tmeit-website-dev
 
-echo $SFTP_KEY > /tmp/sftp_key
+echo "-----BEGIN OPENSSH PRIVATE KEY-----" > /tmp/sftp_key
+echo $SFTP_KEY >> /tmp/sftp_key
+echo "-----END OPENSSH PRIVATE KEY-----" >> /tmp/sftp_key
 chmod 600 /tmp/sftp_key
 
 # Upload Python code to server

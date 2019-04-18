@@ -5,7 +5,9 @@
 npm install
 npm run-script build:prod
 
-echo $SFTP_KEY > /tmp/sftp_key
+echo "-----BEGIN OPENSSH PRIVATE KEY-----" > /tmp/sftp_key
+echo $SFTP_KEY >> /tmp/sftp_key
+echo "-----END OPENSSH PRIVATE KEY-----" >> /tmp/sftp_key
 chmod 600 /tmp/sftp_key
 
 # Upload html and js code to server
