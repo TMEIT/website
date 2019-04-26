@@ -7,6 +7,7 @@ import Home from "./layouts/Home";
 import Events from "./layouts/Events";
 import Join from "./layouts/Join";
 import Team from "./layouts/Team";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 
@@ -15,18 +16,7 @@ function App () {
     return (
         <Router>
             <Fragment>
-                <header>
-                    <nav>
-                        <ul>
-                            <li><NavLink to="/" activeClassName="selected">TMEIT</NavLink></li>
-                            <li><NavLink to="/events" activeClassName="selected">Events</NavLink></li>
-                            <li><NavLink to="/team" activeClassName="selected">Team</NavLink></li>
-                            <li><NavLink to="/join_tmeit" activeClassName="selected">JOIN</NavLink></li>
-                            <li><NavLink to="/login" activeClassName="selected">Login</NavLink></li>
-                        </ul>
-                    </nav>
-                    
-                </header>
+                <Header />
 
                 <Switch>
                     <Route path="/" exact component={Home} />
