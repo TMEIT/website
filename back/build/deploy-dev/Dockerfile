@@ -7,9 +7,14 @@ WORKDIR /srv/api
 
 RUN addgroup -S tmeit-website && adduser -S tmeit-wsgi
 
+# Install system packages
+# Note: libxml and libxmlsec are dependencies for the python3-saml package.
 RUN apk add --no-cache \
         uwsgi-python3 \
-        python3
+        python3 \
+        libxml2-dev \
+        xmlsec-dev
+
 
 RUN pip3 install poetry==1.0.0a5
 
