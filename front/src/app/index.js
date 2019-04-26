@@ -18,11 +18,11 @@ function App () {
                 <header>
                     <nav>
                         <ul>
-                            <li><NavLink to="/">TMEIT</NavLink></li>
-                            <li><NavLink to="/events">Events</NavLink></li>
-                            <li><NavLink to="/team">Team</NavLink></li>
-                            <li><NavLink to="/join_tmeit">JOIN</NavLink></li>
-                            <li><NavLink to="/login">Login</NavLink></li>
+                            <li><NavLink to="/" activeClassName="selected">TMEIT</NavLink></li>
+                            <li><NavLink to="/events" activeClassName="selected">Events</NavLink></li>
+                            <li><NavLink to="/team" activeClassName="selected">Team</NavLink></li>
+                            <li><NavLink to="/join_tmeit" activeClassName="selected">JOIN</NavLink></li>
+                            <li><NavLink to="/login" activeClassName="selected">Login</NavLink></li>
                         </ul>
                     </nav>
                     
