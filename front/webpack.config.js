@@ -24,9 +24,16 @@ module.exports = {
                         presets: ['@babel/preset-react', '@babel/preset-env']
                     }
                 }
+            },
+            {
+                test: /\.css$/,
+                include: SRC_DIR,
+                exclude: /node_modules/,
+                use: ['style-loader', 'css-loader']
             }
         ]
-    },
+    }
+,
     devServer: {
         contentBase: './www'
     }
