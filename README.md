@@ -31,6 +31,7 @@ A new website created by and for TMEIT
 
 ### Events
 * A list of all KMR events (also internfester and utlandsfester if logged in)
+* TMEIT Pubs and gasques automatically crosspost to Facebook
 * Switch between two views, upcoming and past:
     * List of upcoming events from soonest to last
     * List of past events from latest to oldest, maybe with year selectors
@@ -39,6 +40,7 @@ A new website created by and for TMEIT
 * (if logged in)
     * Number of people working
     * Y/M/N attendence
+
     
 ### Event
 * Banner
@@ -48,6 +50,9 @@ A new website created by and for TMEIT
 * Location
 * Link to FB Page
 * List of TMEIT people attending 
+* Comments
+    * Live comments
+    * To encourage shitposting, users cannot delete comments
 
 
 ### People
@@ -58,17 +63,21 @@ A new website created by and for TMEIT
 
 ### Profiles
 * Info should be limited if you're not logged in
-* Show Name + nickname, Title, Team, random picture, and points
-* Tabbed sections:
-    * Info
+* Profile header: Name + nickname, Title, Team, random picture, and points
+* Info section:
         * email
         * DOB
         * Permits
         * History
+* Tabbed sections:
+    * Comments
+        * Live comments
+        * To encourage shitposting, users cannot delete comments
     * Pictures
         * Able to upload new photos
         * (Profile photos should be uploaded to static host automatically and backend should track IDs)
-    * Events worked and attended
+    * Events worked 
+    * Events attended
 
 
 ### Sign up
