@@ -8,8 +8,8 @@ function Profile ({props}) {
                 <img src="https://thispersondoesnotexist.com/image" alt="John Doe" />        
             </div>
             <div className="text">
-                <h1>John Doe</h1>
-                <h2>Hoe on a stick</h2>
+                <h1>Ovvenamn</h1>
+                <h2>Jonatan Hindén</h2>
                 <p>xx</p>
             </div>
         </div>
