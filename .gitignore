@@ -1,2 +1,3 @@
-#JetBrains IDE project folders
 **/.idea/
+*.code-workspace
+.DS_Store
