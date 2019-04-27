@@ -33,7 +33,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     else:
         # Always get secret for our JWT tokens from jwt_secret.txt when running in production
         try:
-            with open('jwt_secret.txt') as secret_file:
+            with open('/srv/api/jwt_secret.txt') as secret_file:
                 app.config['JWT_SECRET_KEY'] = secret_file.read()
         except FileNotFoundError:
             print("When running in production, we need a jwt_secret.txt to sign JWTs with.\n"

@@ -5,7 +5,7 @@ from tmeit_backend import api_app
 from pathlib import Path
 import os
 
-DATABASE_PATH = os.getcwd() + '/database.sqlite3'
+DATABASE_PATH = os.getcwd() + '/srv/api/database.sqlite3'
 
 # Make sure we have a valid database
 # TODO: We might be able to do some active db checks too to make sure nothing is blackholed
