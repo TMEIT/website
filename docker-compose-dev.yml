@@ -18,4 +18,6 @@ services:
       - /srv/www-tmeit/development/www:/usr/share/nginx/html:ro
     depends_on:
       - backend
+    ports:
+      - 8080:80
 
