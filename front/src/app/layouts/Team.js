@@ -5,12 +5,15 @@ import Profile from "../components/Profile";
 function Team() {return (
     <Router>
         <Fragment>
-            <h1>Team</h1>
-            <h2><Link to="/team/5">User</Link></h2>
-            <h2><Link to="/team/6">User</Link></h2>
-            <h2><Link to="/team/8">User</Link></h2>
             <Switch>
-                <Route exact path="/team/" />
+                <Route exact path="/team/">
+                    <Fragment>
+                        <h1>Team</h1>
+                        <h2><Link to="/team/5">User</Link></h2>
+                        <h2><Link to="/team/6">User</Link></h2>
+                        <h2><Link to="/team/8">User</Link></h2>
+                    </Fragment>
+                </Route>
                 <Route path="/team/:id" component={Profile}/>
             </Switch>
         </Fragment>
