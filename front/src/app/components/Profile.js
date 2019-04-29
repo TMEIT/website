@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./profile.css"
 
-function Profile () {
+function Profile ({match}) {
     return (
-        <h2>Profile</h2>
+        <h2>Profile {match.params.id} </h2>
     )
 }
 
