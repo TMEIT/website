@@ -5,29 +5,10 @@ from tmeit_backend import models, api_app
 from tests import dummy_entries
 
 
-@pytest.fixture
-def app_nodb():
+def create_test_db(app):
     """
-        Creates an app session for testing, using an empty db in memory.
-        app = api_app.create_app('sqlite:///{}/testing.sqlite3'.format(tmp_path), debug=True, testing=True)
+    Creates a test database using the given app
     """
-    app = api_app.create_app('sqlite://', debug=True, testing=True)
-
-    with app.app_context():
-        models.db.create_all()
-
-    return app
-
-
-
-@pytest.fixture(scope="session")
-def app(tmp_path_factory):
-    """
-    Creates an app session for testing, and creates and uses a new database file with a test workteam and user.
-    """
-    tmp_path = tmp_path_factory.mktemp("tmeit-db")
-    app = api_app.create_app('sqlite:///{}/testing.sqlite3'.format(tmp_path), debug=True, testing=True)
-
     with app.app_context():
         models.db.create_all()
 
@@ -59,4 +40,28 @@ def app(tmp_path_factory):
         models.db.session.add(test_user)
         models.db.session.commit()
 
+
+@pytest.fixture
+def app_nodb():
+    """
+        Creates an app session for testing, using an empty db in memory.
+        app = api_app.create_app('sqlite:///{}/testing.sqlite3'.format(tmp_path), debug=True, testing=True)
+    """
+    app = api_app.create_app('sqlite://', debug=True, testing=True)
+
+    with app.app_context():
+        models.db.create_all()
+
+    return app
+
+
+@pytest.fixture(scope="session")
+def app(tmp_path_factory):
+    """
+    Creates an app session for testing, and creates and uses a new database file with a test workteam and user.
+    """
+    tmp_path = tmp_path_factory.mktemp("tmeit-db")
+    app = api_app.create_app('sqlite:///{}/testing.sqlite3'.format(tmp_path), debug=True, testing=True)
+
+    create_test_db(app)
     return app

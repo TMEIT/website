@@ -58,5 +58,6 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
 
 # start the flask loop
 if __name__ == '__main__':
-    app = create_app('sqlite://', debug=True, testing=False)
+    import os
+    app = create_app('sqlite:///{}/database.sqlite3'.format(os.getcwd()), debug=True, testing=False)
     app.run()
