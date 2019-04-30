@@ -1,24 +1,14 @@
-import React from "react";
+import React, {Component, Fragment} from "react";
 import styles from "./profile.css"
+import roles from "./variables"
 
-const user = {
-    id: "",
-    email: "",
-    profilePic: "",
-    name: "",
-    nickname: "",
-    gallery: "",
-    title: "",
-    team: "",
-    points: "",
-    eventsWorked: "",
-    eventsAttended: "",
-    permits: "",
-}
-
-function Profile ({match}) {
+function Profile (props) {
+    const member = props.route.member
     return (
-        <h2>Profile {match.params.id} </h2>
+       <Fragment>
+            <h2>{member.first_name + " " + member.last_name}</h2>
+            <h2>{member.nickname}</h2>
+       </Fragment>
     )
 }
 
