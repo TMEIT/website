@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react";
+import React, {Fragment} from "react";
 import styles from "./profile.css"
 import roles from "./variables"
 
