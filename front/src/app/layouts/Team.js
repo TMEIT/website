@@ -98,7 +98,7 @@ function Team() {return (
 
                     </Fragment>
                 </Route>
-                <Route path="/team/:id" render={Profile} member={memberToBePassed} />
+                <Route path="/team/:id" render={(props) => <Profile {...props} member={memberToBePassed}/>}  />
             </Switch>
         </Fragment>
     </Router>
