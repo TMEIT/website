@@ -9,6 +9,7 @@ import Join from "./layouts/Join";
 import Team from "./layouts/Team";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Profile from "./layouts/Profile";
 
 function App () {
     return (
@@ -22,6 +23,7 @@ function App () {
                     <Route path="/team" component={Team} />
                     <Route path="/join_tmeit" component={Join} />
                     <Route path="/login" component={Login} />
+                    <Route path="/profile/:id" component={Profile} />
                 </Switch>
 
                 <Footer />
