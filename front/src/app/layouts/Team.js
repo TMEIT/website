@@ -1,68 +1,49 @@
 import React, {Fragment, useState} from "react";
 import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
 import Profile from "../components/Profile";
+import {useFetch} from "../FetchHooks.js";
 
-const members = {
-    "num_results": 1,
-    "objects": [
-        {
-            "current_role": 1,
-            "drivers_license": true,
-            "email": "testtmeit@gmail.com",
-            "fest": null,
-            "first_name": "Test",
-            "last_name": "TMEIT",
-            "liquor_permit": false,
-            "nickname": "TT",
-            "phone": "(555) 555-5555",
-            "role_histories": [],
-            "stad": null,
-            "workteams": [
-                {
-                    "active": true,
-                    "active_period": 0,
-                    "active_year": 2019,
-                    "id": 1,
-                    "name": "Web Crew",
-                    "symbol": "W"
-                }
-            ],
-            "workteams_leading": [
-                {
-                    "active": true,
-                    "active_period": 0,
-                    "active_year": 2019,
-                    "id": 1,
-                    "name": "Web Crew",
-                    "symbol": "W"
-                }
-            ]
+function findMemberByEmail(members, email) {
+    if(members == null) return null;
+
+    for ( const member of members) {
+        if(member.email === email) {
+            return member;
         }
-    ],
-    "page": 1,
-    "total_pages": 1
+    }
+
+    return null;
 }
 
 function Team() {
 
-    const [memberPassing, setMemberPassing] = useState(null);
-    
+    const {loading, data} = useFetch("/api/members");
+
+    const members = loading ? null : data.objects;
+
     return (
         <Router>
             <Switch>
                 <Route exact path="/team/">
                     <Fragment>
                         <h1>Team</h1>
-                        {members.objects.map(member => 
-                            <h2 key={member.email} >
-                                <Link to={"/team/" + member.email} onClick={() => setMemberPassing(member)}>
-                                    {member.first_name + " " + member.last_name}
-                                </Link>
-                            </h2>
-                        )}
+                        {loading && "Loading..."}
+
+                        {
+                            !loading && members.map(member =>
+                                <h2 key={member.email} >
+                                    <Link to={"/team/" + member.email} >
+                                        {member.first_name + " " + member.last_name}
+                                    </Link>
+                                </h2>
+                            )
+                        }
+
                     </Fragment>
                 </Route>
-                <Route path="/team/:id" render={(props) => <Profile {...props} member={memberPassing}/>}  />
+                {/*Loading a profiles doesnt work, as we dont have data when the route loads,
+                and state updates wont rerender it...*/}
+                <Route path="/team/:id" render={ (props) => <Profile {...props} member={findMemberByEmail(members, props.match.path.id)}/>}  />
             </Switch>
         </Router>
     )
