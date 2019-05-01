@@ -4,14 +4,14 @@ import {useFetch} from "../FetchHooks.js"
 import Loading from "../components/Loading";
 
 function Profile ({match}) {
-    const {loading, member} = useFetch("/api/members" + match.params.id);
+    const {loading, data} = useFetch("/api/members/" + match.params.id);
 
     return (
        <Fragment>
-           {loading? <Loading/> :
+           {loading ? <Loading/> :
                 <Fragment>
-                    <h2>{member.first_name + " " + member.last_name}</h2>
-                    <h2>{member.nickname}</h2>
+                    <h2>{data.first_name + " " + data.last_name}</h2>
+                    <h2>{data.nickname}</h2>
                 </Fragment>
            }
        </Fragment>
