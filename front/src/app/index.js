@@ -24,7 +24,6 @@ function App () {
                         <Route path="/events" component={Events} />
                         <Route path="/team" component={Team} />
                         <Route path="/join_tmeit" component={Join} />
-                        <Route path="/login" component={Login} />
                         <Route path="/profile/:id" component={Profile} />
                     </Switch>
                 </main>
