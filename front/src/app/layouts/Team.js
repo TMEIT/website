@@ -12,8 +12,8 @@ function Team() {
             <h1>Team</h1>
             {loading? <Loading /> : 
                 data.objects.map(member =>
-                    <h2 key={member.email} >
-                        <Link to={"/profile/" + member.email} >
+                    <h2 key={encodeURIComponent(member.email)} >
+                        <Link to={"/profile/" + encodeURIComponent(member.email)} >
                             {member.first_name + " " + member.last_name}
                         </Link>
                     </h2>
