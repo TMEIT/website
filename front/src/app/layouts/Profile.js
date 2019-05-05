@@ -9,7 +9,6 @@ function Profile ({match}) {
     if(!match.params.id) return(<Redirect to={"/team"} />);
 
     const {loading, data} = useFetch("/api/members/" + match.params.id);
-    console.log(data);
     if(data === "error") return(
         <>
             <h1>404: This profile was not found :(</h1>

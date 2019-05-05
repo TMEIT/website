@@ -25,7 +25,6 @@ export const useFetch = url => {
         if(!response.ok) {
             setData("error");
             setLoading(false);
-            console.log(response);
         } else {
             const json = await response.json();
             setData(json);
