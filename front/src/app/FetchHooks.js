@@ -22,9 +22,16 @@ export const useFetch = url => {
 
     async function fetchData() {
         const response = await fetch(url);
-        const json = await response.json();
-        setData(json);
-        setLoading(false)  }
+        if(!response.ok) {
+            setData("error");
+            setLoading(false);
+            console.log(response);
+        } else {
+            const json = await response.json();
+            setData(json);
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
         fetchData()
