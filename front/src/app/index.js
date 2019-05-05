@@ -14,21 +14,24 @@ import Profile from "./layouts/Profile";
 function App () {
     return (
         <Router>
-            <Fragment>
+            <>
+
                 <Header />
 
-                <Switch>
-                    <Route path="/" exact component={Home} />
-                    <Route path="/events" component={Events} />
-                    <Route path="/team" component={Team} />
-                    <Route path="/join_tmeit" component={Join} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/profile/:id" component={Profile} />
-                </Switch>
+                <main>
+                    <Switch>
+                        <Route path="/" exact component={Home} />
+                        <Route path="/events" component={Events} />
+                        <Route path="/team" component={Team} />
+                        <Route path="/join_tmeit" component={Join} />
+                        <Route path="/login" component={Login} />
+                        <Route path="/profile/:id" component={Profile} />
+                    </Switch>
+                </main>
 
                 <Footer />
 
-            </Fragment>
+            </>
         </Router>
     )
 }
