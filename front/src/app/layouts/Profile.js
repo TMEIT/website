@@ -24,7 +24,7 @@ function Profile ({match}) {
 
 
     if(loading) {
-        return <loading />
+        return <Loading />
     }
 
 
