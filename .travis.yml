@@ -53,6 +53,7 @@ matrix:
 #                tags: true
         # Development deploy on master commits
           - provider: script
+            skip_cleanup: true
             script: bash deploy_dev.sh
             on:
                 branch: master
