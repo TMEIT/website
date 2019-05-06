@@ -81,7 +81,7 @@ const InfoList = React.memo(function InfoList(props) {
         <li>{(props.data.fest ? "Completed" : "Has not completed") + " FEST training."}</li>;
     const stad = props.data.stad == null ? null :
         <li>{(props.data.stad ? "Completed" : "Has not completed") + " STAD training."}</li>;
-    const liquor = <li>(props.data.liquor_permit ? "Is" : "Is not") + " on Kistan 2.0's liquor license."</li>;
+    const liquor = <li>{(props.data.liquor_permit ? "Is" : "Is not") + " on Kistan 2.0's liquor license."}</li>;
 
 
 
