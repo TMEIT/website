@@ -1,11 +1,10 @@
-footer {
-    background-color: #f5f5f5;
-    margin-top: auto;
+header {
+    background-color: #c5c5c5;
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
 
-footer ul {
+header ul {
     display: flex;
     flex-direction: row;
     justify-content: space-around;

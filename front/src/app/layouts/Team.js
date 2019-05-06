@@ -1,20 +1,26 @@
-import React, {Component, Fragment} from "react";
-import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
-import Profile from "../components/Profile";
+import React, {Fragment} from "react";
+import {Link} from "react-router-dom";
+import Loading from "../components/Loading";
+import {useFetch} from "../FetchHooks.js";
 
-function Team() {return (
-    <Router>
+function Team() {
+
+    const {loading, data} = useFetch("/api/members");
+
+    return (
         <Fragment>
             <h1>Team</h1>
-            <h2><Link to="/team/5">User</Link></h2>
-            <h2><Link to="/team/6">User</Link></h2>
-            <h2><Link to="/team/8">User</Link></h2>
-            <Switch>
-                <Route exact path="/team/" />
-                <Route path="/team/:id" component={Profile}/>
-            </Switch>
+            {loading? <Loading /> : 
+                data.objects.map(member =>
+                    <h2 key={member.email} >
+                        <Link to={"/profile/" + encodeURIComponent(member.email)} >
+                            {member.first_name + " " + member.last_name}
+                        </Link>
+                    </h2>
+                )
+            }
         </Fragment>
-    </Router>
-)}
+    )
+}
 
 export default Team

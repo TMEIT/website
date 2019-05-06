@@ -21,7 +21,7 @@ module.exports = {
                 use: { //more loaders can be added here in an array
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-react', '@babel/preset-env']
+                        presets: ['@babel/preset-react']
                     }
                 }
             },
@@ -35,6 +35,12 @@ module.exports = {
     }
 ,
     devServer: {
-        contentBase: './www'
+        contentBase: './www',
+        historyApiFallback: {
+            disableDotRule: true
+        },
+        proxy: {
+            '/api': 'http://127.0.0.1:5000'
+        }
     }
 };
