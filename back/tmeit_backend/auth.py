@@ -3,11 +3,10 @@
 
 import flask
 import jwt
-import requests
-
+import requests.exceptions
 import datetime
 
-from tmeit_backend import models
+from tmeit_backend import models, auth_google, auth_kth
 
 
 login_page = flask.Blueprint('login_page', __name__)
@@ -24,7 +23,7 @@ def login():
         if google_jwt is None:
             return flask.jsonify({"msg": "No token found"}), 400  # No token in JSON payload
         try:
-            user = verify_google_token(google_jwt)
+            user = auth_google.verify_google_token(google_jwt)
         except InvalidExternalTokenError as e:
             return flask.jsonify({"msg": str(e)}), 401  # Invalid token
         except requests.exceptions.RequestException as e:
@@ -32,11 +31,10 @@ def login():
                                   "response": e.response}), 502  # HTTP error using Google's verification API
 
     elif flask.request.content_type == "application/xml":  # SAML token in XML payload, aka a KTH SAML token
-        # TODO: Not implemented
-        # try:
-        #     verify_kth_token(None)
-        # except InvalidExternalTokenError as e:
-        #     return flask.jsonify({"msg": str(e)}), 401
+        try:
+            auth_kth.verify_kth_token(flask_request=flask.request)
+        except InvalidExternalTokenError as e:
+            return flask.jsonify({"msg": str(e)}), 401
         return flask.jsonify({"msg": "KTH login is not implemented yet"}), 501
 
     else:
@@ -52,51 +50,7 @@ def login():
     return flask.jsonify(access_token=access_token), 200
 
 
-# Authentication Exceptions #
-class InvalidExternalTokenError(RuntimeError):
-    """Raised when a user tries to login with a external token that is invalid."""
-    pass
-
-
-# Functions for external tokens #
-def verify_google_token(token: str):
-    """ Takes a Google JWT "id_token", verifies it, and returns the user's email if the token was valid.
-
-        We don't want to bother tracking google's current public key for JWT signing, so we just use Google's Oauth2
-        tokeninfo API, at the cost of some performance on user login.
-        https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token
-        TODO: We could track Google's public key and verify tokens locally for a performance boost on login requests
-
-        Raises:
-            InvalidExternalTokenError: Token is signed incorrectly, not from Google, expired, the wrong audience, or
-                does not contain an email claim. Token is not usable.
-            requests.exceptions.RequestException: An HTTP error occurred while verifying the token with Google.
-
-        Returns:
-            A dict containing the logging-in user's email and full name, obtained from their login token
-    """
-    r = requests.get("https://oauth2.googleapis.com/tokeninfo?id_token=" + token )
-
-    # Raise if Google says token is invalid
-    if r.status_code == 400 and r.json()['error'] == "invalid_token":
-        raise InvalidExternalTokenError("This Google JWT is invalid.")
-
-    # Raise if we had an HTTP error aside form an invalid token
-    r.raise_for_status()
-
-    # Check that token matches our Client ID and isn't stolen from another service.
-    validated_token = r.json()
-    if validated_token['aud'] != flask.current_app.config['GOOGLE_CLIENT_ID']:
-        raise InvalidExternalTokenError("This Google JWT is not ours. Stealing is wrong!")
-
-    return {'email':   validated_token['email'],
-            'name':    validated_token['name']}
-
-
-def verify_kth_token(token):
-    """Decode and verify KTH SAML tokens"""
-    raise NotImplementedError("KTH login is not implemented yet.")
-
+# JWT generation and verification #
 
 def generate_jwt(user) -> str:
     """ Generates a JWT for the user logging in, signed with the key in JWT_SECRET_KEY in the Flask config
@@ -139,3 +93,9 @@ def verify_token(token: str, member_model: models.Member):
 
     # return the user's Member object from the database
     return member_model.query.get(decoded_token['sub'])
+
+
+# Authentication Exceptions #
+class InvalidExternalTokenError(RuntimeError):
+    """Raised when a user tries to login with a external token that is invalid."""
+    pass
