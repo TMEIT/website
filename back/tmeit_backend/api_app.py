@@ -46,7 +46,8 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
         if len(app.config['JWT_SECRET_KEY']) < 30:
             raise RuntimeError("jwt_secret.txt is too weak.")
 
-    # Add /api/google-login route
+    # Add /api/kth-login and /api/google-login routes
+    app.register_blueprint(kth.kth_blueprint)
     app.register_blueprint(google.google_blueprint)
 
     # Init Flask-SQLAlchemy plugin
