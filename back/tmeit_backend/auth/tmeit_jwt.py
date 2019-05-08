@@ -1,56 +1,12 @@
-# auth.login.py
+# auth.tmeit_jwt.py
 # Handles token generation and verification
 
 import flask
 import jwt
-import requests.exceptions
 import datetime
 
 from tmeit_backend import models
-from tmeit_backend.auth import google, kth, errors
 
-login_page = flask.Blueprint('login_page', __name__)
-
-
-@login_page.route('/api/login', methods=['POST'])
-def login():
-    """ Log in a user by receiving a POST with a Google or KTH single-sign-on token, and respond with a JWT."""
-
-    user = {}
-
-    if flask.request.is_json:  # JWT in JSON payload, aka a Google JWT
-        google_jwt = flask.request.json.get("access_token")
-        if google_jwt is None:
-            return flask.jsonify({"msg": "No token found"}), 400  # No token in JSON payload
-        try:
-            user = google.verify_google_token(google_jwt)
-        except errors.InvalidExternalTokenError as e:
-            return flask.jsonify({"msg": str(e)}), 401  # Invalid token
-        except requests.exceptions.RequestException as e:
-            return flask.jsonify({"msg": "Error verifying JWT on Google's servers.",
-                                  "response": e.response}), 502  # HTTP error using Google's verification API
-
-    elif flask.request.content_type == "application/xml":  # SAML token in XML payload, aka a KTH SAML token
-        try:
-            kth.verify_kth_token(flask_request=flask.request)
-        except errors.InvalidExternalTokenError as e:
-            return flask.jsonify({"msg": str(e)}), 401
-        return flask.jsonify({"msg": "KTH login is not implemented yet"}), 501
-
-    else:
-        return flask.jsonify({"msg": "Bad Request"}), 400  # Request didnt have JSON or XML data, invalid format
-
-    user['email'] = str.lower(user['email'])
-
-    if models.Member.query.get(user['email']) is None:  # User isn't registered with TMEIT with that email
-        return flask.jsonify({"msg": "{} ({}) is not registered".format(user['name'], user['email'])}), 403
-
-    # Create and return our login token
-    access_token = generate_jwt(user)
-    return flask.jsonify(access_token=access_token), 200
-
-
-# JWT generation and verification #
 
 def generate_jwt(user) -> str:
     """ Generates a JWT for the user logging in, signed with the key in JWT_SECRET_KEY in the Flask config
