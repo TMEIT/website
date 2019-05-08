@@ -27,37 +27,38 @@ def google_login():
 
     # Check request and read in Google token
     if not flask.request.is_json:
-        return flask.jsonify({"msg": "Bad Request"}), 400  # Request didnt have JSON or XML data, invalid format
+        return flask.jsonify(msg="Bad Request"), 400  # Request didnt have JSON or XML data, invalid format
 
     google_jwt = flask.request.json.get("access_token")  # Read token
 
     if google_jwt is None:
-        return flask.jsonify({"msg": "No token found"}), 400  # No token in JSON payload
+        return flask.jsonify(msg="No token found"), 400  # No token in JSON payload
 
     # Validate token with Google service
     r = requests.get("https://oauth2.googleapis.com/tokeninfo?id_token=" + google_jwt)
 
     if r.status_code == 400 and r.json()['error'] == "invalid_token":
-        return flask.jsonify({"msg": "This Google JWT is invalid."}), 401
+        return flask.jsonify(msg="This Google JWT is invalid."), 401
 
     if r.status_code != requests.codes.ok:
-        return flask.jsonify({"msg": "Error verifying JWT on Google's servers.",
-                              "reason": r.reason}), 502  # HTTP error using Google's verification API
+        return flask.jsonify(msg="Error verifying JWT on Google's servers.",
+                             reason=r.reason), 502  # HTTP error using Google's verification API
 
     validated_token = r.json()
 
     if validated_token['aud'] != flask.current_app.config['GOOGLE_CLIENT_ID']:
-        return flask.jsonify({"msg": "This Google JWT is not ours. Stealing is wrong!"}), 401
+        return flask.jsonify(msg="This Google JWT is not ours. Stealing is wrong!"), 401
 
     # Check if user exists
     if models.Member.query.get(validated_token['email']) is None:  # User isn't registered with TMEIT with that email
-        return flask.jsonify({"msg": "{} ({}) is not registered"
-                             .format(validated_token['name'], validated_token['email'])}), 403
+        return flask.jsonify(msg="{} ({}) is not registered".format(validated_token['name'],
+                                                                    validated_token['email'])
+                             ), 403
 
     # Return our TMEIT authentication JWT
-    access_token = tmeit_jwt.generate_jwt({
-        'email':    str.lower(validated_token['email']),
-        'name':     validated_token['name']
-    })
+    access_token = tmeit_jwt.generate_jwt(user={
+                                                    'email':    str.lower(validated_token['email']),
+                                                    'name':     validated_token['name']
+                                                })
 
     return flask.jsonify(access_token=access_token), 200
