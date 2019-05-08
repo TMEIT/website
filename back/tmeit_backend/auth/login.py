@@ -12,7 +12,7 @@ from tmeit_backend.auth import google, kth, errors
 login_page = flask.Blueprint('login_page', __name__)
 
 
-@login_page.route('/login', methods=['POST'])
+@login_page.route('/api/login', methods=['POST'])
 def login():
     """ Log in a user by receiving a POST with a Google or KTH single-sign-on token, and respond with a JWT."""
 
