@@ -1,4 +1,4 @@
-# auth_google.py
+# auth.google.py
 # Handles KTH login tokens
 
 from onelogin import saml2

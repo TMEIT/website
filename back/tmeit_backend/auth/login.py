@@ -1,4 +1,4 @@
-# auth.py
+# auth.login.py
 # Handles token generation and verification
 
 import flask
@@ -6,8 +6,8 @@ import jwt
 import requests.exceptions
 import datetime
 
-from tmeit_backend import models, auth_google, auth_kth
-
+from tmeit_backend import models
+from tmeit_backend.auth import google, kth, errors
 
 login_page = flask.Blueprint('login_page', __name__)
 
@@ -23,8 +23,8 @@ def login():
         if google_jwt is None:
             return flask.jsonify({"msg": "No token found"}), 400  # No token in JSON payload
         try:
-            user = auth_google.verify_google_token(google_jwt)
-        except InvalidExternalTokenError as e:
+            user = google.verify_google_token(google_jwt)
+        except errors.InvalidExternalTokenError as e:
             return flask.jsonify({"msg": str(e)}), 401  # Invalid token
         except requests.exceptions.RequestException as e:
             return flask.jsonify({"msg": "Error verifying JWT on Google's servers.",
@@ -32,8 +32,8 @@ def login():
 
     elif flask.request.content_type == "application/xml":  # SAML token in XML payload, aka a KTH SAML token
         try:
-            auth_kth.verify_kth_token(flask_request=flask.request)
-        except InvalidExternalTokenError as e:
+            kth.verify_kth_token(flask_request=flask.request)
+        except errors.InvalidExternalTokenError as e:
             return flask.jsonify({"msg": str(e)}), 401
         return flask.jsonify({"msg": "KTH login is not implemented yet"}), 501
 
@@ -93,9 +93,3 @@ def verify_token(token: str, member_model: models.Member):
 
     # return the user's Member object from the database
     return member_model.query.get(decoded_token['sub'])
-
-
-# Authentication Exceptions #
-class InvalidExternalTokenError(RuntimeError):
-    """Raised when a user tries to login with a external token that is invalid."""
-    pass

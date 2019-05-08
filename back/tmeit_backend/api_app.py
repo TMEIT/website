@@ -4,7 +4,8 @@
 import flask
 from sqlalchemy.exc import OperationalError
 
-from tmeit_backend import models, auth, crud_api, dummy_entries
+from tmeit_backend import models, crud_api, dummy_entries
+from tmeit_backend.auth import login
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
@@ -46,7 +47,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
             raise RuntimeError("jwt_secret.txt is too weak.")
 
     # Add /login route
-    app.register_blueprint(auth.login_page)
+    app.register_blueprint(login.login_page)
 
     # Init Flask-SQLAlchemy plugin
     models.db.init_app(app)

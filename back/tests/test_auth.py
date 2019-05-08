@@ -1,11 +1,12 @@
-# Test the backend's authentication handling inside back/auth.py
+# Test the backend's authentication handling inside back/login.py
 
 import pytest
 import os
 import flask
 import jwt
 
-from tmeit_backend import api_app, auth, models
+from tmeit_backend import api_app, models
+from tmeit_backend.auth import google
 
 EXPIRED_GOOGLE_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZmYjA1Zjc0MjM2NmVlNGNmNGJjZjQ5Zjk4NGM0ODdlNDVjOGM4M2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNDk3MTA3NTAwNzA1LW5nc21paXFpM3A2cjFsNXBwMGdwZmduZnFmN2I4amNiLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNDk3MTA3NTAwNzA1LW5nc21paXFpM3A2cjFsNXBwMGdwZmduZnFmN2I4amNiLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA5NzcwOTQ5ODY5ODk4NjkyMjgxIiwiZW1haWwiOiJ0ZXN0dG1laXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJjT0tMeHZtMjNRQUlQM2xZQ3FQOXRBIiwibmFtZSI6IlRlc3QgVE1FSVQiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1PVkdGY2NBUk1LZy9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQ2V2b1FOam5zcjNhcjZiVWVZZHI2cnJJTjZSRG1YMUFBL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJUZXN0IiwiZmFtaWx5X25hbWUiOiJUTUVJVCIsImxvY2FsZSI6ImVuIiwiaWF0IjoxNTQ5Mjk0NDQ4LCJleHAiOjE1NDkyOTgwNDgsImp0aSI6ImY4NjBjYjAxYjZjMDE3OGVjMzZlNzVhYmM1YjAzM2E1OTJlNDBjZGMifQ.CuK1JkSmF4IOhNOq_fFhG_Y5AD6BHsNCnBjgQjE80oAajcpMFS2_VpPORzi8NrW8cgExyTd1zqs63LcaaFR1NPIu6mTA4b4YWYRdw9uhkD2em1cXAlCaRlyX4nFh_pUSNmi_q1ANOoyxaDkQo2-nr43DoZUM8gSTs2bXDZVaIrrE7Lf1JYFfw9xyGNYlrmzkzAGm9cLxddwEE93kZF3_6waF0MYVDUnLtzYw4rVPz-3DBNQGZRwnySY9QRv-ZCmUBV6rmZaQZSPAmO5bkXf9CTrBW7baIQsnaD5DoxxL1kQL1OBmMVTDvPCc6aoR-YdyFibRi5j-dEFr5cdasGExHg"
 
@@ -61,7 +62,7 @@ class TestLogin(object):
     def test_jwt_generation(self, app, monkeypatch):
         """Tests that we're able to generate valid jwt tokens"""
         # Patch over token verification
-        monkeypatch.setattr(auth, 'verify_google_token', TestLogin.mock_external_token_verification)
+        monkeypatch.setattr(google, 'verify_google_token', TestLogin.mock_external_token_verification)
         app.config['SERVER_NAME'] = 'localhost:5000'
         client = app.test_client()
         payload = {'access_token': EXPIRED_GOOGLE_TOKEN}

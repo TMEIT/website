@@ -1,9 +1,10 @@
-# auth_google.py
+# auth.google.py
 # Handles Google login tokens
 
 import flask
 import requests
-from tmeit_backend.auth import InvalidExternalTokenError
+
+from tmeit_backend.auth import errors
 
 
 def verify_google_token(token: str):
@@ -26,7 +27,7 @@ def verify_google_token(token: str):
 
     # Raise if Google says token is invalid
     if r.status_code == 400 and r.json()['error'] == "invalid_token":
-        raise InvalidExternalTokenError("This Google JWT is invalid.")
+        raise errors.InvalidExternalTokenError("This Google JWT is invalid.")
 
     # Raise if we had an HTTP error aside form an invalid token
     r.raise_for_status()
@@ -34,7 +35,7 @@ def verify_google_token(token: str):
     # Check that token matches our Client ID and isn't stolen from another service.
     validated_token = r.json()
     if validated_token['aud'] != flask.current_app.config['GOOGLE_CLIENT_ID']:
-        raise InvalidExternalTokenError("This Google JWT is not ours. Stealing is wrong!")
+        raise errors.InvalidExternalTokenError("This Google JWT is not ours. Stealing is wrong!")
 
     return {'email':   validated_token['email'],
             'name':    validated_token['name']}
