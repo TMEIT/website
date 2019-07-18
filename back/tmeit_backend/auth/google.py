@@ -38,7 +38,7 @@ def google_login():
     r = requests.get("https://oauth2.googleapis.com/tokeninfo?id_token=" + google_jwt)
 
     if r.status_code == 400 and r.json()['error'] == "invalid_token":
-        return flask.jsonify(msg="This Google JWT is invalid."), 401
+        return flask.jsonify(msg="This Google JWT is invalid."), 403
 
     if r.status_code != requests.codes.ok:
         return flask.jsonify(msg="Error verifying JWT on Google's servers.",
@@ -47,7 +47,7 @@ def google_login():
     validated_token = r.json()
 
     if validated_token['aud'] != flask.current_app.config['GOOGLE_CLIENT_ID']:
-        return flask.jsonify(msg="This Google JWT is not ours. Stealing is wrong!"), 401
+        return flask.jsonify(msg="This Google JWT is not ours. Stealing is wrong!"), 403
 
     # Check if user exists
     if models.Member.query.get(validated_token['email']) is None:  # User isn't registered with TMEIT with that email
