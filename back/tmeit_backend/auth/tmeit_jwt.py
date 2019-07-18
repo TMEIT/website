@@ -19,7 +19,7 @@ def generate_jwt(user) -> str:
             'iss': config['JWT_ISSUER'],  # Token Issuer
             'iat': datetime.datetime.utcnow(),  # Token Issue Time
             'sub': user['email'],  # Token Recipient
-            'name': user['name'],  # Recipients' full name
+            'name': user['name'],  # Recipients' full name, not used for verification, but might be useful for UX on frontend
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=90)  # Token Expiration Time
         }
     jwt_bytes = jwt.encode(payload, key=config['JWT_SECRET_KEY'], algorithm=config['JWT_ALGORITHM'])
