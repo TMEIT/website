@@ -24,5 +24,4 @@ RUN poetry config settings.virtualenvs.in-project true
 COPY pyproject.toml poetry.lock /root/back/
 RUN chmod -R 777 /root
 
-RUN poetry lock
 RUN poetry install
