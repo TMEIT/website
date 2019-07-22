@@ -54,10 +54,3 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     crud_api.add_crud_routes(app)
 
     return app
-
-
-# start the flask loop
-if __name__ == '__main__':
-    import os
-    app = create_app('sqlite:///{}/database.sqlite3'.format(os.getcwd()), debug=True, testing=False)
-    app.run()
