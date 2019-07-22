@@ -1,8 +1,6 @@
 import pytest
-import os
 
-from tmeit_backend import models, api_app
-from tests import dummy_entries
+from tmeit_backend import models, api_app, dummy_entries
 
 
 def create_test_db(app):
