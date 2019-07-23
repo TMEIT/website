@@ -20,6 +20,7 @@ matrix:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         before_install:
             - cd back
 =======
@@ -31,6 +32,9 @@ matrix:
           - cd back
           - pwd
 >>>>>>> 264f1f6... Travis CI: debug path
+=======
+        before_install: cd back
+>>>>>>> 4c67174... Travis CI: add missing underscore in backend build script
         install: /bin/bash build/build-dev.sh
 >>>>>>> e42f89b... Backend: Build docker image before testing on Travis
         script: /bin/bash build/run-tests.sh
