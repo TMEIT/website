@@ -17,8 +17,12 @@ matrix:
       - language: python
         python:
             - "3.6"
+<<<<<<< HEAD
         before_install:
             - cd back
+=======
+        install: /bin/bash build/build-dev.sh
+>>>>>>> e42f89b... Backend: Build docker image before testing on Travis
         script: /bin/bash build/run-tests.sh
         deploy:
         # Production deploy on releases
