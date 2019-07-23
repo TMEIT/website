@@ -18,9 +18,13 @@ matrix:
         python:
             - "3.6"
 <<<<<<< HEAD
+<<<<<<< HEAD
         before_install:
             - cd back
 =======
+=======
+        before install: cd back
+>>>>>>> ccaded7... Travis CI: cd to back/ directory before testing backend
         install: /bin/bash build/build-dev.sh
 >>>>>>> e42f89b... Backend: Build docker image before testing on Travis
         script: /bin/bash build/run-tests.sh
