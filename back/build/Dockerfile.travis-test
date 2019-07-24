@@ -1,4 +1,4 @@
 FROM tmeit_backend-dev
 
-COPY ./* /root/back
+COPY ./ /root/back/
 
