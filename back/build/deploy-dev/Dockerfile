@@ -12,7 +12,7 @@ RUN apk add --no-cache \
         python3
 
 # Install dependencies
-COPY requirements.txt requirements.txt
+COPY ../../requirements.txt requirements.txt
 RUN pip3 install --quiet --no-cache-dir -r requirements.txt
 
 USER tmeit-wsgi:tmeit-website
