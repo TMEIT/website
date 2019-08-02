@@ -1,5 +1,7 @@
 from tmeit_backend import models
 
+# Some example values for the database for development stuff
+
 # Dummy workteam entry
 TEST_TEAM_NAME = "Web Crew"
 TEST_SYMBOL = "W"

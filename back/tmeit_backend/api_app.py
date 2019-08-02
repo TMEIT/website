@@ -2,8 +2,9 @@
 # Factory for our Flask app that implements our backend API
 
 import flask
+from sqlalchemy.exc import OperationalError
 
-from tmeit_backend import models, auth, crud_api
+from tmeit_backend import models, auth, crud_api, dummy_entries
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
@@ -50,14 +51,52 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     # Init Flask-SQLAlchemy plugin
     models.db.init_app(app)
 
+    # Generate adummy database if needed
+    if app.config["ENV"] == 'development':
+        try:
+            with app.app_context():  # See if members table exists
+                models.db.session.connection().execute(
+                    "SELECT * FROM members"
+                )
+        except OperationalError:
+            generate_dev_db(app)
+
     # Add crud routes (Will be under /api/)
     crud_api.add_crud_routes(app)
 
     return app
 
 
-# start the flask loop
-if __name__ == '__main__':
-    import os
-    app = create_app('sqlite:///{}/database.sqlite3'.format(os.getcwd()), debug=True, testing=False)
-    app.run()
+def generate_dev_db(app):
+    app.logger.info("Running in dev mode, and no database was found.\n"
+                    "Generating a new dummy database.")
+    with app.app_context():
+        models.db.create_all()
+
+    test_team = models.Workteam(
+        name=dummy_entries.TEST_TEAM_NAME,
+        symbol=dummy_entries.TEST_SYMBOL,
+        active=dummy_entries.TEST_ACTIVE,
+        active_year=dummy_entries.TEST_ACTIVE_YEAR,
+        active_period=dummy_entries.TEST_ACTIVE_PERIOD
+    )
+
+    test_user = models.Member(
+        email=dummy_entries.TEST_EMAIL,
+        first_name=dummy_entries.TEST_FIRST_NAME,
+        nickname=dummy_entries.TEST_NICKNAME,
+        last_name=dummy_entries.TEST_LAST_NAME,
+        phone=dummy_entries.TEST_PHONE,
+        drivers_license=dummy_entries.TEST_DRIVERS_LICENSE,
+        stad=dummy_entries.TEST_STAD,
+        fest=dummy_entries.TEST_FEST,
+        liquor_permit=dummy_entries.TEST_LIQUOR_PERMIT,
+        current_role=dummy_entries.TEST_CURRENT_ROLE,
+        workteams=[test_team],
+        workteams_leading=[test_team]
+    )
+
+    with app.app_context():
+        models.db.session.add(test_team)
+        models.db.session.add(test_user)
+        models.db.session.commit()

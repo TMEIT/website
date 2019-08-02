@@ -19,13 +19,9 @@ matrix:
             - "3.6"
         before_install:
             - cd back
-        install:
-            - pip install -r requirements.txt  # Install deps
-            - pip install -r requirements_test.txt  # Install testing deps
-            - pip install .  # Install our backend package for tests to run against
-        script: pytest --cov=tmeit_backend tests
-        after_success:
-            - coveralls
+            - /bin/bash build/local-dev/build-dev.sh
+        install: docker build -f build/travis/Dockerfile -t tmeit_backend-travis-test .
+        script: docker run tmeit_backend-travis-test poetry run pytest
         deploy:
         # Production deploy on releases
 #          - provider: script

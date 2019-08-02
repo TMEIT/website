@@ -1,5 +1,4 @@
-from tests import dummy_entries
-from tmeit_backend import models
+from tmeit_backend import models, dummy_entries
 
 
 def test_access_db(app):
