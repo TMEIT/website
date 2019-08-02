@@ -5,6 +5,10 @@ A new website created by and for TMEIT
 [![Build Status](https://travis-ci.org/TMEIT/website.svg?branch=master)](https://travis-ci.org/TMEIT/website)
 [![Coverage Status](https://coveralls.io/repos/github/TMEIT/website/badge.svg?branch=backend-token-processing)](https://coveralls.io/github/TMEIT/website?branch=backend-token-processing)
 
+Local development build instructions:
+Frontend **WIP**
+[Backend](https://github.com/TMEIT/website/blob/master/back/Howto-dev.md)
+
 ## Sitemap and page design ideas
 
 ### Sidebar/Navbar
