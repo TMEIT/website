@@ -30,7 +30,7 @@ matrix:
 #                tags: true
         # Development deploy on master commits
           - provider: script
-            script: bash deploy_dev.sh
+            script: bash build/deploy-dev/deploy_dev.sh
             on:
                 branch: master
 
