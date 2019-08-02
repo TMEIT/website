@@ -43,7 +43,7 @@ class TestLogin(object):
         """Tests that we reject invalid Google tokens"""
         payload = {'access_token': EXPIRED_GOOGLE_TOKEN}
         r = client.post(flask.url_for('google_blueprint.google_login'), json=payload)
-        assert r.status_code == 401
+        assert r.status_code == 403
         assert r.json['msg'] == 'This Google JWT is invalid.'
 
     # FIXME: We can't test without a DB anymore
