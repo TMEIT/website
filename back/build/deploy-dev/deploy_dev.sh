@@ -6,7 +6,7 @@
 tag=`echo "$TRAVIS_COMMIT" | sed "s/^\(.......\).*/\1/"`
 
 # Build and tag with commit hash
-docker build -t justinlex/tmeit-website-dev:$tag .
+docker build -f build/deploy-dev/Dockerfile -t justinlex/tmeit-website-dev:$tag .
 
 # Tag with :latest
 docker tag justinlex/tmeit-website-dev:$tag justinlex/tmeit-website-dev:latest
