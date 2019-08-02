@@ -19,8 +19,8 @@ matrix:
             - "3.6"
         before_install:
             - cd back
-            - /bin/bash build/build-dev.sh
-        install: docker build -f build/Dockerfile.travis-test -t tmeit_backend-travis-test .
+            - /bin/bash build/local-dev/build-dev.sh
+        install: docker build -f build/travis/Dockerfile -t tmeit_backend-travis-test .
         script: docker run tmeit_backend-travis-test poetry run pytest
         deploy:
         # Production deploy on releases
