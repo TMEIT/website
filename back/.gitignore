@@ -18,3 +18,7 @@ __pycache__
 
 # JWT secret
 tmeit_backend/jwt_secret.txt
+
+# SAML certs
+tmeit_backend/saml.crt
+tmeit_backend/saml.pem
