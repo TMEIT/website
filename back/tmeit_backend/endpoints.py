@@ -5,6 +5,7 @@
 import flask
 from sqlalchemy.orm import joinedload
 import flask_marshmallow
+from marshmallow_enum import EnumField
 
 from tmeit_backend import models
 
@@ -28,6 +29,7 @@ def generate_endpoints(app):
 
         members = ma.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
         team_leaders = ma.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
+        active_period = EnumField(models.PeriodEnum)
 
     # Schema instances
     member_schema = MemberSchema()

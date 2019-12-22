@@ -181,6 +181,17 @@ tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
 category = "main"
+description = "Enum field for Marshmallow"
+name = "marshmallow-enum"
+optional = false
+python-versions = "*"
+version = "1.5.1"
+
+[package.dependencies]
+marshmallow = ">=2.0.0"
+
+[[package]]
+category = "main"
 description = "SQLAlchemy integration with the marshmallow (de)serialization library"
 name = "marshmallow-sqlalchemy"
 optional = false
@@ -445,7 +456,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "e3a77f9c1fdafab3364f67d8892d0da644f8f9c1c2add9e7308a21fbaa835dcf"
+content-hash = "486f30ee09c437a308e6466ac5ca80b86bd3789ca1ae5d859a13b72c32300b85"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -568,6 +579,10 @@ markupsafe = [
 marshmallow = [
     {file = "marshmallow-3.3.0-py2.py3-none-any.whl", hash = "sha256:3e53dd9e9358977a3929e45cdbe4a671f9eff53a7d6a23f33ed3eab8c1890d8f"},
     {file = "marshmallow-3.3.0.tar.gz", hash = "sha256:0ba81b6da4ae69eb229b74b3c741ff13fe04fb899824377b1aff5aaa1a9fd46e"},
+]
+marshmallow-enum = [
+    {file = "marshmallow-enum-1.5.1.tar.gz", hash = "sha256:38e697e11f45a8e64b4a1e664000897c659b60aa57bfa18d44e226a9920b6e58"},
+    {file = "marshmallow_enum-1.5.1-py2.py3-none-any.whl", hash = "sha256:57161ab3dbfde4f57adeb12090f39592e992b9c86d206d02f6bd03ebec60f072"},
 ]
 marshmallow-sqlalchemy = [
     {file = "marshmallow-sqlalchemy-0.21.0.tar.gz", hash = "sha256:93fd8fad2b33d92a1ae58328eeb0f39ed174858d82f9e7084a174df7b41fd3a4"},

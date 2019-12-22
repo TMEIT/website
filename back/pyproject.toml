@@ -15,6 +15,7 @@ SQLAlchemy = "^1.3.12"
 marshmallow = "^3.3.0"
 flask-marshmallow = "^0.10.1"
 marshmallow-sqlalchemy = "^0.21.0"
+marshmallow-enum = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 coverage = "^4.5.2"
