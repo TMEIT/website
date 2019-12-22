@@ -5,6 +5,7 @@
 import flask
 from sqlalchemy.orm import joinedload
 import flask_marshmallow
+import marshmallow.fields
 from marshmallow_enum import EnumField
 
 from tmeit_backend import models
@@ -20,15 +21,14 @@ def generate_endpoints(app):
     class MemberSchema(ma.ModelSchema):
         class Meta:
             model = models.Member
-        workteams = ma.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
-        workteams_leading = ma.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
+        workteams = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
+        workteams_leading = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
 
     class WorkteamSchema(ma.ModelSchema):
         class Meta:
             model = models.Workteam
-
-        members = ma.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
-        team_leaders = ma.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
+        members = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
+        team_leaders = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
         active_period = EnumField(models.PeriodEnum)
 
     # Schema instances
