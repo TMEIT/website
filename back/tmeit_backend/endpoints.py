@@ -26,8 +26,8 @@ def generate_endpoints(app):
         class Meta:
             model = models.Workteam
 
-        members = ma.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
-        team_leaders = ma.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
+        members = ma.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
+        team_leaders = ma.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
 
     # Schema instances
     member_schema = MemberSchema()
