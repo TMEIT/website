@@ -4,7 +4,7 @@
 import flask
 from sqlalchemy.exc import OperationalError
 
-from tmeit_backend import models, auth, endpoints, dummy_entries
+from tmeit_backend import models, auth, dummy_entries, endpoints
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
@@ -51,7 +51,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     # Init Flask-SQLAlchemy plugin
     models.db.init_app(app)
 
-    # Generate adummy database if needed
+    # Generate a dummy database if needed
     if app.config["ENV"] == 'development':
         try:
             with app.app_context():  # See if members table exists
@@ -61,8 +61,8 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
         except OperationalError:
             generate_dev_db(app)
 
-    # Add crud routes (Will be under /api/)
-    endpoints.add_crud_routes(app)
+    # Generate our model-based rest API and register it with Flask
+    app.register_blueprint(endpoints.generate_endpoints(app))
 
     return app
 
