@@ -11,7 +11,7 @@ Flask = "^1.1.1"
 Flask-SQLAlchemy = "^2.4.0"
 PyJWT = "^1.7.1"
 requests = "^2.21.0"
-SQLAlchemy = "^1.3.3"
+SQLAlchemy = "^1.3.12"
 
 [tool.poetry.dev-dependencies]
 coverage = "^4.5.2"
