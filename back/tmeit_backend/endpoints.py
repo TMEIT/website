@@ -1,4 +1,4 @@
-# crud_api.py
+# endpoints.py
 # Creates our CRUD API for our database
 
 import flask_restless

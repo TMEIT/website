@@ -1,7 +1,7 @@
 # wsgi.py
 # Exposes our WSGI interface for uWSGI to hook into
 
-from tmeit_backend import api_app
+from tmeit_backend import app
 from pathlib import Path
 import os
 
@@ -13,5 +13,5 @@ if Path(DATABASE_PATH).is_file() is False:
     raise FileNotFoundError("Database file not found, is it mounted to the Docker container?")
 
 # Special "application" variable that uwsgi looks for and uses to run
-application = api_app.create_app('sqlite:///' + DATABASE_PATH)
+application = app.create_app('sqlite:///' + DATABASE_PATH)
 

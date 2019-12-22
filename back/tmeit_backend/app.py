@@ -1,10 +1,10 @@
-# api_app.py
+# app.py
 # Factory for our Flask app that implements our backend API
 
 import flask
 from sqlalchemy.exc import OperationalError
 
-from tmeit_backend import models, auth, crud_api, dummy_entries
+from tmeit_backend import models, auth, endpoints, dummy_entries
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
@@ -62,7 +62,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
             generate_dev_db(app)
 
     # Add crud routes (Will be under /api/)
-    crud_api.add_crud_routes(app)
+    endpoints.add_crud_routes(app)
 
     return app
 
