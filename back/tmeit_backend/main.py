@@ -1,4 +1,4 @@
-# app.py
+# main.py
 # Factory for our Flask app that implements our backend API
 
 import flask
