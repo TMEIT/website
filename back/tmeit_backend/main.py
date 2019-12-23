@@ -8,10 +8,37 @@ from tmeit_backend import models, auth, dummy_entries, endpoints
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
-    # Create the Flask application and the Flask-SQLAlchemy object.
+    """Flask App Factory"""
+    # Create the Flask application object
     app = flask.Flask(__name__)
 
-    # FLASK CONFIGURATION #
+    # Configure it
+    configure_app(app, database_uri, debug, testing)
+
+    # Add /login route
+    app.register_blueprint(auth.login_page)
+
+    # Register our app with Flask-SQLAlchemy
+    models.db.init_app(app)
+
+    # Generate a dummy database if needed
+    if app.config["ENV"] == 'development':
+        try:
+            with app.app_context():  # See if members table exists
+                models.db.session.connection().execute(
+                    "SELECT * FROM members"
+                )
+        except OperationalError:
+            generate_dev_db(app)
+
+    # Generate our model-based rest API and register it with Flask
+    app.register_blueprint(endpoints.generate_endpoints(app))
+
+    return app
+
+
+def configure_app(app, database_uri, debug, testing):
+    """Sets up the Flask configuration for our app."""
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     if debug is True:
         app.config['ENV'] = 'development'
@@ -45,29 +72,9 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
         if len(app.config['JWT_SECRET_KEY']) < 30:
             raise RuntimeError("jwt_secret.txt is too weak.")
 
-    # Add /login route
-    app.register_blueprint(auth.login_page)
-
-    # Init Flask-SQLAlchemy plugin
-    models.db.init_app(app)
-
-    # Generate a dummy database if needed
-    if app.config["ENV"] == 'development':
-        try:
-            with app.app_context():  # See if members table exists
-                models.db.session.connection().execute(
-                    "SELECT * FROM members"
-                )
-        except OperationalError:
-            generate_dev_db(app)
-
-    # Generate our model-based rest API and register it with Flask
-    app.register_blueprint(endpoints.generate_endpoints(app))
-
-    return app
-
 
 def generate_dev_db(app):
+    """Generates a development database with some example data."""
     app.logger.info("Running in dev mode, and no database was found.\n"
                     "Generating a new dummy database.")
     with app.app_context():
