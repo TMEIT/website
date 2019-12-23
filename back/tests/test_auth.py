@@ -33,7 +33,7 @@ class TestSecret:
         os.chdir(tmp_path)
         with open('jwt_secret.txt', 'w') as secret_file:
             secret_file.write(KEY)
-        app = app.create_app('sqlite://', debug=False, testing=False)
+        app = main.create_app('sqlite://', debug=False, testing=False)
         assert app.config['JWT_SECRET_KEY'] == KEY
 
 
