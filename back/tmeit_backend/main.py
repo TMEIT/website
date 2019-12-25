@@ -90,6 +90,7 @@ def generate_dev_db(app):
 
     test_user = models.Member(
         email=dummy_entries.TEST_EMAIL,
+        password_hash=dummy_entries.TEST_PASSWORD_HASH,
         first_name=dummy_entries.TEST_FIRST_NAME,
         nickname=dummy_entries.TEST_NICKNAME,
         last_name=dummy_entries.TEST_LAST_NAME,

@@ -11,6 +11,7 @@ TEST_ACTIVE_PERIOD = models.PeriodEnum.spring
 
 # Dummy member entry
 TEST_EMAIL = "testtmeit@gmail.com"
+TEST_PASSWORD_HASH = "ABC"
 TEST_FIRST_NAME = "Test"
 TEST_NICKNAME = "TT"
 TEST_LAST_NAME = "TMEIT"

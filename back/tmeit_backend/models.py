@@ -163,6 +163,7 @@ class Member(db.Model):
 
     __tablename__ = 'members'
     email = db.Column(db.Unicode, primary_key=True, nullable=False)
+    password_hash = db.Column(db.Unicode)
     first_name = db.Column(db.Unicode, nullable=False)
     nickname = db.Column(db.Unicode)
     last_name = db.Column(db.Unicode, nullable=False)

@@ -3,8 +3,8 @@
 # and provides the endpoint blueprints for Flask
 
 import flask
-from sqlalchemy.orm import joinedload
 import flask_marshmallow
+import marshmallow_sqlalchemy
 import marshmallow.fields
 from marshmallow_enum import EnumField
 
@@ -21,8 +21,10 @@ def generate_endpoints(app):
     class MemberSchema(ma.ModelSchema):
         class Meta:
             model = models.Member
+            exclude = ['password_hash']
         workteams = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
         workteams_leading = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
+        current_role = EnumField(models.CurrentRoleEnum)
 
     class WorkteamSchema(ma.ModelSchema):
         class Meta:
