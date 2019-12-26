@@ -83,7 +83,7 @@ class RoleOrTitle(enum.IntEnum):
 
 
 # Associative tables for our many-to-many relationships #
-memberworkteam_table = db.Table('memberworkteam',
+workteammember_table = db.Table('workteammember',
                                 db.Column('workteam_id', db.Integer, db.ForeignKey('workteams.id')),
                                 db.Column('member_id', db.Integer, db.ForeignKey('members.email')))
 workteamleader_table = db.Table('workteamleader',
@@ -119,7 +119,7 @@ class Workteam(db.Model):
     name = db.Column(db.Unicode, nullable=False)
     symbol = db.Column(db.Unicode)
     team_leaders = db.relationship('Member', secondary=workteamleader_table, back_populates="workteams_leading")
-    members = db.relationship('Member', secondary=memberworkteam_table, back_populates="workteams")
+    members = db.relationship('Member', secondary=workteammember_table, back_populates="workteams")
     active = db.Column(db.Boolean, nullable=False)
     active_year = db.Column(db.Integer)  # Year that the workteam was or is active (Purely cosmetic)
     active_period = db.Column(
@@ -174,12 +174,7 @@ class Member(db.Model):
     liquor_permit = db.Column(db.Boolean, nullable=False)
     current_role = db.Column(db.Enum(CurrentRoleEnum), nullable=False)
     role_histories = db.relationship('RoleHistory', back_populates='owner')
-    # role = db.Column(db.Enum(RoleEnum), nullable=False)
-    # prao_date = db.Column(db.Date)
-    # marskalk_date = db.Column(db.Date)
-    # vraq_ex_date = db.Column(db.Date)
-    # titles = db.Column(db.Unicode)
-    workteams = db.relationship('Workteam', secondary=memberworkteam_table, back_populates="members")
+    workteams = db.relationship('Workteam', secondary=workteammember_table, back_populates="members")
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
 
 
