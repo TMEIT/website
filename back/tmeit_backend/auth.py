@@ -36,9 +36,8 @@ def login():
     except KeyError:
         return flask.jsonify({"msg": "Bad Request"}), 400
 
-    try:
-        member = models.Member.query.get(email)
-    except KeyError:
+    member = models.Member.query.get(email)
+    if member is None:
         return flask.jsonify({"msg": f'No user found with the email "{email}".'}), 403
 
     try:
@@ -58,11 +57,6 @@ def login():
         access_token = generate_jwt(user)
         return flask.jsonify(access_token=access_token), 200
 
-
-# Authentication Exceptions #
-class InvalidExternalTokenError(RuntimeError):
-    """Raised when a user tries to login with a external token that is invalid."""
-    pass
 
 def generate_jwt(user) -> str:
     """ Generates a JWT for the user logging in, signed with the key in JWT_SECRET_KEY in the Flask config
