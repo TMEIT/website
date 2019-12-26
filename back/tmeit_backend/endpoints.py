@@ -11,6 +11,7 @@ from marshmallow_enum import EnumField
 from tmeit_backend import models
 
 
+# TODO: make HyperLinkRelated fields absolute
 def generate_endpoints(app):
 
     # Initialize flask_marshmallow and a Flask blueprint

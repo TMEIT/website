@@ -1,6 +1,14 @@
-from tmeit_backend import models
+from argon2 import PasswordHasher
+
+from tmeit_backend import models, auth
 
 # Some example values for the database for development stuff
+
+ph = PasswordHasher(time_cost=auth.ARGON_ITERATIONS,
+                    memory_cost=auth.ARGON_MEMORY,
+                    parallelism=auth.ARGON_PARALLELISM,
+                    hash_len=auth.ARGON_HASH_LEN,
+                    salt_len=auth.ARGON_SALT_LEN)
 
 # Dummy workteam entry
 TEST_TEAM_NAME = "Web Crew"
@@ -11,7 +19,8 @@ TEST_ACTIVE_PERIOD = models.PeriodEnum.spring
 
 # Dummy member entry
 TEST_EMAIL = "testtmeit@gmail.com"
-TEST_PASSWORD_HASH = "ABC"
+PASSWORD = 'password'
+TEST_PASSWORD_HASH = ph.hash(PASSWORD)
 TEST_FIRST_NAME = "Test"
 TEST_NICKNAME = "TT"
 TEST_LAST_NAME = "TMEIT"

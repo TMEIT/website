@@ -1,102 +1,68 @@
 # auth.py
-# Handles token generation and verification
+# Handles passwords, and token generation/verification
 
 import flask
 import jwt
-import requests
-
+import argon2
 import datetime
 
 from tmeit_backend import models
 
+# Initialize Argon2 password hashing library
+ARGON_ITERATIONS = 110  # Number of iterations we run of Argon2 (110 ~= 5 seconds on an i5 8350U)
+ARGON_MEMORY = 102400  # (100MiB) Memory usage of generating a hash, in kibibytes
+ARGON_PARALLELISM = 2  # Should be nThreads available on CPU * 2 (We use a single-thread Linode instance)
+ARGON_HASH_LEN = 32  # Use a 256-bit hash instead of the 128-bit default
+ARGON_SALT_LEN = 32  # Use a 256-bit salt instead of the 128-bit default
+ph = argon2.PasswordHasher(time_cost=ARGON_ITERATIONS,
+                           memory_cost=ARGON_MEMORY,
+                           parallelism=ARGON_PARALLELISM,
+                           hash_len=ARGON_HASH_LEN,
+                           salt_len=ARGON_SALT_LEN)
 
 login_page = flask.Blueprint('login_page', __name__)
 
-
+# TODO: Use Flask-limiter for this
 @login_page.route('/login', methods=['POST'])
 def login():
-    """ Log in a user by receiving a POST with a Google or KTH single-sign-on token, and respond with a JWT."""
+    """ Log in a user by receiving a POST with an email address and password, and respond with a JWT."""
 
-    user = {}
+    if not flask.request.is_json:
+        return flask.jsonify({"msg": "Bad Request"}), 400
 
-    if flask.request.is_json:  # JWT in JSON payload, aka a Google JWT
-        google_jwt = flask.request.json.get("access_token")
-        if google_jwt is None:
-            return flask.jsonify({"msg": "No token found"}), 400  # No token in JSON payload
-        try:
-            user = verify_google_token(google_jwt)
-        except InvalidExternalTokenError as e:
-            return flask.jsonify({"msg": str(e)}), 401  # Invalid token
-        except requests.exceptions.RequestException as e:
-            return flask.jsonify({"msg": "Error verifying JWT on Google's servers.",
-                                  "response": e.response}), 502  # HTTP error using Google's verification API
+    try:
+        email = flask.request.json['email']
+        password = flask.request.json['password']
+    except KeyError:
+        return flask.jsonify({"msg": "Bad Request"}), 400
 
-    elif flask.request.content_type == "application/xml":  # SAML token in XML payload, aka a KTH SAML token
-        # TODO: Not implemented
-        # try:
-        #     verify_kth_token(None)
-        # except InvalidExternalTokenError as e:
-        #     return flask.jsonify({"msg": str(e)}), 401
-        return flask.jsonify({"msg": "KTH login is not implemented yet"}), 501
+    try:
+        member = models.Member.query.get(email)
+    except KeyError:
+        return flask.jsonify({"msg": f'No user found with the email "{email}".'}), 403
 
-    else:
-        return flask.jsonify({"msg": "Bad Request"}), 400  # Request didnt have JSON or XML data, invalid format
+    try:
+        success = ph.verify(member.password_hash, password)
+    except argon2.exceptions.VerifyMismatchError:
+        return flask.jsonify({"msg": 'Invalid password.'}), 403
 
-    user['email'] = str.lower(user['email'])
-
-    if models.Member.query.get(user['email']) is None:  # User isn't registered with TMEIT with that email
-        return flask.jsonify({"msg": "{} ({}) is not registered".format(user['name'], user['email'])}), 403
-
-    # Create and return our login token
-    access_token = generate_jwt(user)
-    return flask.jsonify(access_token=access_token), 200
+    if success:
+        # Check if the member's hash is old/easy-to-crack and rehash if necessary
+        if ph.check_needs_rehash(member.password_hash):
+            member.password_hash = ph.hash(password)
+        # Create and return our login token
+        user = {
+            'email': member.email,
+            'name': f'{member.first_name} {member.last_name}'
+        }
+        access_token = generate_jwt(user)
+        return flask.jsonify(access_token=access_token), 200
 
 
 # Authentication Exceptions #
 class InvalidExternalTokenError(RuntimeError):
     """Raised when a user tries to login with a external token that is invalid."""
     pass
-
-
-# Functions for external tokens #
-def verify_google_token(token: str):
-    """ Takes a Google JWT "id_token", verifies it, and returns the user's email if the token was valid.
-
-        We don't want to bother tracking google's current public key for JWT signing, so we just use Google's Oauth2
-        tokeninfo API, at the cost of some performance on user login.
-        https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token
-        TODO: We could track Google's public key and verify tokens locally for a performance boost on login requests
-
-        Raises:
-            InvalidExternalTokenError: Token is signed incorrectly, not from Google, expired, the wrong audience, or
-                does not contain an email claim. Token is not usable.
-            requests.exceptions.RequestException: An HTTP error occurred while verifying the token with Google.
-
-        Returns:
-            A dict containing the logging-in user's email and full name, obtained from their login token
-    """
-    r = requests.get("https://oauth2.googleapis.com/tokeninfo?id_token=" + token )
-
-    # Raise if Google says token is invalid
-    if r.status_code == 400 and r.json()['error'] == "invalid_token":
-        raise InvalidExternalTokenError("This Google JWT is invalid.")
-
-    # Raise if we had an HTTP error aside form an invalid token
-    r.raise_for_status()
-
-    # Check that token matches our Client ID and isn't stolen from another service.
-    validated_token = r.json()
-    if validated_token['aud'] != flask.current_app.config['GOOGLE_CLIENT_ID']:
-        raise InvalidExternalTokenError("This Google JWT is not ours. Stealing is wrong!")
-
-    return {'email':   validated_token['email'],
-            'name':    validated_token['name']}
-
-
-def verify_kth_token(token):
-    """Decode and verify KTH SAML tokens"""
-    raise NotImplementedError("KTH login is not implemented yet.")
-
 
 def generate_jwt(user) -> str:
     """ Generates a JWT for the user logging in, signed with the key in JWT_SECRET_KEY in the Flask config
@@ -116,7 +82,7 @@ def generate_jwt(user) -> str:
     return jwt_bytes.decode("utf-8")
 
 
-def verify_token(token: str, member_model: models.Member):
+def verify_token(token: str):
     """ Verifies an incoming JWT token and returns the user's database object.
 
     Tokens must be signed with our secret, and the 'iss' field must match {ISSUER}. Tokens must not be issued from
@@ -138,4 +104,4 @@ def verify_token(token: str, member_model: models.Member):
                                algorithm=config['JWT_ALGORITHM'])
 
     # return the user's Member object from the database
-    return member_model.query.get(decoded_token['sub'])
+    return models.Member.query.get(decoded_token['sub'])
