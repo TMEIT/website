@@ -2,7 +2,7 @@
 
 import pytest
 import os
-import flask
+from flask import current_app, testing, url_for, wrappers
 import jwt
 
 from tmeit_backend import main, auth, models, dummy_entries
@@ -36,12 +36,33 @@ class TestSecret:
 
 
 class TestLogin(object):
-    def test_login(self, client):
+    def test_login(self, client: testing.FlaskClient):
+        """Tests that we can login with email+password, and that the JWT returned is valid."""
         payload = {
             'email': dummy_entries.TEST_EMAIL,
             'password': dummy_entries.PASSWORD
         }
-
-        r = client.post(flask.url_for('login_page.login'), json=payload)
-        assert r.status_code is 200
+        r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
+        assert r.status_code == 200
         assert auth.verify_token(r.json['access_token']) == models.Member.query.get(dummy_entries.TEST_EMAIL)
+
+    def test_invalid_email(self, client: testing.FlaskClient):
+        """Tests that we reject invalid emails"""
+        payload = {
+            'email': 'qlubbmastare@qmisk.se',
+            'password': dummy_entries.PASSWORD
+        }
+        r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
+        assert r.status_code == 403
+        assert r.json['msg'] == 'No user found with the email "qlubbmastare@qmisk.se".'
+
+    def test_invalid_password(self, client: testing.FlaskClient):
+        """Tests that we reject invalid passwords"""
+        payload = {
+            'email': dummy_entries.TEST_EMAIL,
+            'password': 'password?'
+        }
+        r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
+        assert r.status_code == 403
+        assert r.json['msg'] == 'Invalid password.'
+
