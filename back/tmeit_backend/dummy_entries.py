@@ -4,11 +4,7 @@ from tmeit_backend import models, auth
 
 # Some example values for the database for development stuff
 
-ph = PasswordHasher(time_cost=auth.ARGON_ITERATIONS,
-                    memory_cost=auth.ARGON_MEMORY,
-                    parallelism=auth.ARGON_PARALLELISM,
-                    hash_len=auth.ARGON_HASH_LEN,
-                    salt_len=auth.ARGON_SALT_LEN)
+ph = PasswordHasher()
 
 # Dummy workteam entry
 TEST_TEAM_NAME = "Web Crew"

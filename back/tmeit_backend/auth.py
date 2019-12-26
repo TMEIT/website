@@ -8,19 +8,10 @@ import datetime
 
 from tmeit_backend import models
 
-# Initialize Argon2 password hashing library
-ARGON_ITERATIONS = 110  # Number of iterations we run of Argon2 (110 ~= 5 seconds on an i5 8350U)
-ARGON_MEMORY = 102400  # (100MiB) Memory usage of generating a hash, in kibibytes
-ARGON_PARALLELISM = 2  # Should be nThreads available on CPU * 2 (We use a single-thread Linode instance)
-ARGON_HASH_LEN = 32  # Use a 256-bit hash instead of the 128-bit default
-ARGON_SALT_LEN = 32  # Use a 256-bit salt instead of the 128-bit default
-ph = argon2.PasswordHasher(time_cost=ARGON_ITERATIONS,
-                           memory_cost=ARGON_MEMORY,
-                           parallelism=ARGON_PARALLELISM,
-                           hash_len=ARGON_HASH_LEN,
-                           salt_len=ARGON_SALT_LEN)
+ph = argon2.PasswordHasher()
 
 login_page = flask.Blueprint('login_page', __name__)
+
 
 # TODO: Use Flask-limiter for this
 @login_page.route('/login', methods=['POST'])
