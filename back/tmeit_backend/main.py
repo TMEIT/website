@@ -4,7 +4,7 @@
 import flask
 from sqlalchemy.exc import OperationalError
 
-from tmeit_backend import models, auth, dummy_entries, endpoints
+from tmeit_backend import models, auth, endpoints, model_fixtures
 
 
 def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
@@ -21,15 +21,21 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
     # Register our app with Flask-SQLAlchemy
     models.db.init_app(app)
 
-    # Generate a dummy database if needed
+    # Generate an empty database for dev servers and testing
     if app.config["ENV"] == 'development':
-        try:
-            with app.app_context():  # See if members table exists
-                models.db.session.connection().execute(
-                    "SELECT * FROM members"
-                )
-        except OperationalError:
-            generate_dev_db(app)
+
+        with app.app_context():
+            models.db.create_all()
+
+        # Also generate example data when running a dev server
+        if app.config['TESTING'] is not True:
+            app.logger.warning("Generating example data for the database.")
+
+            with app.app_context():
+                model_fixtures.WorkteamFactory()
+                model_fixtures.MemberFactory()
+                model_fixtures.RoleHistoryFactory(owner_email="tt@gmail.com")
+                models.db.session.commit()
 
     # Generate our model-based rest API and register it with Flask
     app.register_blueprint(endpoints.generate_endpoints(app))
@@ -71,40 +77,3 @@ def configure_app(app, database_uri, debug, testing):
             raise
         if len(app.config['JWT_SECRET_KEY']) < 30:
             raise RuntimeError("jwt_secret.txt is too weak.")
-
-
-def generate_dev_db(app):
-    """Generates a development database with some example data."""
-    app.logger.info("Running in dev mode, and no database was found.\n"
-                    "Generating a new dummy database.")
-    with app.app_context():
-        models.db.create_all()
-
-    test_team = models.Workteam(
-        name=dummy_entries.TEST_TEAM_NAME,
-        symbol=dummy_entries.TEST_SYMBOL,
-        active=dummy_entries.TEST_ACTIVE,
-        active_year=dummy_entries.TEST_ACTIVE_YEAR,
-        active_period=dummy_entries.TEST_ACTIVE_PERIOD
-    )
-
-    test_user = models.Member(
-        email=dummy_entries.TEST_EMAIL,
-        password_hash=dummy_entries.TEST_PASSWORD_HASH,
-        first_name=dummy_entries.TEST_FIRST_NAME,
-        nickname=dummy_entries.TEST_NICKNAME,
-        last_name=dummy_entries.TEST_LAST_NAME,
-        phone=dummy_entries.TEST_PHONE,
-        drivers_license=dummy_entries.TEST_DRIVERS_LICENSE,
-        stad=dummy_entries.TEST_STAD,
-        fest=dummy_entries.TEST_FEST,
-        liquor_permit=dummy_entries.TEST_LIQUOR_PERMIT,
-        current_role=dummy_entries.TEST_CURRENT_ROLE,
-        workteams=[test_team],
-        workteams_leading=[test_team]
-    )
-
-    with app.app_context():
-        models.db.session.add(test_team)
-        models.db.session.add(test_user)
-        models.db.session.commit()

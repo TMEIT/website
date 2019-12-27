@@ -1,11 +1,11 @@
 # Test the backend's authentication handling inside back/auth.py
 
-import pytest
 import os
-from flask import current_app, testing, url_for, wrappers
-import jwt
 
-from tmeit_backend import main, auth, models, dummy_entries
+import pytest
+from flask import testing, url_for, wrappers
+
+from tmeit_backend import main, auth, models, model_fixtures
 
 
 class TestSecret:
@@ -36,21 +36,32 @@ class TestSecret:
 
 
 class TestLogin(object):
+    """Tests logging in with an email and password"""
+
+    EMAIL = "abc@gmail.com"  # email for our test user
+
+    @pytest.fixture(scope='function', autouse=True)
+    def create_user(self, app):
+        """Sets up a database with a user for us to test password login."""
+        with app.app_context():
+            model_fixtures.MemberFactory(email=self.EMAIL)
+            models.db.session.commit()
+
     def test_login(self, client: testing.FlaskClient):
         """Tests that we can login with email+password, and that the JWT returned is valid."""
         payload = {
-            'email': dummy_entries.TEST_EMAIL,
-            'password': dummy_entries.PASSWORD
+            'email': self.EMAIL,
+            'password': model_fixtures.MEMBER_PASSWORD
         }
         r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
         assert r.status_code == 200
-        assert auth.verify_token(r.json['access_token']) == models.Member.query.get(dummy_entries.TEST_EMAIL)
+        assert auth.verify_token(r.json['access_token']) == models.Member.query.get(self.EMAIL)
 
     def test_invalid_email(self, client: testing.FlaskClient):
         """Tests that we reject invalid emails"""
         payload = {
             'email': 'qlubbmastare@qmisk.se',
-            'password': dummy_entries.PASSWORD
+            'password': model_fixtures.MEMBER_PASSWORD
         }
         r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
         assert r.status_code == 403
@@ -59,7 +70,7 @@ class TestLogin(object):
     def test_invalid_password(self, client: testing.FlaskClient):
         """Tests that we reject invalid passwords"""
         payload = {
-            'email': dummy_entries.TEST_EMAIL,
+            'email': self.EMAIL,
             'password': 'password?'
         }
         r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)

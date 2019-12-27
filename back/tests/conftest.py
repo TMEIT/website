@@ -1,6 +1,7 @@
 import pytest
 
-from tmeit_backend import models, main, dummy_entries
+from tmeit_backend import models, main, model_fixtures
+
 
 @pytest.fixture(scope="function")
 def app():

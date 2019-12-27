@@ -202,7 +202,7 @@ class RoleHistory(db.Model):
 
     __tablename__ = 'role_histories'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    owner_email = db.Column(db.Integer, db.ForeignKey('members.email'))
+    owner_email = db.Column(db.Unicode, db.ForeignKey('members.email'), nullable=False)
     owner = db.relationship('Member', back_populates='role_histories')
     role = db.Column(db.Enum(RoleOrTitle), nullable=False)
     start_date = db.Column(db.Date, nullable=False)

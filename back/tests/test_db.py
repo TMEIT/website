@@ -1,7 +1,16 @@
-from tmeit_backend import models, dummy_entries
+from tmeit_backend import models, model_fixtures
 
 
 def test_access_db(app):
     """Test that we can get data from our DB"""
+
+    # Example data for our test user
+    email = "abc@gmail.com"
+    first_name = 'abe'
+
+    # create test user
     with app.app_context():
-        assert models.Member.query.get(dummy_entries.TEST_EMAIL).first_name == dummy_entries.TEST_FIRST_NAME
+        model_fixtures.MemberFactory(email=email, first_name=first_name)
+        models.db.session.commit()
+
+    assert models.Member.query.get(email).first_name == first_name

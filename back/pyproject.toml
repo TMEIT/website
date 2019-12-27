@@ -17,6 +17,7 @@ flask-marshmallow = "^0.10.1"
 marshmallow-sqlalchemy = "^0.21.0"
 marshmallow-enum = "^1.5.1"
 argon2-cffi = "^19.2.0"
+factory-boy = "^2.12.0"
 
 [tool.poetry.dev-dependencies]
 coverage = "^4.5.2"
