@@ -205,8 +205,10 @@ class RoleHistory(db.Model):
     owner_email = db.Column(db.Unicode, db.ForeignKey('members.email'), nullable=False)
     owner = db.relationship('Member', back_populates='role_histories')
     role = db.Column(db.Enum(RoleOrTitle), nullable=False)
+
     start_date = db.Column(db.Date, nullable=False)
-    end_date = db.Column(db.Date)
+    end_date = db.Column(db.Date,
+                         db.CheckConstraint('end_date > start_date', name='datecheck'))
 
     # Define fields able to be set with POST
     allowed_member_fields = []
