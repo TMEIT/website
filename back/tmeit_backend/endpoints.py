@@ -7,6 +7,7 @@ import flask_marshmallow
 import jwt.exceptions
 import marshmallow.fields
 from marshmallow_enum import EnumField
+from marshmallow_sqlalchemy.fields import Nested
 
 from tmeit_backend import models, auth
 
@@ -19,6 +20,11 @@ def generate_endpoints(app):
     model_endpoints = flask.Blueprint('model_endpoints', __name__)
 
     # Schemas
+    class RoleHistorySchema(ma.ModelSchema):
+        class Meta:
+            model = models.RoleHistory
+        role = EnumField(models.RoleOrTitle)
+
     class MemberSchema(ma.ModelSchema):
         class Meta:
             model = models.Member
@@ -26,6 +32,7 @@ def generate_endpoints(app):
         workteams = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
         workteams_leading = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
         current_role = EnumField(models.CurrentRoleEnum)
+        role_histories = Nested(RoleHistorySchema, many=True)
         #TODO: Add RoleHistory nesting?
 
     class WorkteamSchema(ma.ModelSchema):
