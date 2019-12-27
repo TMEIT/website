@@ -30,12 +30,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
         # Also generate example data when running a dev server
         if app.config['TESTING'] is not True:
             app.logger.warning("Generating example data for the database.")
-
-            with app.app_context():
-                model_fixtures.WorkteamFactory()
-                model_fixtures.MemberFactory()
-                model_fixtures.RoleHistoryFactory(owner_email="tt@gmail.com")
-                models.db.session.commit()
+            model_fixtures.generate_dev_data(app)
 
     # Generate our model-based rest API and register it with Flask
     app.register_blueprint(endpoints.generate_endpoints(app))

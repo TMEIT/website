@@ -5,6 +5,7 @@ import random
 import unicodedata
 
 import factory
+import factory.random
 from argon2 import PasswordHasher
 
 from tmeit_backend import models
@@ -15,13 +16,7 @@ class WorkteamFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = models.Workteam
         sqlalchemy_session = models.db.session
 
-    @factory.lazy_attribute
-    def symbol(self):
-        """Choose a random greek letter."""
-        symbol = chr(random.randrange(0x0391, 0x03aa))  # https://www.unicode.org/charts/PDF/U0370.pdf
-        if symbol == '\u03a2':  # Avoid reserved character
-            symbol = '\u0391'
-        return symbol
+    symbol = factory.Faker('lexify', text='?', letters='ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')
 
     @factory.lazy_attribute
     def name(self):
@@ -29,9 +24,9 @@ class WorkteamFactory(factory.alchemy.SQLAlchemyModelFactory):
         letter = self.symbol
         return unicodedata.name(letter).split()[-1].capitalize()
 
-    active = True
-    active_year = 2020
-    active_period = models.PeriodEnum.spring
+    active = factory.Faker('pybool')
+    active_year = factory.Faker('random_int', min=2000, max=2020)
+    active_period = factory.lazy_attribute(lambda a: models.PeriodEnum(random.randrange(1)))
 
 
 class RoleHistoryFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -45,7 +40,8 @@ class RoleHistoryFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = models.db.session
 
     role = models.RoleOrTitle.marskalk
-    start_date = factory.lazy_attribute(lambda a: datetime.date.today())
+    start_date = factory.Faker('date_object')
+    end_date = datetime.date.today()
 
 
 ph = PasswordHasher()
@@ -58,9 +54,9 @@ class MemberFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = models.Member
         sqlalchemy_session = models.db.session
 
-    first_name = "Test"
-    nickname = "TT"
-    last_name = "TMEIT"
+    first_name = factory.Faker('first_name')
+    nickname = None
+    last_name = factory.Faker('last_name')
 
     @factory.lazy_attribute
     def email(self):
@@ -72,10 +68,25 @@ class MemberFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     password_hash = ph.hash(MEMBER_PASSWORD)
 
-    phone = "(555) 555-5555"
-    drivers_license = True
-    stad = True
-    fest = False
-    liquor_permit = False
-    current_role = models.CurrentRoleEnum.marshal
-    #role_histories = factory.RelatedFactory(RoleHistoryFactory, 'owner', )
+    phone = factory.Faker('phone_number', locale='sv_SE')
+    drivers_license = factory.Faker('pybool')
+    stad = factory.Faker('pybool')
+    fest = factory.Faker('pybool')
+    liquor_permit = factory.Faker('pybool')
+    current_role = factory.lazy_attribute(lambda a: models.CurrentRoleEnum(random.randint(-1, 5)))
+    # role_histories = factory.RelatedFactory(RoleHistoryFactory, 'owner', )
+
+
+def generate_dev_data(app):
+    with app.app_context():
+
+        for i in range(100):
+            member = MemberFactory()
+            RoleHistoryFactory(owner=member)
+        models.db.session.commit()
+
+        for i in range(50):
+            workteam = WorkteamFactory()
+            workteam.members += random.choices(models.Member.query.all(),
+                                               k=random.randint(5, 25))
+        models.db.session.commit()
