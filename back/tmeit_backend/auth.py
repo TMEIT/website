@@ -53,6 +53,7 @@ def generate_jwt(user) -> str:
     """ Generates a JWT for the user logging in, signed with the key in JWT_SECRET_KEY in the Flask config
 
     :param user: A dict containing the subject's email and full_name
+    #TODO: Change this interface to use a model instead
     :return: A JWT
     """
     config = flask.current_app.config  # The app config is used to set issuer, secret key, and signing algorithm

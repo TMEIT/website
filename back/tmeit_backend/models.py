@@ -1,9 +1,9 @@
 # model.py
 # Defines our SQLAlchemy models
 
+import enum
 
 import flask_sqlalchemy
-import enum
 
 
 db = flask_sqlalchemy.SQLAlchemy()  # see documentation in class definition from flask_sqlalchemy
@@ -105,7 +105,7 @@ class Workteam(db.Model):
     Columns:
         id: Internal id for our database.
         name: The name of the workteam.
-        symbol: The symbol associated with the workteam.
+        symbol: The unicode symbol associated with the workteam.
         team_leaders: The marskalkar that lead and organize the workteam.
         members: The people that are part of the work team.
         active: Whether or not a team is currently running events or is a historical team that is now inactive.
@@ -177,6 +177,12 @@ class Member(db.Model):
     workteams = db.relationship('Workteam', secondary=workteammember_table, back_populates="members")
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
 
+    # Define fields able to be set with POST
+    allowed_member_fields = []
+    allowed_user_fields = ['email', 'nickname', 'phone', 'drivers_license'] + allowed_member_fields  # Special 'me' list
+    allowed_master_fields = ['first_name', 'last_name', 'stad', 'fest', 'liquor_permit',
+                             'current_role', 'workteams', 'workteam_leading'] + allowed_user_fields
+
 
 class RoleHistory(db.Model):
     """ SQL Alchemy model to track "Role Histories", the roles and titles of TMEIT members.
@@ -202,3 +208,8 @@ class RoleHistory(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date)
 
+    # Define fields able to be set with POST
+    allowed_member_fields = []
+    allowed_master_fields = ['owner_email', 'owner', 'role', 'start_date', 'end_date'] + allowed_member_fields
+
+# TODO: Figure out how we can set role histories on member with POST

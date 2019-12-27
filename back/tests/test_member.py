@@ -1,6 +1,6 @@
 from flask import url_for, testing, wrappers
 
-from tmeit_backend import dummy_entries, models
+from tmeit_backend import dummy_entries, models, auth
 
 
 def test_get_member_detail_noauth(client: testing.FlaskClient):
@@ -14,3 +14,15 @@ def test_get_member_detail_noauth(client: testing.FlaskClient):
     # Make sure we don't leak password hashes
     assert o.get('password_hash') is None
     assert dummy_entries.TEST_PASSWORD_HASH not in r.data.decode('utf-8')
+
+
+def test_set_member_detail_auth(client: testing.FlaskClient):
+    payload = {'email': 'abc@butt'}
+    payload['auth'] = auth.generate_jwt({'email': dummy_entries.TEST_EMAIL, 'name': 'lol'})
+    r: wrappers.Response = client.post(url_for('model_endpoints.member_detail', email=dummy_entries.TEST_EMAIL,),
+                                       json=payload)
+    print(r.json)
+    assert r.status_code == 200
+    assert r.json['email'] == 'abc@butt'
+
+# TODO: More testing
