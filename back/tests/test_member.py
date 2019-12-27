@@ -40,7 +40,6 @@ def test_set_member_detail_auth(client: testing.FlaskClient):
     }
     r: wrappers.Response = client.post(url_for('model_endpoints.member_detail', email=EMAIL,),
                                        json=payload)
-    print(r.json)
     assert r.status_code == 200
     assert r.json['email'] == 'abc@butt'
 
