@@ -29,7 +29,7 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
 
         # Also generate example data when running a dev server
         if app.config['TESTING'] is not True:
-            app.logger.warning("Generating example data for the database.")
+            app.logger.warning("Starting a devserver, generating example data for the database.")
             model_fixtures.generate_dev_data(app)
 
     # Generate our model-based rest API and register it with Flask

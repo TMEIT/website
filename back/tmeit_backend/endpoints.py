@@ -38,8 +38,8 @@ def generate_endpoints(app):
     class WorkteamSchema(ma.ModelSchema):
         class Meta:
             model = models.Workteam
-        members = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
-        team_leaders = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail', url_key='email'))
+        members = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail'))
+        team_leaders = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail'))
         active_period = EnumField(models.PeriodEnum)
 
     # Schema instances
@@ -54,9 +54,9 @@ def generate_endpoints(app):
         all_members = models.Member.query.all()
         return flask.jsonify(members_schema.dump(all_members))
 
-    @model_endpoints.route('/api/members/<email>', methods=['GET', 'POST'])
-    def member_detail(email):
-        member: models.Member = models.Member.query.get(email)
+    @model_endpoints.route('/api/members/<id>', methods=['GET', 'POST'])
+    def member_detail(id):
+        member: models.Member = models.Member.query.get(id)
         if flask.request.method == 'POST':
             post(instance=member, schema=member_schema)
         return flask.jsonify(member_schema.dump(member))

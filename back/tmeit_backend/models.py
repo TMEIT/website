@@ -85,10 +85,10 @@ class RoleOrTitle(enum.IntEnum):
 # Associative tables for our many-to-many relationships #
 workteammember_table = db.Table('workteammember',
                                 db.Column('workteam_id', db.Integer, db.ForeignKey('workteams.id')),
-                                db.Column('member_id', db.Integer, db.ForeignKey('members.email')))
+                                db.Column('member_id', db.Integer, db.ForeignKey('members.id')))
 workteamleader_table = db.Table('workteamleader',
                                 db.Column('workteam_id', db.Integer, db.ForeignKey('workteams.id')),
-                                db.Column('leader_id', db.Integer, db.ForeignKey('members.email')))
+                                db.Column('leader_id', db.Integer, db.ForeignKey('members.id')))
 
 
 # SQL Alchemy model definitions #
@@ -162,7 +162,8 @@ class Member(db.Model):
     """
 
     __tablename__ = 'members'
-    email = db.Column(db.Unicode, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    email = db.Column(db.Unicode, unique=True, nullable=False)
     password_hash = db.Column(db.Unicode)
     first_name = db.Column(db.Unicode, nullable=False)
     nickname = db.Column(db.Unicode)
@@ -202,7 +203,7 @@ class RoleHistory(db.Model):
 
     __tablename__ = 'role_histories'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    owner_email = db.Column(db.Unicode, db.ForeignKey('members.email'), nullable=False)
+    owner_id = db.Column(db.Unicode, db.ForeignKey('members.id'), nullable=False)
     owner = db.relationship('Member', back_populates='role_histories')
     role = db.Column(db.Enum(RoleOrTitle), nullable=False)
 

@@ -38,27 +38,24 @@ class TestSecret:
 class TestLogin(object):
     """Tests logging in with an email and password"""
 
-    EMAIL = "abc@gmail.com"  # email for our test user
-
-    @pytest.fixture(scope='function', autouse=True)
-    def create_user(self, app):
-        """Sets up a database with a user for us to test password login."""
-        with app.app_context():
-            model_fixtures.MemberFactory(email=self.EMAIL)
-            models.db.session.commit()
-
     def test_login(self, client: testing.FlaskClient):
         """Tests that we can login with email+password, and that the JWT returned is valid."""
-        payload = {
-            'email': self.EMAIL,
-            'password': model_fixtures.MEMBER_PASSWORD
-        }
-        r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
-        assert r.status_code == 200
-        assert auth.verify_token(r.json['access_token']) == models.Member.query.get(self.EMAIL)
+        with client.application.app_context():
+            member = model_fixtures.MemberFactory()  # create a example member to login with
+            models.db.session.commit()
+            payload = {
+                'email': member.email,
+                'password': model_fixtures.MEMBER_PASSWORD
+            }
+            r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
+            assert r.status_code == 200
+            assert auth.verify_token(r.json['access_token']) == member
 
     def test_invalid_email(self, client: testing.FlaskClient):
         """Tests that we reject invalid emails"""
+        with client.application.app_context():
+            member = model_fixtures.MemberFactory()  # create a example member to not login with
+            models.db.session.commit()
         payload = {
             'email': 'qlubbmastare@qmisk.se',
             'password': model_fixtures.MEMBER_PASSWORD
@@ -69,10 +66,13 @@ class TestLogin(object):
 
     def test_invalid_password(self, client: testing.FlaskClient):
         """Tests that we reject invalid passwords"""
-        payload = {
-            'email': self.EMAIL,
-            'password': 'password?'
-        }
+        with client.application.app_context():
+            member = model_fixtures.MemberFactory()  # create a example member to login with
+            models.db.session.commit()
+            payload = {
+                'email': member.email,
+                'password': 'password?'
+            }
         r: wrappers.Response = client.post(url_for('login_page.login'), json=payload)
         assert r.status_code == 403
         assert r.json['msg'] == 'Invalid password.'

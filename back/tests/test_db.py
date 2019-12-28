@@ -10,7 +10,6 @@ def test_access_db(app):
 
     # create test user
     with app.app_context():
-        model_fixtures.MemberFactory(email=email, first_name=first_name)
+        member = model_fixtures.MemberFactory(email=email, first_name=first_name)
         models.db.session.commit()
-
-    assert models.Member.query.get(email).first_name == first_name
+        assert models.Member.query.get(member.id).first_name == first_name

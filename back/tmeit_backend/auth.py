@@ -27,7 +27,7 @@ def login():
     except KeyError:
         return flask.jsonify({"msg": "Bad Request"}), 400
 
-    member = models.Member.query.get(email)
+    member = models.Member.query.filter(models.Member.email == email).one_or_none()
     if member is None:
         return flask.jsonify({"msg": f'No user found with the email "{email}".'}), 403
 
@@ -41,27 +41,22 @@ def login():
         if ph.check_needs_rehash(member.password_hash):
             member.password_hash = ph.hash(password)
         # Create and return our login token
-        user = {
-            'email': member.email,
-            'name': f'{member.first_name} {member.last_name}'
-        }
-        access_token = generate_jwt(user)
+        access_token = generate_jwt(member)
         return flask.jsonify(access_token=access_token), 200
 
 
-def generate_jwt(user) -> str:
+def generate_jwt(member) -> str:
     """ Generates a JWT for the user logging in, signed with the key in JWT_SECRET_KEY in the Flask config
 
-    :param user: A dict containing the subject's email and full_name
-    #TODO: Change this interface to use a model instead
+    :param member: the instance of the member model we're generating the jwt for.
     :return: A JWT
     """
     config = flask.current_app.config  # The app config is used to set issuer, secret key, and signing algorithm
     payload = {
             'iss': config['JWT_ISSUER'],  # Token Issuer
             'iat': datetime.datetime.utcnow(),  # Token Issue Time
-            'sub': user['email'],  # Token Recipient
-            'name': user['name'],  # Recipients' full name
+            'sub': member.id,  # Token Recipient
+            'name': f'{member.first_name} {member.last_name}',  # Recipients' full name
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=90)  # Token Expiration Time
         }
     jwt_bytes = jwt.encode(payload, key=config['JWT_SECRET_KEY'], algorithm=config['JWT_ALGORITHM'])
@@ -76,7 +71,6 @@ def verify_token(token: str):
 
     Args:
         token: The user's JWT to be verified
-        member_model: Our Flask-SQLAlchemy model for Members, so that we can look up the member in the database.
 
     Raises:
         jwt.exceptions.InvalidTokenError: Token received is not valid. Note that subclasses of this exception
