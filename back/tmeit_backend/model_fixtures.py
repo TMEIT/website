@@ -33,7 +33,7 @@ class RoleHistoryFactory(factory.alchemy.SQLAlchemyModelFactory):
     """
     Creates a role history.
 
-    Must be called with owner_email= argument or from a RelatedFactory within Member in order to link.
+    Must be called with owner_id= argument or from a RelatedFactory within Member in order to link.
     """
     class Meta:
         model = models.RoleHistory

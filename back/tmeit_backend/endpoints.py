@@ -47,6 +47,7 @@ def generate_endpoints(app):
     members_schema = MemberSchema(many=True)
     workteam_schema = WorkteamSchema()
     workteams_schema = WorkteamSchema(many=True)
+    # TODO: Hide some information about members when not authenticated
 
     # Endpoints
     @model_endpoints.route('/api/members/')
