@@ -81,7 +81,7 @@ def verify_token(token: str):
 
     # pyJWT does validation for us, and we select validation settings here.
     decoded_token = jwt.decode(token, config['JWT_SECRET_KEY'], issuer=config['JWT_ISSUER'],
-                               algorithm=config['JWT_ALGORITHM'])
+                               algorithms=[config['JWT_ALGORITHM']])
 
     # return the user's Member object from the database
     return models.Member.query.get(decoded_token['sub'])
