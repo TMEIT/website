@@ -1,6 +1,7 @@
 from flask import url_for, testing, wrappers
 import pytest
 
+from tests import utils
 from tmeit_backend import models, auth, model_fixtures
 
 
@@ -47,16 +48,56 @@ def test_get_member_detail_noauth(client: testing.FlaskClient, dummy_member_id: 
         assert models.Member.query.get(dummy_member_id).password_hash not in r.data.decode('utf-8')
 
 
-def test_set_member_detail_auth(client: testing.FlaskClient, dummy_member_id: int):
+def test_set_member_detail_self(client: testing.FlaskClient, dummy_member_id: int):
     with client.application.app_context():
-        auth_member = models.Member.query.get(dummy_member_id)
-        payload = {
-            'email': 'abc@butt',
-            'auth': auth.generate_jwt(auth_member)
-        }
-    r: wrappers.Response = client.post(url_for('model_endpoints.member_detail', id=dummy_member_id),
-                                       json=payload)
-    assert r.status_code == 200
-    assert r.json['email'] == 'abc@butt'
+        pass  # TODO: test setting workteams on a member here?
+        # team = models.Workteam(name="The Team", active=True)
+        # models.db.session.add(team)
+        # models.db.session.commit()
 
-# TODO: More testing
+    # payloads that attempt to change various fields
+    valid_changes = [
+        {'email': 'abc@butt'},
+        {'nickname': 'butts'},
+        {'phone': '12345'},
+        {'drivers_license': True},
+    ]
+    illegal_changes = [
+        {'first_name': 'abd'},
+        {'last_name': 'def'},
+        {'stad': True},
+        {'fest': True},
+        {'liqour_permit': True},
+        {'current_role': 'master'},
+        {'workteams': None},
+        {'workteams_leading': None},
+    ]
+
+    for change in valid_changes:
+        with client.application.app_context():
+            auth_member = models.Member.query.get(dummy_member_id)
+            payload = utils.create_auth_payload(auth_member, change)
+        r: wrappers.Response = client.post(path=url_for('model_endpoints.member_detail', id=dummy_member_id),
+                                           json=payload)
+        assert r.status_code == 200
+        assert change.items() < r.json.items()  # Use set arithmetic to check if change was applied
+
+    for change in illegal_changes:
+        with client.application.app_context():
+            auth_member = models.Member.query.get(dummy_member_id)
+            payload = utils.create_auth_payload(auth_member, change)
+        r: wrappers.Response = client.post(path=url_for('model_endpoints.member_detail', id=dummy_member_id),
+                                           json=payload)
+        assert r.status_code == 403
+
+
+def test_set_member_detail_master(client: testing.FlaskClient, dummy_member_id: int):
+    pass
+
+
+def test_set_member_detail_member(client: testing.FlaskClient, dummy_member_id: int):
+    pass
+
+
+def test_set_member_detail_noauth(client: testing.FlaskClient, dummy_member_id: int):
+    pass
