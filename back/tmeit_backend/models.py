@@ -4,9 +4,11 @@
 import enum
 
 import flask_sqlalchemy
+from sqlalchemy.ext import associationproxy
 
 
-db = flask_sqlalchemy.SQLAlchemy()  # see documentation in class definition from flask_sqlalchemy
+# Our connection to sqlalchemy, see documentation in class definition from flask_sqlalchemy
+db = flask_sqlalchemy.SQLAlchemy()
 
 
 # Enums for our models to use #
@@ -25,6 +27,13 @@ class CurrentRoleEnum(enum.IntEnum):  # TMEIT roles for members
     ex = 4
     inactive = 5
     exprao = -1
+
+
+class AttendResponseEnum(enum.IntEnum):
+    """Used to show the current response a member has towards an event."""
+    yes = 1
+    no = 2
+    maybe = 3  # binary(yes) || binary(no)
 
 
 class RoleOrTitle(enum.IntEnum):
@@ -89,6 +98,20 @@ workteammember_table = db.Table('workteammember',
 workteamleader_table = db.Table('workteamleader',
                                 db.Column('workteam_id', db.Integer, db.ForeignKey('workteams.id')),
                                 db.Column('leader_id', db.Integer, db.ForeignKey('members.id')))
+# workteamworking_table = db.Table('workteamworking',
+#                                 db.Column('workteam_id', db.Integer, db.ForeignKey('workteams.id')),
+#                                 db.Column('event_id', db.Integer, db.ForeignKey('event.id')))
+#
+#
+# # Association Objects for many-to-many relationships with extra attributes #
+# class MemberTmeitEventAttendanceRelation(db.Model):
+#     """Used to relate members attending TMEIT events, as well as provide a Y/N/M response attribute"""
+#     id = db.Column(db.Integer, primary_key=True, nullable=False)
+#     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+#     event = db.relationship('TmeitEvent', back_populates='_members_attending')
+#     member_id = db.Column(db.Integer, db.ForeignKey('members.id'))
+#     member = db.relationship('Member', back_populates='_tmeit_events_attending')
+#     attend_response = db.Column(db.Enum(AttendResponseEnum))
 
 
 # SQL Alchemy model definitions #
@@ -124,6 +147,7 @@ class Workteam(db.Model):
     active_year = db.Column(db.Integer)  # Year that the workteam was or is active (Purely cosmetic)
     active_period = db.Column(
         db.Enum(PeriodEnum))  # Part of the year that the workteam was active, (i.e. fall/spring, also cosmetic)
+    # events = db.relationship('Event', secondary=workteammember_table, back_populates="workteams")
 
 
 class Member(db.Model):
@@ -177,6 +201,7 @@ class Member(db.Model):
     role_histories = db.relationship('RoleHistory', back_populates='owner')
     workteams = db.relationship('Workteam', secondary=workteammember_table, back_populates="members")
     workteams_leading = db.relationship('Workteam', secondary=workteamleader_table, back_populates="team_leaders")
+    # _tmeit_events_attending = db.relationship('MemberTmeitEventAttendanceRelation', back_populates="member")
 
     # Define fields able to be set with POST
     allowed_member_fields = []
@@ -216,3 +241,29 @@ class RoleHistory(db.Model):
     allowed_master_fields = ['owner_email', 'owner', 'role', 'start_date', 'end_date'] + allowed_member_fields
 
 # TODO: Figure out how we can set role histories on member with POST
+
+
+class TmeitEvent(db.Model):
+    """SQL Alchemy model for TMEIT events, both public and internal."""
+
+    __tablename__ = 'tmeit_events'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.Unicode, unique=True, nullable=False)
+    # start_time =
+    # end_time =
+    # workteams_working = db.relationship('Workteam', secondary=workteamworking_table, back_populates="events")
+    # _members_working = db.relationship('MemberTmeitEventWorkingRelation', back_populates="event")
+    # _members_attending = db.relationship('MemberTmeitEventAttendanceRelation', back_populates='event')
+    facebook_link = db.column(db.Unicode)
+    description = db.Column(db.Unicode)
+
+    # Association proxies, they simplify traversing an association object so that it isn't necessary to reference
+    # twice to get to our target, we can simply just get the referenced object, packaged in a tuple with any other
+    # information we want
+    # members_working = associationproxy.association_proxy()
+    # members_attending = associationproxy.association_proxy('_members_attending',
+    #                                                        ('member', 'attend_response'))
+    allowed_member_fields = []
+    allowed_working_team_fields = []
+    allowed_leading_working_team_fields = []
+    allowed_master_fields = []
