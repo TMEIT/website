@@ -15,7 +15,7 @@ class TestSecret:
         """Tests that we're checking for a valid secret when loading in production"""
         os.chdir(tmp_path)
         with pytest.raises(FileNotFoundError):
-            main.create_app('sqlite://', debug=False, testing=False)
+            main.create_app('sqlite://', debug=False, testing=True)
 
     def test_weak_secret(self, tmp_path):
         """Tests that we're checking for a strong secret when loading in production"""
@@ -23,7 +23,7 @@ class TestSecret:
         with open('jwt_secret.txt', 'w') as secret_file:
             secret_file.write("too short secret not secure")
         with pytest.raises(RuntimeError):
-            main.create_app('sqlite://', debug=False, testing=False)
+            main.create_app('sqlite://', debug=False, testing=True)
 
     def test_secret_loading(self, tmp_path):
         """tests that secret loads properly"""
@@ -31,7 +31,7 @@ class TestSecret:
         os.chdir(tmp_path)
         with open('jwt_secret.txt', 'w') as secret_file:
             secret_file.write(KEY)
-        app = main.create_app('sqlite://', debug=False, testing=False)
+        app = main.create_app('sqlite://', debug=False, testing=True)
         assert app.config['JWT_SECRET_KEY'] == KEY
 
 

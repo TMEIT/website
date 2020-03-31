@@ -66,10 +66,11 @@ def configure_app(app, database_uri, debug, testing):
             with open('jwt_secret.txt') as secret_file:
                 app.config['JWT_SECRET_KEY'] = secret_file.read()
         except FileNotFoundError:
-            print("When running in production, we need a jwt_secret.txt to sign JWTs with.\n"
-                  "jwt_secret.txt should be a text file with at least 30 random UTF-8 characters generated from "
-                  "/dev/random\n"
-                  "If running in Docker, the file should be mounted to /srv/api/jwt_secret.txt")
+            if not testing:
+                print("When running in production, we need a jwt_secret.txt to sign JWTs with.\n"
+                      "jwt_secret.txt should be a text file with at least 30 random UTF-8 characters generated from "
+                      "/dev/random\n"
+                      "If running in Docker, the file should be mounted to /srv/api/jwt_secret.txt")
             raise
         if len(app.config['JWT_SECRET_KEY']) < 30:
             raise RuntimeError("jwt_secret.txt is too weak.")
