@@ -42,12 +42,7 @@ class WorkteamSchema(ma.ModelSchema):
     team_leaders = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.member_detail'))
     active_period = EnumField(models.PeriodEnum)
 
-
-member_schema = MemberSchema()
-members_schema = MemberSchema(many=True)
-workteam_schema = WorkteamSchema()
-workteams_schema = WorkteamSchema(many=True)
-# TODO: Hide some information about members when not authenticated
+# TODO: Hide some information about members when not authenticated using arguments to Schema() init
 
 
 # Endpoints
@@ -58,7 +53,7 @@ model_endpoints = flask.Blueprint('model_endpoints', __name__)
 @utils.json_required
 def members():
     all_members = models.Member.query.all()
-    return members_schema.jsonify(all_members)
+    return MemberSchema(many=True).jsonify(all_members)
 
 
 @model_endpoints.route('/api/members/<id>', methods=['GET', 'POST'])
@@ -66,25 +61,25 @@ def members():
 def member_detail(id):
     member: models.Member = models.Member.query.get(id)
     if flask.request.method == 'POST':
-        post(instance=member, schema=member_schema)
-    return member_schema.jsonify(member)
+        post(instance=member, schema=MemberSchema())
+    return MemberSchema().jsonify(member)
 
 
 @model_endpoints.route('/api/workteams/')
 @utils.json_required
 def workteams():
     all_workteams = models.Workteam.query.all()
-    return workteams_schema.jsonify(all_workteams)
+    return WorkteamSchema().jsonify(all_workteams)
 
 
 @model_endpoints.route('/api/workteams/<id>')
 @utils.json_required
 def workteam_detail(id):
     workteam: models.Workteam = models.Workteam.query.get(id)
-    return workteam_schema.jsonify(workteam)
+    return WorkteamSchema(many=True).jsonify(workteam)
 
 
-def post(instance, schema: flask_marshmallow.Marshmallow().ModelSchema):
+def post(instance, schema):
     """Special universal function used to authenticate and handle post request on schemas."""
 
     data = flask.request.json
