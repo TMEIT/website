@@ -6,7 +6,7 @@ import jwt
 import argon2
 import datetime
 
-from tmeit_backend import models
+from tmeit_backend import models, utils
 
 ph = argon2.PasswordHasher()
 
@@ -15,11 +15,9 @@ login_page = flask.Blueprint('login_page', __name__)
 
 # TODO: Use Flask-limiter for this
 @login_page.route('/login', methods=['POST'])
+@utils.json_required
 def login():
     """ Log in a user by receiving a POST with an email address and password, and respond with a JWT."""
-
-    if not flask.request.is_json:
-        return flask.jsonify({"msg": "Bad Request"}), 400
 
     try:
         email = flask.request.json['email']

@@ -9,7 +9,7 @@ import marshmallow.fields
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
 
-from tmeit_backend import models, auth
+from tmeit_backend import models, auth, utils
 
 
 # JSON serializers and deserializers
@@ -55,12 +55,14 @@ model_endpoints = flask.Blueprint('model_endpoints', __name__)
 
 
 @model_endpoints.route('/api/members/')
+@utils.json_required
 def members():
     all_members = models.Member.query.all()
     return flask.jsonify(members_schema.dump(all_members))
 
 
 @model_endpoints.route('/api/members/<id>', methods=['GET', 'POST'])
+@utils.json_required
 def member_detail(id):
     member: models.Member = models.Member.query.get(id)
     if flask.request.method == 'POST':
@@ -69,12 +71,14 @@ def member_detail(id):
 
 
 @model_endpoints.route('/api/workteams/')
+@utils.json_required
 def workteams():
     all_workteams = models.Workteam.query.all()
     return flask.jsonify(workteams_schema.dump(all_workteams))
 
 
 @model_endpoints.route('/api/workteams/<id>')
+@utils.json_required
 def workteam_detail(id):
     workteam: models.Workteam = models.Workteam.query.get(id)
     return flask.jsonify(workteam_schema.dump(workteam))
@@ -82,11 +86,6 @@ def workteam_detail(id):
 
 def post(instance, schema: flask_marshmallow.Marshmallow().ModelSchema):
     """Special universal function used to authenticate and handle post request on schemas."""
-
-    # Require a JSON body with POST
-    if not flask.request.is_json:
-        flask.abort(400)
-        return
 
     data = flask.request.json
 
@@ -123,3 +122,20 @@ def post(instance, schema: flask_marshmallow.Marshmallow().ModelSchema):
 #     """Function for authenticating and handling post requests for events"""
 #     if isinstance(instance, models.TmeitEvent) and False:  # user in models.Member.query().options:
 #     acl = []  # Special list for workteams working TmeitEvents
+
+# @authorization(get=,post=
+
+# get:
+# check input format
+# check master permissions
+# check member permissions
+# check custom relational permissions
+# execute
+
+# post:
+# check input format
+# check master permissions
+# check member permissions
+# check custom relational permissions
+# execute
+

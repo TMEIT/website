@@ -30,7 +30,7 @@ def test_get_member_detail_noauth(client: testing.FlaskClient, dummy_member_id: 
         models.db.session.commit()
 
         # Basic testing of endpoint
-        r: wrappers.Response = client.get(url_for('model_endpoints.member_detail', id=dummy_member_id))
+        r: wrappers.Response = client.get(url_for('model_endpoints.member_detail', id=dummy_member_id), json={})
         assert r.status_code == 200
         o: dict = r.json
         assert o['email'] == EMAIL
