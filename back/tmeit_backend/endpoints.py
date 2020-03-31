@@ -13,6 +13,7 @@ from tmeit_backend import models, auth
 
 
 # TODO: make HyperLinkRelated fields absolute
+# TODO: Input sanitation/validation
 def generate_endpoints(app):
 
     # Initialize flask_marshmallow and a Flask blueprint
@@ -33,7 +34,6 @@ def generate_endpoints(app):
         workteams_leading = marshmallow.fields.List(ma.HyperlinkRelated('model_endpoints.workteam_detail'))
         current_role = EnumField(models.CurrentRoleEnum)
         role_histories = Nested(RoleHistorySchema, many=True)
-        #TODO: Add RoleHistory nesting?
 
     class WorkteamSchema(ma.ModelSchema):
         class Meta:
@@ -76,8 +76,8 @@ def generate_endpoints(app):
     return model_endpoints
 
 
-def post(instance, schema):
-    """Special universal function used to handle post request on schemas."""
+def post(instance, schema: flask_marshmallow.Marshmallow().ModelSchema):
+    """Special universal function used to authenticate and handle post request on schemas."""
 
     # Require a JSON body with POST
     if not flask.request.is_json:
@@ -100,8 +100,10 @@ def post(instance, schema):
             acl = instance.allowed_master_fields
         elif user == instance:
             acl = instance.allowed_user_fields  # Special list for user editing themselves
-        else:
+        elif user.current_role > 0:  # must be a member to use POST
             acl = instance.allowed_member_fields
+        else: 
+            acl = []
     except NameError:
         raise NameError(f'{instance} is missing POSTable fields!')
     for field in flask.request.json:
@@ -112,3 +114,8 @@ def post(instance, schema):
     # Deserialize json into model and commit changes
     schema.load(flask.request.json, instance=instance, partial=True)
     models.db.session.commit()
+
+# def post_event(instance, schema):
+#     """Function for authenticating and handling post requests for events"""
+#     if isinstance(instance, models.TmeitEvent) and False:  # user in models.Member.query().options:
+#     acl = []  # Special list for workteams working TmeitEvents
