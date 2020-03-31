@@ -32,8 +32,9 @@ def create_app(database_uri, debug=False, testing=False) -> flask.Flask:
             app.logger.warning("Starting a devserver, generating example data for the database.")
             model_fixtures.generate_dev_data(app)
 
-    # Generate our model-based rest API and register it with Flask
-    app.register_blueprint(endpoints.generate_endpoints(app))
+    # Initialize our model API endpoints and register them with Flask
+    endpoints.ma.init_app(app)
+    app.register_blueprint(endpoints.model_endpoints)
 
     return app
 
