@@ -58,7 +58,7 @@ model_endpoints = flask.Blueprint('model_endpoints', __name__)
 @utils.json_required
 def members():
     all_members = models.Member.query.all()
-    return flask.jsonify(members_schema.dump(all_members))
+    return members_schema.jsonify(all_members)
 
 
 @model_endpoints.route('/api/members/<id>', methods=['GET', 'POST'])
@@ -67,21 +67,21 @@ def member_detail(id):
     member: models.Member = models.Member.query.get(id)
     if flask.request.method == 'POST':
         post(instance=member, schema=member_schema)
-    return flask.jsonify(member_schema.dump(member))
+    return member_schema.jsonify(member)
 
 
 @model_endpoints.route('/api/workteams/')
 @utils.json_required
 def workteams():
     all_workteams = models.Workteam.query.all()
-    return flask.jsonify(workteams_schema.dump(all_workteams))
+    return workteams_schema.jsonify(all_workteams)
 
 
 @model_endpoints.route('/api/workteams/<id>')
 @utils.json_required
 def workteam_detail(id):
     workteam: models.Workteam = models.Workteam.query.get(id)
-    return flask.jsonify(workteam_schema.dump(workteam))
+    return workteam_schema.jsonify(workteam)
 
 
 def post(instance, schema: flask_marshmallow.Marshmallow().ModelSchema):
@@ -139,3 +139,6 @@ def post(instance, schema: flask_marshmallow.Marshmallow().ModelSchema):
 # check custom relational permissions
 # execute
 
+# queryset
+# serializer (uninstanciated?)
+# additional auth grant
