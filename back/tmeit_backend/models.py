@@ -7,8 +7,19 @@ import flask_sqlalchemy
 from sqlalchemy.ext import associationproxy
 
 
-# Our connection to sqlalchemy, see documentation in class definition from flask_sqlalchemy
-db = flask_sqlalchemy.SQLAlchemy()
+class TmeitBaseModel:
+    """
+    A baseclass for our sqlalchemy database models.
+
+    Adds a common subclass to all of our model classes and sets default "deny" POST permissions for all of our data.
+    """
+    member_post_fields = []
+    master_post_fields = []
+
+
+# Our connection to sqlalchemy, we use flask_sqlalchemy to automate session management with flask requests.
+# See docstring in class definition from flask_sqlalchemy for interface documentation.
+db = flask_sqlalchemy.SQLAlchemy(model_class=TmeitBaseModel)
 
 
 # Enums for our models to use #
