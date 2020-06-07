@@ -23,6 +23,15 @@ def dummy_member_id(app):
         return member.id
 
 
+def test_get_member_list_noauth(client: testing.FlaskClient):
+    model_fixtures.generate_dev_data(client.application)
+
+    # Basic testing of endpoint
+    r: wrappers.Response = client.get(url_for('model_endpoints.members', id=dummy_member_id), json={})
+    assert r.status_code == 200
+    o: dict = r.json
+
+
 def test_get_member_detail_noauth(client: testing.FlaskClient, dummy_member_id: int):
     with client.application.app_context():
         # Generate a single role history for the dummy member
