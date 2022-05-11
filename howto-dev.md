@@ -35,7 +35,7 @@ and runs automatically when the master branch is updated.
   * Retroactively edit backups?
 
 ### Deployment
-* Helm is used to configure different Kubernetes environments, 
+* Kustomize is used to configure different Kubernetes environments, 
 making changes to the database configuration to allow for running the app in a kubernetes test environment
 * Alerts
   * Grafana+loki stack for monitoring
@@ -53,7 +53,7 @@ making changes to the database configuration to allow for running the app in a k
 * All code should have automatic tests so that assumptions are verified, and regressions are caught.
 * Frontend javascript code is tested inside the container when compiling the app
 * Backend code is tested inside the container
-* Helm charts are tested to make sure that they template correctly once the container is built, 
+* Kubernetes manifests are tested to make sure that are valid once the container is built, 
 but before the chart is deployed to production
 
 ## Local development environment
