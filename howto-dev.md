@@ -45,6 +45,9 @@ making changes to the database configuration to allow for running the app in a k
     * Database backups haven't run
     * CPU or memory are full on node
     * CrashLoop/database migration is stuck
+  * External uptime checker should check external accessibility and alert system health
+    * Check backend health endpoint
+    * Special microservice that has an endpoint that checks that the monitoring is healthy 
 
 ### Tests
 * All code should have automatic tests so that assumptions are verified, and regressions are caught.
