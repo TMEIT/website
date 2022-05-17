@@ -7,11 +7,8 @@ license = "AGPL-3.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-Flask = "^1.1.1"
-Flask-Restless = "^0.17.0"
-Flask-SQLAlchemy = "^2.4.0"
-PyJWT = "^1.7.1"
-requests = "^2.21.0"
+fastapi = "^0.78.0"
+PyJWT = "^2.4.0"
 SQLAlchemy = "^1.3.3"
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
 
@@ -19,9 +16,7 @@ uvicorn = {extras = ["standard"], version = "^0.17.6"}
 coverage = "^4.5.2"
 pytest = "^4.2.0"
 pytest-cov = "^2.6.1"
-pytest-flask = "^0.14.0"
-python-coveralls = "^2.9.1"
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry>=1.1"]
 build-backend = "poetry.masonry.api"
