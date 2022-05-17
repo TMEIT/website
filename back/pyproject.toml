@@ -10,10 +10,10 @@ python = "^3.7"
 Flask = "^1.1.1"
 Flask-Restless = "^0.17.0"
 Flask-SQLAlchemy = "^2.4.0"
-python3-saml = "^1.6.0"
 PyJWT = "^1.7.1"
 requests = "^2.21.0"
 SQLAlchemy = "^1.3.3"
+uvicorn = {extras = ["standard"], version = "^0.17.6"}
 
 [tool.poetry.dev-dependencies]
 coverage = "^4.5.2"
