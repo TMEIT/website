@@ -1,3 +1,6 @@
+# This is a sealedsecret containing the auth credentials for the docker registry at registry.jlh.name
+# This is encrypted and will only work on the home.jlh.name kubernetes cluster
+
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
