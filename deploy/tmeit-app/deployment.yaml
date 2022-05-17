@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tmeit-app
+  labels:
+    app: tmeit-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tmeit-app
+  template:
+    metadata:
+      labels:
+        app: tmeit-app
+    spec:
+      containers:
+      - name: uvicorn
+        image: registry.jlh.name/tmeit-app
+        ports:
+        - containerPort: 80
