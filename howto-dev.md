@@ -71,3 +71,5 @@ but before the chart is deployed to production
 * Tilt is configured with the Tiltfile
 * cluster and repository specific variables are defined in tilt_options.json
   * You shouldn't have to change anything in Tiltfile, just tilt_options
+# Starting local environment
+Run `tilt up`
