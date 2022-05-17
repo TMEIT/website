@@ -1,0 +1,18 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  annotations:
+    sealedsecrets.bitnami.com/cluster-wide: "true"
+  creationTimestamp: null
+  name: regcred
+spec:
+  encryptedData:
+    .dockerconfigjson: AgBTPK+uXR7jnM1B+wpaPiId8XukjrkIMBuLaUY3R4HTGDpSMiCKTAR+9PpA/k3AUreHQLstyahLC/kuFLoKLKS1UxYP0NPbM2ZMzAG/0o+F2lfW6hyFnsbkVRmL+5TdZ0oWq6nV3gX4MXBk6BltTcubGWNWIDJJDnLNu9aT6T7FsbudnpOUJfsS8lUVwdTPTMmHW/AWSdIPS3zDHnSQj/J8DGWggyg9Dy0g7A0dV8mC5liXHJIag2hW9aXSNxI3ziEE9Ee9zZYDsmw8UrNNbY3JN6sVfgBD6F4q1SUG4YNaH9nghutBoFY+pi4hSHu1FGAqVJQ7jsUdSo5xWIAg7gPgnEKw1saDZN2MdJ399lq4tGeGdcaZDsLNyUmSoAA/ieEn692W+57Wmc+k8EXtlhibUUc3EW+h+M+GOx66NH7QNKE5YRLLZlVQ0v4iivJJ5r51xzChZg0jUp2eWI4xQMO/0MUPnU6Cd0vETeKSm22O6zsU0KgfUiKWnJYAVCNljiYPrwc73HfDfw/bqqXCRj53zlM8ndLsTfP2kDpFtZk2dVlw8KC6S4idzQSFCUZ0L23+s1ItdtYGKz8DkA3tHK2JexI2E0qsOKIpHWxdNIVD8c53LFypSPSDdHV6EQf7PWsRiN439R3X2AGuQsVjXW6UP3ASMy/Er1e5BeQdmQIVZ3kyJxpBSt6QGPnKLDpx76qSP8utXKNqx6iyjgTHni/Ctl/UJ8ZpQKtMO4MgpZUtYZ/lONMxVsaYb/vXZe2kUlsGbvYBMN5O64yxa2qKNJH2D6jKOpoTUobVbeXk2u8uVajOLl6v/P5KPFwvnpeRV6JNUDKeHg==
+  template:
+    data: null
+    metadata:
+      annotations:
+        sealedsecrets.bitnami.com/cluster-wide: "true"
+      creationTimestamp: null
+      name: regcred
+    type: kubernetes.io/dockerconfigjson

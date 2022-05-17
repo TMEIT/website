@@ -67,3 +67,7 @@ but before the chart is deployed to production
   * Try microkube or ask @JustinLex for access to his home cluster
   * Could be done on the production cluster as well, but would be expensive
 * Tilt does hot reloads when code is updated, compiling your containers and pushing them to the Kubernetes cluster
+### Configuring Tilt
+* Tilt is configured with the Tiltfile
+* cluster and repository specific variables are defined in tilt_options.json
+  * You shouldn't have to change anything in Tiltfile, just tilt_options

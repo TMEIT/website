@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: uvicorn
-        image: registry.jlh.name/tmeit-app
+        image: tmeit-app
         ports:
         - containerPort: 80
