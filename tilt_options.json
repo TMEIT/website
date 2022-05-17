@@ -1,0 +1,4 @@
+{
+    "default_registry": "registry.jlh.name/tmeit-app",
+    "allow_k8s_contexts": "tmeit-dev/jlh-home-remote"
+}
