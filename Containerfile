@@ -23,7 +23,7 @@ RUN poetry config virtualenvs.in-project true \
   && poetry install --no-interaction --no-ansi
 # Copy backend app into container
 COPY back/tmeit_backend /code/tmeit_backend
-# Run tests (Devs must pass all automated tests before doing live testing!)
+# Run tests (All automated tests must pass before a new container can be published!)
 COPY back/tests /code/tests
 RUN /code/.venv/bin/pytest tests/
 # Uninstall dev dependencies from .venv, so that they don't get transferred to final app container
@@ -33,7 +33,7 @@ RUN poetry install --no-dev --no-interaction --no-ansi
 # Minimal container that contains both the frontend and backend, and gets uploaded to Kubernetes
 FROM docker.io/library/python:3.10-slim as app
 WORKDIR /code
+COPY --from=back-buildtest /code/.venv /code/.venv
 COPY --from=front-buildtest /code/www/ /code/static/front
 COPY --from=back-buildtest /code/tmeit_backend /code/tmeit_backend
-COPY --from=back-buildtest /code/.venv /code/.venv
 CMD ["/code/.venv/bin/uvicorn", "tmeit_backend.app_root:app", "--host", "0.0.0.0", "--port", "80"]

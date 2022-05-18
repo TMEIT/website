@@ -11,6 +11,6 @@ watch_file('deploy/base')
 watch_file('deploy/dev')
 
 # Build, deploy, and port-forward
-podman_build('tmeit-app', '.')
+podman_build('tmeit-app', '.', extra_flags=["-f", "Containerfile-skip-tests"])
 k8s_yaml(kustomize('deploy/dev'))
 k8s_resource('tmeit-app', port_forwards="8080:80")
