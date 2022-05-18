@@ -6,22 +6,16 @@ authors = ["TraditionsMEsterIT"]
 license = "AGPL-3.0"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-Flask = "^1.1.1"
-Flask-Restless = "^0.17.0"
-Flask-SQLAlchemy = "^2.4.0"
-PyJWT = "^1.7.1"
-requests = "^2.21.0"
-SQLAlchemy = "^1.3.3"
+python = "^3.10"
+fastapi = "^0.78.0"
+pydantic = {extras = ["email"], version = "^1.9.0"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
+SQLAlchemy = {extras = ["postgresql_asyncpg", "mypy"], version = "^1.4.36"}
 
 [tool.poetry.dev-dependencies]
-coverage = "^4.5.2"
-pytest = "^4.2.0"
-pytest-cov = "^2.6.1"
-pytest-flask = "^0.14.0"
-python-coveralls = "^2.9.1"
+pytest = "^7.1.2"
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry>=1.1"]
 build-backend = "poetry.masonry.api"

@@ -5,7 +5,7 @@ import {useFetch} from "../FetchHooks.js";
 
 function Team() {
 
-    const {loading, data} = useFetch("/api/members");
+    const {loading, data} = useFetch("/api/v1/members/");
 
 
     let memberList;
@@ -18,9 +18,9 @@ function Team() {
 
     // render memberlist
     else {
-        memberList = data.objects.map(member =>
-                <h2 key={member.email} >
-                    <Link to={"/profile/" + encodeURIComponent(member.email)} >
+        memberList = data.map(member =>
+                <h2 key={member.guid} >
+                    <Link to={"/profile/" + member.guid} >
                         {member.first_name + " " + member.last_name}
                     </Link>
                 </h2>

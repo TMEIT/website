@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "npm run build",
-    "build": "webpack -d && cp src/index.html www/index.html && webpack-dev-server --content-base src/ --inline --hot",
-    "build:prod": "webpack -p && cp src/index.html www/index.html "
+    "build": "webpack -d && cp src/index.html www/index.html && cp src/favicon.png www/favicon.png && cp src/reboot.css www/reboot.css",
+    "build:prod": "webpack -p && cp src/index.html www/index.html && cp src/favicon.png www/favicon.png && cp src/reboot.css www/reboot.css"
   },
   "author": "",
   "repository": "github:TMEIT/website",

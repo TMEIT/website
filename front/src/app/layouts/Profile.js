@@ -14,7 +14,7 @@ function Profile ({match}) {
     if(!match.params.id) return(<Redirect to={"/team"} />);
 
 
-    const {loading, data} = useFetch("/api/members/" + match.params.id);
+    const {loading, data} = useFetch("/api/v1/members/" + match.params.id);
 
 
     if(data === "error") return(
@@ -32,7 +32,7 @@ function Profile ({match}) {
 
     const nickname = data.nickname;
     const fullName = data.first_name + " " + data.last_name;
-    const currentWorkteam = data.workteams[0].name; // TODO: Change this to choose all the workteams that are active
+    // const currentWorkteam = data.workteams[0].name; // TODO: Change this to choose all the workteams that are active
     const role = ((current_role) => {
         const string = currentRolesEN.get(current_role).toString();
         return capitalizeFirstLetter(string);
@@ -43,7 +43,6 @@ function Profile ({match}) {
             <img src={"https://thispersondoesnotexist.com/image"} style={{height: '100px', width: '100px'}}/>
             <h1>{nickname}</h1>
             <h2>{fullName}</h2>
-            <h3>{currentWorkteam}</h3>
             <h3>{role}</h3>
            <Tabs>
                <TabList>
