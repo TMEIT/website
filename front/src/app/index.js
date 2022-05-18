@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom";
+import {createRoot} from 'react-dom/client';
 import React, {Fragment} from "react";
-import {BrowserRouter as Router, Route, Link, NavLink, Switch} from "react-router-dom"
+import {BrowserRouter as Router, Route, Link, NavLink, Routes} from "react-router-dom"
 import styles from "./index.css";
 
 import Home from "./layouts/Home";
@@ -19,13 +20,13 @@ function App () {
                 <Header />
 
                 <main>
-                    <Switch>
-                        <Route path="/" exact component={Home} />
-                        <Route path="/events" component={Events} />
-                        <Route path="/team" component={Team} />
-                        <Route path="/join_tmeit" component={Join} />
-                        <Route path="/profile/:id" component={Profile} />
-                    </Switch>
+                    <Routes>
+                        <Route path="/" exact element={<Home />} />
+                        <Route path="/events" element={<Events />} />
+                        <Route path="/team" element={<Team />} />
+                        <Route path="/join_tmeit" element={<Join />} />
+                        <Route path="/profile/:id" element={<Profile />} />
+                    </Routes>
                 </main>
 
                 <Footer />
@@ -39,5 +40,6 @@ function Login() {
     return <h1>Login</h1>;
 }
 
-
-ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<App />);

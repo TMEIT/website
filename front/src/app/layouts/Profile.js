@@ -1,5 +1,5 @@
 import React, {Fragment} from "react";
-import {Redirect, Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import styles from "./profile.css"
@@ -8,13 +8,11 @@ import Loading from "../components/Loading";
 import {currentRolesEN, capitalizeFirstLetter} from "../tmeitStringFn.js"
 import {WorkteamItem} from "../components/Listables";
 
-function Profile ({match}) {
+function Profile () {
 
-    // Return to team if there's no name given
-    if(!match.params.id) return(<Redirect to={"/team"} />);
+    let { id } = useParams();
 
-
-    const {loading, data} = useFetch("/api/v1/members/" + match.params.id);
+    const {loading, data} = useFetch("/api/v1/members/" + id);
 
 
     if(data === "error") return(

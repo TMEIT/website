@@ -9,10 +9,10 @@ function Header() {
         <header>
             <nav>
                 <ul>
-                    <li><NavLink to="/" activeClassName="selected">TMEIT</NavLink></li>
-                    <li><NavLink to="/events" activeClassName="selected">Events</NavLink></li>
-                    <li><NavLink to="/team" activeClassName="selected">Team</NavLink></li>
-                    <li><NavLink to="/join_tmeit" activeClassName="selected">JOIN</NavLink></li>
+                    <li><NavLink to="/" activeclassname="selected">TMEIT</NavLink></li>
+                    <li><NavLink to="/events" activeclassname="selected">Events</NavLink></li>
+                    <li><NavLink to="/team" activeclassname="selected">Team</NavLink></li>
+                    <li><NavLink to="/join_tmeit" activeclassname="selected">JOIN</NavLink></li>
                     <li><a href={"#"}>Login</a></li>
                 </ul>
             </nav>
