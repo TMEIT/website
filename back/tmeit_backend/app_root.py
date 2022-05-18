@@ -23,5 +23,6 @@ app = FastAPI(routes=routes)
 # Load SPA from frontend for "/" and "/*" endpoints https://stackoverflow.com/a/65917164
 @app.get("/")
 @app.get("/{page}")
+@app.get("/profile/{page}")
 async def load_js_app():
     return FileResponse('static/front/index.html')
