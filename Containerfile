@@ -36,4 +36,4 @@ WORKDIR /code
 COPY --from=front-buildtest /code/www/ /code/static/front
 COPY --from=back-buildtest /code/tmeit_backend /code/tmeit_backend
 COPY --from=back-buildtest /code/.venv /code/.venv
-CMD ["/code/.venv/bin/uvicorn", "tmeit_backend.api_app:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["/code/.venv/bin/uvicorn", "tmeit_backend.app_root:app", "--host", "0.0.0.0", "--port", "80"]
