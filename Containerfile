@@ -16,5 +16,5 @@ COPY back/pyproject.toml back/poetry.lock /code/
 RUN poetry config virtualenvs.create false \
   && poetry install --no-dev --no-interaction --no-ansi
 COPY back/tmeit_backend /code/tmeit_backend
-COPY --from=front-builder /code/www/ /code/static/
-CMD ["uvicorn", "tmeit_backend.wsgi:application", "--host", "0.0.0.0", "--port", "80"]
+COPY --from=front-builder /code/www/ /code/static/front
+CMD ["uvicorn", "tmeit_backend.api_app:app", "--host", "0.0.0.0", "--port", "80"]
