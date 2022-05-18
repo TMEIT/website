@@ -6,16 +6,14 @@ authors = ["TraditionsMEsterIT"]
 license = "AGPL-3.0"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 fastapi = "^0.78.0"
-PyJWT = "^2.4.0"
-SQLAlchemy = "^1.3.3"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
+SQLAlchemy = {extras = ["postgresql_asyncpg", "mypy"], version = "^1.4.36"}
 
 [tool.poetry.dev-dependencies]
-coverage = "^4.5.2"
-pytest = "^4.2.0"
-pytest-cov = "^2.6.1"
+pytest = "^7.1.2"
 
 [build-system]
 requires = ["poetry>=1.1"]
