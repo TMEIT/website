@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -10,8 +10,9 @@ def read_root():
     return {"Hello": "World"}
 
 
-# Load index.html from frontend https://stackoverflow.com/a/65917164
+# Load SPA from frontend https://stackoverflow.com/a/65917164
 @app.get("/")
+@app.get("/{page}")
 async def read_index():
     return FileResponse('static/front/index.html')
 
