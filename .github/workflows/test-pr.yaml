@@ -1,11 +1,11 @@
-name: Lint and test code before it is pulled into master
+name: Run tests
 on:
   pull_request:
     branches:
       - master
 jobs:
   version-incremented: # checks that version has been incremented in node, python, and deployment. And that they match.
-    name: Is version incremented
+    name: Are version numbers incremented
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2.2.0
@@ -18,7 +18,7 @@ jobs:
         run: python release_utils/check-tag-incremented.py
         shell: sh
   lint-kustomization:
-    name: Lint and Test Kustomize/Kubernetes
+    name: Lint Kustomize/Kubernetes
     runs-on: ubuntu-22.04
     steps:
       - name: 'Build dev manifests'
@@ -48,12 +48,12 @@ jobs:
             dev-rendered.yaml
             deploy/tmeit-jlh-name
   lint-gh-actions:
-    name: Lint Github Actions workflows
+    name: Lint GH Actions workflows
     runs-on: ubuntu-22.04
     steps:
       - uses: reviewdog/action-actionlint@v1
   test-app: # do a build (which lints and runs tests)
-    name: Test app
+    name: Build and test app
     runs-on: ubuntu-22.04
     steps:
       - name: Build containers
