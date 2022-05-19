@@ -22,23 +22,23 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Build dev manifests'
-        uses: karancode/kustomize-github-action@master
+        uses: stefanprodan/kube-tools@v1
         with:
-          kustomize_version: '4.5.4'
-          kustomize_build_dir: 'deploy/dev'
-          kustomize_output_file: "dev-rendered.yaml"
+          kustomize: '4.5.4'
+          command: |-
+            kustomize build deploy/dev -o dev-rendered.yaml
       - name: 'Build tmeit.jlh.name manifests'
-        uses: karancode/kustomize-github-action@master
+        uses: stefanprodan/kube-tools@v1
         with:
-          kustomize_version: '4.5.4'
-          kustomize_build_dir: 'deploy/tmeit-jlh-name'
-          kustomize_output_file: "jlh-rendered.yaml"
+          kustomize: '4.5.4'
+          command: |-
+            kustomize build deploy/tmeit-jlh-name -o jlh-rendered.yaml
 #      - name: 'Build tmeit.se manifests'
-#        uses: karancode/kustomize-github-action@master
+#        uses: stefanprodan/kube-tools@v1
 #        with:
-#          kustomize_version: '4.5.4'
-#          kustomize_build_dir: 'deploy/tmeit-se'
-#          kustomize_output_file: "tmeit-se-rendered.yaml"
+#          kustomize: '4.5.4'
+#          command: |
+#            kustomize build deploy/tmeit-se -o tmeit-se-rendered.yaml
       - uses: azure/setup-kubectl@v2.0
       - name: 'Validate kubernetes manifests'
         uses: azure/k8s-lint@v1
