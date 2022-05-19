@@ -17,7 +17,7 @@ spec:
       containers:
       - name: uvicorn
         image: tmeit-app:0.0.1
-        imagepullpolicy: Always
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:
