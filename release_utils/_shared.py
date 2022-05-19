@@ -52,10 +52,12 @@ class FrontVersion:
 
     @version.setter
     def version(self, new_version: SemVer) -> None:
-        with open(self.package_json_path, 'w') as front_package_file:
+        with open(self.package_json_path, 'r+') as front_package_file:
             package = json.load(front_package_file)
             package['version'] = str(new_version)
-            json.dump(package, front_package_file)
+            front_package_file.seek(0)
+            json.dump(package, front_package_file, indent=2)
+            front_package_file.truncate()  # https://stackoverflow.com/a/2424410
 
 
 @dataclass
@@ -92,13 +94,15 @@ class K8sDeploymentImageTag:
 
     @version.setter
     def version(self, new_version: SemVer) -> None:
-        with open(self.tag_patch_path, 'w') as image_tag_patch:
+        with open(self.tag_patch_path, 'r+') as image_tag_patch:
             patch = json.load(image_tag_patch)
             image_str: str = patch[0]["value"]
             image, tag = image_str.split(":")
-            new_image_str = image + str(new_version)
+            new_image_str = f"{image}:{str(new_version)}"
             patch[0]["value"] = new_image_str
-            json.dump(patch, image_tag_patch)
+            image_tag_patch.seek(0)
+            json.dump(patch, image_tag_patch, indent=2)
+            image_tag_patch.truncate()  # https://stackoverflow.com/a/2424410
 
 
 @dataclass
