@@ -17,6 +17,7 @@ spec:
       containers:
       - name: uvicorn
         image: tmeit-app:0.0.1
+        imagepullpolicy: Always
         ports:
         - containerPort: 80
         resources:
@@ -28,7 +29,8 @@ spec:
             cpu: "600m"
             memory: "200Mi"
             ephemeral-storage: 2Gi
+        securityContext:
+          readOnlyRootFilesystem: true
       securityContext:
         runAsUser: 20000
         runAsGroup: 20000
-        readOnlyRootFilesystem: true
