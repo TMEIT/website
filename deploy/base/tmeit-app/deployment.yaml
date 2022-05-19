@@ -29,6 +29,6 @@ spec:
             memory: "200Mi"
             ephemeral-storage: 2Gi
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+        runAsUser: 20000
+        runAsGroup: 20000
         readOnlyRootFilesystem: true
