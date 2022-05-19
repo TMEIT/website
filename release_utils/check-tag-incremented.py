@@ -7,7 +7,7 @@ from _shared import SemVer, FrontVersion, BackVersion, K8sDeploymentImageTag, La
 if __name__ == '__main__':
     front_ver: SemVer = FrontVersion("front/package.json").version
     back_ver: SemVer = BackVersion("back/pyproject.toml").version
-    k8s_image_tag: SemVer = K8sDeploymentImageTag("deploy/prod/set_image_tag.json").version
+    k8s_image_tag: SemVer = K8sDeploymentImageTag("deploy/tmeit-jlh-name/set_image_tag.json").version
 
     # Check if all versions are the same
     if k8s_image_tag != front_ver or k8s_image_tag != back_ver:
