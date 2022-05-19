@@ -21,10 +21,14 @@ spec:
         - containerPort: 80
         resources:
           requests:
-            memory: "100Mi"
             cpu: "400m"
-            ephemeral-storage: 1Gi # I think this is used for logs? kube-score says that it's important to limit this.
+            memory: "100Mi"
+            ephemeral-storage: 2Gi # I think this is used for logs? kube-score says that it's important to limit this.
           limits:
-            memory: "200Mi"
             cpu: "600m"
-            ephemeral-storage: 1Gi
+            memory: "200Mi"
+            ephemeral-storage: 2Gi
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        readOnlyRootFilesystem: true
