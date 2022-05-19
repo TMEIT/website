@@ -19,6 +19,8 @@ if __name__ == '__main__':
     last_release: SemVer = LatestGitTag().version
     if k8s_image_tag == last_release or k8s_image_tag < last_release:
         raise RuntimeError("Versions have not been incremented! "
-                           f"Last version: {last_release}, Current version: {k8s_image_tag}")
+                           f"Last version: {last_release}, Current version: {k8s_image_tag}\n"
+                           "Maybe try incrementing the version with this command:\n"
+                           "python release_utils/set_new_version.py 0.0.1")
     else:
         print("Versions have been incremented, ready to release.")
