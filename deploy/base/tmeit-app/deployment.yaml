@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: uvicorn
-        image: tmeit-app
+        image: tmeit-app:0.0.1
         ports:
         - containerPort: 80
