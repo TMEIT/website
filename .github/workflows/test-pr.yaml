@@ -21,6 +21,7 @@ jobs:
     name: Lint Kustomize/Kubernetes
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.2.0
       - name: 'Build dev manifests'
         uses: stefanprodan/kube-tools@v1
         with:
@@ -51,11 +52,13 @@ jobs:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.2.0
       - uses: reviewdog/action-actionlint@v1
   test-app: # do a build (which lints and runs tests)
     name: Build and test app
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.2.0
       - name: Build containers
         uses: redhat-actions/buildah-build@v2
         with:
