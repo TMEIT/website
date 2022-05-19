@@ -75,7 +75,7 @@ class BackVersion:
     def version(self, new_version: SemVer) -> None:
         project = configparser.ConfigParser()
         project.read(self.pyproject_toml_path)
-        project['tool.poetry']['version'] = str(new_version)
+        project['tool.poetry']['version'] = f'"{str(new_version)}"'  # Output should have double quotes in the string
         with open(self.pyproject_toml_path, 'w') as back_project_file:
             project.write(back_project_file)
 
