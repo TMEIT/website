@@ -42,12 +42,9 @@ jobs:
 #            kustomize build deploy/tmeit-se -o tmeit-se-rendered.yaml
       - uses: azure/setup-kubectl@v2.0
       - name: 'Validate kubernetes manifests'
-        uses: azure/k8s-lint@v1
+        uses: piraces/kube-score-ga@v0.1.2
         with:
-          lintType: dryrun
-          manifests: |
-            dev-rendered.yaml
-            deploy/tmeit-jlh-name
+          manifests-folders: 'dev-rendered.yaml,jlh-rendered.yaml'
   lint-gh-actions:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
