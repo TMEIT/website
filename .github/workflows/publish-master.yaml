@@ -1,0 +1,89 @@
+name: Publish new code in master to production
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-push:
+    name: Build and push app
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Get release version
+        run: python release_utils/get_version.py
+        shell: sh
+        id: release_version
+
+      - name: Build OCI image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ghcr.io/tmeit/tmeit-app
+          tags: "${{ steps.release_version.outputs.stdout }}"
+          containerfiles: |-
+            Containerfile
+
+      - name: Export OCI image
+        run: "podman save --format docker-archive --compress -o docker-container.tar"
+      - name: Send image to publish-tag job # https://stackoverflow.com/a/57877438
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tmeit-app-image"
+          path: "docker-container.tar"
+
+      - name: Log in to gh registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+          registry: "ghcr.io/tmeit"
+      - name: Publish tmeit-app OCI image
+        run: "podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.stdout }}"
+      #- name: Apply Kubernetes configuration
+      #  uses: redhat-actions/push-to-registry@v2
+      #  TODO
+
+
+  publish-tag:
+    name: Publish GH release
+    runs-on: ubuntu-22.04
+    needs: build-push # Run after push so that we can get the docker image for publishing
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Get release version
+        run: python release_utils/get_version.py
+        shell: sh
+        id: release_version
+      - name: Build k8s manifests
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kustomize: '4.5.4'
+          command: |-
+            kustomize build deploy/tmeit-jlh-name -o k8s-manifests.yaml
+      - name: Receive image from build-push job # https://stackoverflow:com/a/57877438
+        uses: actions/download-artifact@v3
+        with:
+          name: "tmeit-app-image"
+      - name: Create git tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          CUSTOM_TAG: "${{ steps.release_version.outputs.stdout }}"
+      - name: Generate changelog
+        uses: loopwerk/tag-changelog@v1
+        id: changelog
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GH release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "${{ steps.release_version.outputs.stdout }}"
+          body: "${{ steps.changelog.outputs.changelog }}"
+          files: |
+            docker-container.tar
+            k8s-manifests.yaml
