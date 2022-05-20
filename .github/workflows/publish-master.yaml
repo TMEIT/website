@@ -28,7 +28,7 @@ jobs:
             Containerfile
 
       - name: Export OCI image
-        run: "podman save  --format docker-archive --compress -o docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"
+        run: "podman save  --format docker-archive -o docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"
       - name: Send image to publish-tag job # https://stackoverflow.com/a/57877438
         uses: actions/upload-artifact@v3
         with:
