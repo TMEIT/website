@@ -4,7 +4,8 @@ function Events() {
     return(
         <>
             <h1>Events</h1>
-            <p>Events will be added in version 0.2.</p>
+            <p>Events page coming soon.</p>
+            <p>Check out our <a href="https://www.facebook.com/TMEIT/events">Facebook events</a> in the meantime!</p>
         </>
     );
 }

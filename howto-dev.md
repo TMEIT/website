@@ -6,8 +6,8 @@
 * Webapp using a ReactJS frontend and a Python+FastAPI backend.
 * Database is a standard PostgreSQL relational database
 * All of our code for the app is compiled to a single OCI container (aka a Docker container)
-* App runs on Kubernetes to handle load-balancing and database containers
-* App compilation, container images, and deploying to kubernetes is scripted by Github Actions CI, 
+* App runs on Kubernetes to for self-healing and container orchestration
+* App compilation, container image building, and deploying to kubernetes is scripted by Github Actions CI, 
 and runs automatically when the master branch is updated.
 
 ### Frontend
@@ -30,9 +30,7 @@ and runs automatically when the master branch is updated.
 * Database backups should run every hour to back up to object storage.
   * Only the first backup of each day is kept after a month
   * Only the first backup of each month is kept after a year
-* TODO: How do we make sure we can delete users for GDPR?
-  * Delete their photos and remove their personal info from their profile?
-  * Retroactively edit backups?
+* TODO: We need to specify our backup retention policy in our GDPR policy
 
 ### Deployment
 * Kustomize is used to configure different Kubernetes environments, 
@@ -73,3 +71,16 @@ but before the chart is deployed to production
   * You shouldn't have to change anything in Tiltfile, just tilt_options
 # Starting local environment
 Run `tilt up`
+
+## Creating a new release
+* Everything in master is automatically pushed to prod
+* Make your changes in a new branch
+* Make sure you increment the release version number in your branch by running `python release_utils/set_new_version.py X.Y.Z`
+  * Set the version number at the end of the command where `x.y.z` is
+  * This project uses [semantic versioning](https://semver.org/)
+* Make a PR on Github to merge your changes into master
+* Your PR will be automatically tested, and only accepted if all linting and testing passes.
+* New release is published and pushed to production once your PR is merged into master.
+  * Container is built and published to Github's container repository
+  * Kubernetes manifests with updated container tag are pushed to production cluster
+  * Code archive, container, and kubernetes manifests will be published as a new release on Github for archival
