@@ -13,8 +13,8 @@ def get_dummy_member(guid: UUID) -> Member:
     return Member(
         guid=guid,
         email="lmao@lol.se",
-        first_name="lm",
-        last_name="ao",
+        first_name="Rofl",
+        last_name="Lmao",
         current_role=CurrentRoleEnum.master,
         role_histories=[],
         workteams=[],
