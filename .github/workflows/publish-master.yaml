@@ -76,6 +76,7 @@ jobs:
       - name: Create git tag
         uses: anothrNick/github-tag-action@1.36.0
         env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CUSTOM_TAG: "${{ steps.release_version.outputs.version }}"
       - name: Generate changelog
         uses: loopwerk/tag-changelog@v1
