@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: Get release version
-        run: python release_utils/get_version.py
+        run: python release_utils/get_version.py gh-actions
         shell: sh
         id: release_version
 
@@ -23,7 +23,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ghcr.io/tmeit/tmeit-app
-          tags: "${{ steps.release_version.outputs.stdout }}"
+          tags: "${{ steps.release_version.outputs.version }}"
           containerfiles: |-
             Containerfile
 
@@ -42,7 +42,7 @@ jobs:
           password: "${{ secrets.GITHUB_TOKEN }}"
           registry: "ghcr.io/tmeit"
       - name: Publish tmeit-app OCI image
-        run: "podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.stdout }}"
+        run: "podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"
       #- name: Apply Kubernetes configuration
       #  uses: redhat-actions/push-to-registry@v2
       #  TODO
@@ -60,7 +60,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: Get release version
-        run: python release_utils/get_version.py
+        run: python release_utils/get_version.py gh-actions
         shell: sh
         id: release_version
       - name: Build k8s manifests
@@ -76,7 +76,7 @@ jobs:
       - name: Create git tag
         uses: anothrNick/github-tag-action@1.36.0
         env:
-          CUSTOM_TAG: "${{ steps.release_version.outputs.stdout }}"
+          CUSTOM_TAG: "${{ steps.release_version.outputs.version }}"
       - name: Generate changelog
         uses: loopwerk/tag-changelog@v1
         id: changelog
@@ -85,7 +85,7 @@ jobs:
       - name: Create GH release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "${{ steps.release_version.outputs.stdout }}"
+          tag_name: "${{ steps.release_version.outputs.version }}"
           body: "${{ steps.changelog.outputs.changelog }}"
           files: |
             docker-container.tar
