@@ -1,0 +1,29 @@
+# This is a firewall whitelist for traffic in/out of the tmeit-app pod
+# See https://v1-23.docs.kubernetes.io/docs/concepts/services-networking/network-policies/
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tmeit-app
+spec:
+  podSelector:
+    matchLabels:
+      app: tmeit-app
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            app: postgres
+      ports:
+        - protocol: TCP
+          port: 5432

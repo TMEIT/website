@@ -16,6 +16,21 @@ spec:
     spec:
       containers:
       - name: uvicorn
-        image: tmeit-app
+        image: tmeit-app:0.0.1
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            cpu: "400m"
+            memory: "100Mi"
+            ephemeral-storage: 2Gi # I think this is used for logs? kube-score says that it's important to limit this.
+          limits:
+            cpu: "600m"
+            memory: "200Mi"
+            ephemeral-storage: 2Gi
+        securityContext:
+          readOnlyRootFilesystem: true
+      securityContext:
+        runAsUser: 20000
+        runAsGroup: 20000
