@@ -1,4 +1,4 @@
-name: Publish new code in master to production
+name: Push and publish app
 on:
   push:
     branches:
