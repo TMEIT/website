@@ -40,9 +40,9 @@ jobs:
           registry: "ghcr.io/tmeit"
       - name: Publish tmeit-app OCI image
         run: "podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.stdout }}"
-      - name: Apply Kubernetes configuration
-        #uses: redhat-actions/push-to-registry@v2
-        #TODO
+      #- name: Apply Kubernetes configuration
+      #  uses: redhat-actions/push-to-registry@v2
+      #  TODO
 
 
   publish-tag:
