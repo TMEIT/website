@@ -59,12 +59,13 @@ jobs:
           # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
 
       - name: 'Push manifests to prod'
-        uses: stefanprodan/kube-tools@v1
-        with:
-          kubectl: '1.24.0'  # kubectl 1.24 has kustomize 4.5.4 built in
-          command: |-
-           kubectl apply -k deploy/tmeit-jlh-name/
-
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          chmod +x kubectl
+          kubectl apply -k deploy/tmeit-jlh-name/
+# kubectl 1.24.0 has kustomize 4.5.4 built in
 
   publish-tag:
     name: Publish GH release
