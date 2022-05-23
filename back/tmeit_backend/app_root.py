@@ -35,3 +35,21 @@ async def load_js_app():
 @app.get("/profile/")
 async def dont_load_empty_profile():
     return RedirectResponse('/team')
+
+
+@app.get("/health")
+async def healh_check():
+    """Health check endpoint for kubernetes liveness probes"""
+    return {"healthy": True}
+
+
+# Health check endpoint
+@app.get("/ready")
+async def ready_check():
+    """
+    ready check endpoint for kubernetes readiness probes
+
+    Possible tests we could do in the future to cover more cases:
+    * connect to database
+    """
+    return {"ready": True}

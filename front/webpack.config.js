@@ -2,14 +2,19 @@
 
 const path = require("path");
 
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 const DIST_DIR = path.resolve(__dirname, "www");
 const SRC_DIR = path.resolve(__dirname, "src");
+
+const PACKAGE = require('./package.json');
+const version = PACKAGE.version;
 
 module.exports = {
     entry: SRC_DIR + "/app/index.js",
     output: {
         path: DIST_DIR,
-        filename: "bundle.js",
+        filename: "bundle-" + version + ".js",
         publicPath: "/static/front/"
     },
     module: {
@@ -32,8 +37,24 @@ module.exports = {
                 use: ['style-loader', 'css-loader']
             }
         ]
-    }
-,
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: "TMEIT",
+            filename: './index.html', //relative to root of the application
+            favicon: "./src/favicon.png",
+            hash: true,
+            templateContent: `
+              <!DOCTYPE html>
+              <html lang="en">
+                <body>
+                  <div id="root"></div>
+                </body>
+              </html>
+            `
+
+        })
+    ],
     devServer: {
         contentBase: './www',
         historyApiFallback: {

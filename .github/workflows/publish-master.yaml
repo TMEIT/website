@@ -1,8 +1,13 @@
 name: Push and publish app
+
 on:
   push:
     branches:
       - master
+
+env:
+  TMEIT_JLH_NAME_CA_BASE64: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkekNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTXpneU1UUTNNakV3SGhjTk1qRXhNVEk1TVRrek9EUXhXaGNOTXpFeE1USTNNVGt6T0RReApXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTXpneU1UUTNNakV3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFUMVBkZGhUUHZSSVdTWWw1T2tDZEpESThDMWlzc3VmT1BYZCtCWFgwNTMKU1VzWCtRVjc3eEZDbjFwdUpSK0k3NmpYcWpyaGd3b044T2g0dVFiTkNtcUdvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVVBQbUZkUU5paHZiUWZuVUJVRDJWCm9PN1BsbUl3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUlnU1JDd2dQdmRpQ2k4MjNPV2dIdTQ1cVdMUlFhR2prY2sKT21WWjlHU0IzbzBDSVFEMVRaTVRvakJJRGxicm01QmxSbDR0Z2tCM3lsNVQweWRQM01aYUtqQ0xCZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+
 jobs:
   build-push:
     name: Build and push app
@@ -43,9 +48,22 @@ jobs:
           registry: "ghcr.io/tmeit"
       - name: Publish tmeit-app OCI image
         run: "podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"
-      #- name: Apply Kubernetes configuration
-      #  uses: redhat-actions/push-to-registry@v2
-      #  TODO
+      - name: Setup KUBECONFIG
+        uses: vbem/kubeconfig4sa@v1
+        with: # Super useful action with good docs on k8s SAs https://github.com/vbem/kubeconfig4sa
+          server: ${{ secrets.JLH_CLUSTER_URL}}
+          ca-base64: ${{ env.TMEIT_JLH_NAME_CA_BASE64 }}
+          token: ${{ secrets.TMEIT_JLH_NAME_SA_TOKEN}}
+          namespace: tmeit
+          # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
+          # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
+
+      - name: 'Build dev manifests'
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kubectl: '1.24'  # kubectl 1.24 has kustomize 4.5.4 built in
+          command: |-
+           kubectl apply -k deploy/tmeit-jlh-name/
 
 
   publish-tag:
