@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import React, {Fragment} from "react";
 import {BrowserRouter as Router, Route, Link, NavLink, Routes} from "react-router-dom"
 import styles from "./index.css";
+import css_reset from "../reboot.css";
 
 import Home from "./layouts/Home";
 import Events from "./layouts/Events";
