@@ -58,10 +58,10 @@ jobs:
           # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
           # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
 
-      - name: 'Build dev manifests'
+      - name: 'Push manifests to prod'
         uses: stefanprodan/kube-tools@v1
         with:
-          kubectl: '1.24'  # kubectl 1.24 has kustomize 4.5.4 built in
+          kubectl: '1.24.0'  # kubectl 1.24 has kustomize 4.5.4 built in
           command: |-
            kubectl apply -k deploy/tmeit-jlh-name/
 
