@@ -5,7 +5,6 @@ bases:
   - ../base
 
 resources:
-- namespace.yaml
 - ingress.yaml
 
 patchesJson6902:
