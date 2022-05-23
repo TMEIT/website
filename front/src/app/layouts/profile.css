@@ -2,3 +2,15 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+.react-tabs__tab{
+    display: inline;
+    border: thin solid black;
+    list-style-type: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    padding: 0.5em;
+}
