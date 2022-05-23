@@ -5,7 +5,7 @@ bases:
   - ../base
 
 resources:
-- ingress.yaml
+- service.yaml
 
 patchesJson6902:
   - target:
