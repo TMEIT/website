@@ -15,6 +15,7 @@ body {
 
 main {
     flex-shrink: 0;
+    margin: 2em;
 }
 
 nav ul li {
