@@ -56,7 +56,7 @@ function Profile () {
                        <HistoryList histories={data.role_histories} />
                    </div>
                </TabPanel>
-               <TabPanel>Hurr durr</TabPanel>
+               <TabPanel>"Det var bättre förr"</TabPanel>
                <TabPanel>All of them</TabPanel>
                <TabPanel>
                    {data.workteams.map( team => <WorkteamItem key={team} team={team}/>)}
