@@ -26,7 +26,7 @@ function App () {
                         <Route path="/events" element={<Events />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/join_tmeit" element={<Join />} />
-                        <Route path="/profile/:id" element={<Profile />} />
+                        <Route path="/profile/:shortGuid/:name" element={<Profile />} />
                     </Routes>
                 </main>
 
