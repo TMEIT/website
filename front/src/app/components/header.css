@@ -1,11 +1,17 @@
 header {
     background-color: #c5c5c5;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 header ul {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    font-size: 2rem;
 }
+
+header ul li a:link { text-decoration: none; }
+header ul li a:visited { text-decoration: none; }
+header ul li a:hover { text-decoration: none; }
+header ul li a:active { text-decoration: none; }
