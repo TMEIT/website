@@ -38,9 +38,12 @@ function Home() {
                 <li>The backend providing the json API and the SQL database is written in Python using the FastAPI framework and the SQLalchemy database library.</li>
                 <li>The website is optimized for speed, with the website downloading in less than 100kb, and a high-speed backend capable of handling thousands of requests per second on a single core.</li>
                 <li>The website testing and deployment is fully automated, and if the website stops responding, Kubernetes will automatically restart it.</li>
+                <li>More information can be found in the devloper guide <a href={"https://github.com/TMEIT/website/blob/master/howto-dev.md"}>here</a>.</li>
             </ul>
             <p>
                 Feel free to send us suggestions about the future of tmeit.se!
+            </p>
+            <p>
                 Let us know if you're interesting in trying out some web/api development,
                 and we can help you set up a developer copy of the site on your computer for testing.
             </p>
