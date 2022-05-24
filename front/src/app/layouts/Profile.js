@@ -10,9 +10,9 @@ import {WorkteamItem} from "../components/Listables";
 
 function Profile () {
 
-    let { id } = useParams();
+    let { shortGuid, _ } = useParams();
 
-    const {loading, data} = useFetch("/api/v1/members/" + id);
+    const {loading, data} = useFetch("/api/v1/members/" + shortGuid);
 
 
     if(data === "error") return(

@@ -25,7 +25,8 @@ app = FastAPI(routes=routes)
 @app.get("/events")
 @app.get("/team")
 @app.get("/join_tmeit")
-@app.get("/profile/{page}")
+@app.get("/profile/{shortguid}")
+@app.get("/profile/{shortguid}/{name}")
 async def load_js_app():
     return FileResponse('static/front/index.html')
 
