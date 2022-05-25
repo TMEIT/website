@@ -15,9 +15,13 @@ body {
 
 main {
     flex-shrink: 0;
-    margin: 2em;
+    margin: 2rem;
 }
 
 nav ul li {
     display: inline;
+}
+
+nav ul {
+    padding: 0;
 }
