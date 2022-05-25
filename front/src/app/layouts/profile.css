@@ -3,6 +3,9 @@
     flex-wrap: wrap;
 }
 
+.react-tabs__tab-list{
+    padding: 0;
+}
 .react-tabs__tab{
     display: inline;
     border: thin solid black;
@@ -12,5 +15,6 @@
     -ms-user-select: none;
     user-select: none;
     cursor: pointer;
-    padding: 0.5em;
+    padding: 0.5rem;
+
 }
