@@ -1,0 +1,30 @@
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: tmeit-db
+spec:
+   replicas: 3
+   image: postgres:15beta1
+   database:
+      size: 200Mi
+   env:
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: kubegres-passwords
+              key: superUserPassword
+      - name: POSTGRES_REPLICATION_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: kubegres-passwords
+              key: replicationUserPassword
+   resources:
+     limits:
+       memory: "1Gi"
+       cpu: "1"
+       ephemeral-storage: 1Gi
+     requests:
+       memory: "200Mi"
+       cpu: "50m"
+       ephemeral-storage: 1Gi
+

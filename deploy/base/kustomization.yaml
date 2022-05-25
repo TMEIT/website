@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
 - tmeit-app/deployment.yaml
 - tmeit-app/networkpolicy.yaml
+- postgres/kubegres.yaml

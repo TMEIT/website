@@ -17,3 +17,12 @@ patchesJson6902:
         - op: add
           path: /spec/template/spec/imagePullSecrets
           value: [{ name: regcred }]
+
+secretGenerator:
+- name: kubegres-passwords
+  literals:
+  - superUserPassword=rzQ4aWQGkvWk8QfQkFPTjmE5ErJrpf
+  - replicationUserPassword=7t3zfOH9GaFBjl4RA6gXIBhkImbsgw
+
+generatorOptions:
+  disableNameSuffixHash: true
