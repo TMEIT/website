@@ -4,6 +4,10 @@ kind: Kustomization
 bases:
   - ../base
 
+replicas:
+- name: tmeit-app
+  count: 3
+
 resources:
 - service.yaml
 
