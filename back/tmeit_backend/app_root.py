@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Response, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 from starlette.routing import Mount
@@ -7,7 +7,6 @@ from . import app_api
 
 # This creates the root FastAPI app
 # This app routes incoming requests between static frontend files and backend API endpoints
-from .app_api import api_startup
 
 routes = [
     Mount("/api/v1", app_api.app),  # API routes
@@ -46,16 +45,16 @@ async def healh_check():
 
 # Health check endpoint
 @app.get("/ready")
-async def ready_check():
+async def ready_check(response: Response, db=Depends(app_api.get_db)):
     """
-    ready check endpoint for kubernetes readiness probes
+    Ready check endpoint for kubernetes readiness probes
 
-    Possible tests we could do in the future to cover more cases:
-    * connect to database
+    Returns 200 when db is up
     """
-    return {"ready": True}
-
-
-@app.on_event("startup")
-async def root_startup():
-    await api_startup()
+    try:
+        await db.execute("SELECT 1")
+    except Exception:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return {"ready": False, "error": "Cannot connect to database"}
+    else:
+        return {"ready": True}

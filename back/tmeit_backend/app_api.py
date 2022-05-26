@@ -13,7 +13,7 @@ from .schemas.members.enums import CurrentRoleEnum
 
 from . import models
 
-from .database import async_session, engine
+from .database import async_session
 
 # Our FastAPI sub-app for the v1 API
 app = FastAPI()
@@ -23,14 +23,6 @@ async def get_db():
     """DB dependency for FastAPI endpoints. Yields an AsyncSession."""
     async with async_session() as db:
         yield db
-
-
-async def api_startup():
-    # Create tables #TODO replace with alembic
-    async with engine.begin() as conn:
-        await conn.run_sync(
-            models.Base.metadata.create_all
-        )
 
 
 def get_dummy_member(short_guid: base64url_length_8) -> Member:
