@@ -62,8 +62,9 @@ but before the chart is deployed to production
 * Container building is done with Podman on your local machine
   * I am biased against the Docker daemon and do not have it installed.
 * You will need a local Kubernetes cluster to run the app for testing
+  * The cluster also needs [kubegres](https://www.kubegres.io/) installed to manage the database
   * Try microkube or ask @JustinLex for access to his home cluster
-  * Could be done on the production cluster as well, but would be expensive
+  * Testing could be done on the production cluster as well, but would be expensive
 * Tilt does hot reloads when code is updated, compiling your containers and pushing them to the Kubernetes cluster
 ### Configuring Tilt
 * Tilt is configured with the Tiltfile
