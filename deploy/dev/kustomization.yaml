@@ -6,6 +6,7 @@ bases:
 
 resources:
 - tmeit-app/regcred.yaml
+- postgres/kubegres-conf.yaml
 
 patchesJson6902:
   - target:
@@ -23,6 +24,7 @@ secretGenerator:
   literals:
   - superUserPassword=rzQ4aWQGkvWk8QfQkFPTjmE5ErJrpf
   - replicationUserPassword=7t3zfOH9GaFBjl4RA6gXIBhkImbsgw
+  - tmeitBackendUserPassword=HBXOHEc6TpkquVHKy2zmSeUIEaUFvW
 
 generatorOptions:
   disableNameSuffixHash: true
