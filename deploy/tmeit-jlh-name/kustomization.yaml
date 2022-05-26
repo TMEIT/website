@@ -9,7 +9,8 @@ replicas:
   count: 3
 
 resources:
-- service.yaml
+- tmeit-app/service.yaml
+- postgres/sealedsecret.yaml
 
 patchesJson6902:
   - target:
@@ -17,4 +18,4 @@ patchesJson6902:
       version: v1
       kind: Deployment
       name: tmeit-app
-    path: set_image_tag.json
+    path: tmeit-app/set_image_tag.json
