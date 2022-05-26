@@ -7,6 +7,7 @@ spec:
    image: postgres:15beta1
    database:
       size: 200Mi
+   customConfig: kubegres-conf
    env:
       - name: POSTGRES_PASSWORD
         valueFrom:
@@ -18,9 +19,14 @@ spec:
            secretKeyRef:
               name: kubegres-passwords
               key: replicationUserPassword
+      - name: POSTGRES_TMEIT_BACKEND_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: kubegres-passwords
+              key: tmeitBackendUserPassword
    resources:
      limits:
-       memory: "1Gi"
+       memory: "500Mi"
        cpu: "1"
        ephemeral-storage: 1Gi
      requests:
