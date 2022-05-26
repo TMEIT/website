@@ -11,12 +11,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas.members.model import Member, base64url_length_8
 from .schemas.members.enums import CurrentRoleEnum
 
-from . import models
+from . import models, database
 
-from .database import async_session
 
 # Our FastAPI sub-app for the v1 API
 app = FastAPI()
+
+# Create SQLAlchemy engine and db connection pool to be shared across requests.
+# Requires that POSTGRES_PASSWORD envvar is set.
+async_session = database.get_async_session()
 
 
 async def get_db():

@@ -1,19 +1,29 @@
 import os
+from typing import Callable
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-POSTGRES_USER = "tmeit_backend"
-POSTGRES_PASSWORD = os.environ['POSTGRES_PASSWORD']
-POSTGRES_HOSTNAME = "tmeit-db"
-PORTGRES = "5432"
-POSTGRES_DB_NAME = "tmeit_backend"
-
-SQLALCHEMY_DATABASE_URL = (f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@"
-                           f"{POSTGRES_HOSTNAME}:{PORTGRES}/{POSTGRES_DB_NAME}")
-
-engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
-async_session = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 Base = declarative_base()
+
+
+def get_async_session() -> Callable[[], AsyncSession]:
+    """
+    Creates SQLAlchemy engine and returns a sessionmaker for it.
+
+    Requires that POSTGRES_PASSWORD envvar is set.
+    """
+    postgres_user = "tmeit_backend"
+    postgres_password = os.environ['POSTGRES_PASSWORD']
+    postgres_hostname = "tmeit-db"
+    portgres = "5432"
+    postgres_db_name = "tmeit_backend"
+
+    sqlalchemy_database_url = (f"postgresql+asyncpg://{postgres_user}:{postgres_password}@"
+                               f"{postgres_hostname}:{portgres}/{postgres_db_name}")
+
+    engine = create_async_engine(sqlalchemy_database_url)
+    async_session = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession, expire_on_commit=False)
+    return async_session
