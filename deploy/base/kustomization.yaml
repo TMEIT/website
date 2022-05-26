@@ -5,3 +5,5 @@ resources:
 - tmeit-app/deployment.yaml
 - tmeit-app/networkpolicy.yaml
 - postgres/kubegres.yaml
+- postgres/networkpolicy.yaml
+- networkpolicy-allow-dns.yaml
