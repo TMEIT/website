@@ -7,7 +7,7 @@ from . import app_api
 
 # This creates the root FastAPI app
 # This app routes incoming requests between static frontend files and backend API endpoints
-
+from .app_api import api_startup
 
 routes = [
     Mount("/api/v1", app_api.app),  # API routes
@@ -54,3 +54,8 @@ async def ready_check():
     * connect to database
     """
     return {"ready": True}
+
+
+@app.on_event("startup")
+async def root_startup():
+    await api_startup()
