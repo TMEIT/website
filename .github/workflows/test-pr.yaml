@@ -26,6 +26,7 @@ jobs:
     name: Lint Kustomize/Kubernetes
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.2.0
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with:
