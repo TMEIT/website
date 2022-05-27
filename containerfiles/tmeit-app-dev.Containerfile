@@ -1,3 +1,9 @@
+# This Containerfile  builds the app container for use with the Tilt developer environment.
+
+# This containerfile compiles the frontend in dev mode, and skips the tests that the prod containerfile runs,
+# in order to speed up build times when using hot-reload
+
+
 FROM docker.io/library/node:18-alpine as front-buildtest
 ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /code

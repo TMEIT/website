@@ -1,4 +1,4 @@
-# This Containerfile (aka a Dockerfile) builds the container image for the app.
+# This Containerfile (aka a Dockerfile) builds the prod container image for the app.
 
 # Frontend builder/tester.
 # Installs frontend build deps, tests the frontend, and then compiles/minifies the frontend.
