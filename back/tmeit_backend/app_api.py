@@ -19,7 +19,9 @@ app = FastAPI()
 
 # Create SQLAlchemy engine and db connection pool to be shared across requests.
 # Requires that POSTGRES_PASSWORD envvar is set.
-async_session = database.get_async_session()
+db_url = database.get_production_url()
+engine = database.get_async_engine(db_url)
+async_session = database.get_async_session(engine)
 
 
 async def get_db():
