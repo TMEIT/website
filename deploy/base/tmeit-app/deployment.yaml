@@ -54,18 +54,18 @@ spec:
             ephemeral-storage: 2Gi
         securityContext:
           readOnlyRootFilesystem: true
-        affinity:  # Tries to place replicas on separate nodes
-          podAntiAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                podAffinityTerm:
-                  labelSelector:
-                    matchExpressions:
-                      - key: app
-                        operator: In
-                        values:
-                          - tmeit-app
-                  topologyKey: kubernetes.io/hostname
+      affinity:  # Tries to place replicas on separate nodes
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - tmeit-app
+                topologyKey: kubernetes.io/hostname
       securityContext:
         runAsUser: 20000
         runAsGroup: 20000
