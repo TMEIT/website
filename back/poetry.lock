@@ -2,7 +2,7 @@
 name = "alembic"
 version = "1.7.7"
 description = "A database migration tool for SQLAlchemy."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 
@@ -236,7 +236,7 @@ python-versions = "*"
 name = "mako"
 version = "1.2.0"
 description = "A super-fast templating language that borrows the best ideas from the existing templating languages."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -252,7 +252,7 @@ testing = ["pytest"]
 name = "markupsafe"
 version = "2.1.1"
 description = "Safely add untrusted strings to HTML/XML markup."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -576,7 +576,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "5bfba12fbfecf938cb830db9618e54ba5d0f15aa915e382e2d41534fdd5d6748"
+content-hash = "ee93a3c3ae99c75ab09591501b4ac7fe13e4998bdc8bda53c7df43632919f1f2"
 
 [metadata.files]
 alembic = [
