@@ -45,6 +45,7 @@ jobs:
         uses: piraces/kube-score-ga@v0.1.2
         with:
           manifests-folders: 'dev-rendered.yaml,jlh-rendered.yaml'
+          ignore-exit-code: true
   lint-gh-actions:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
