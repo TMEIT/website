@@ -29,8 +29,9 @@ jobs:
         with:
           image: ghcr.io/tmeit/tmeit-app
           tags: "${{ steps.release_version.outputs.version }}"
+          context: '.'
           containerfiles: |-
-            Containerfile
+            containerfiles/tmeit-app.Containerfile
 
       - name: Export OCI image
         run: "podman save  --format docker-archive -o docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"

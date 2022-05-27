@@ -2,7 +2,7 @@
 ## Adding or updating dependencies
 The backend dependencies are managed using [Poetry](https://python-poetry.org/).
 
-The OCI container at `/Containerfile` handles installing dependencies by itself, 
+The OCI container at `containerfiles/tmeit-app.Containerfile` handles installing dependencies by itself, 
 but if you want to make changes to the dependencies, 
 you'll have to also install Poetry locally.
 
