@@ -58,5 +58,5 @@ jobs:
           image: tmeit-app
           context: '.'
           containerfiles: |-
-            tmeit-app-dev.Containerfile
-            tmeit-app.Containerfile
+            containerfiles/tmeit-app-dev.Containerfile
+            containerfiles/tmeit-app.Containerfile
