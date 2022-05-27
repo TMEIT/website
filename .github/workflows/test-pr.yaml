@@ -27,6 +27,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.2.0
+      - name: 'Build dev manifests'
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kustomize: '4.5.4'
+          command: |-
+            kustomize build deploy/dev -o dev-rendered.yaml
+      - name: lint dev manifests
+        uses: azure/k8s-lint@v1
+        with:
+          lintType: kubeval
+          manifests: |
+            dev-rendered.yaml
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with:
@@ -34,13 +46,12 @@ jobs:
           ca-base64: ${{ env.TMEIT_JLH_NAME_CA_BASE64 }}
           token: ${{ secrets.TMEIT_JLH_NAME_SA_TOKEN}}
           namespace: tmeit
-      - name: 'Dry-run apply all environments'
+      - name: 'lint prod manifests'
         run: |
           curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
           curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl apply --dry-run=server -o yaml -k deploy/dev/
           kubectl apply --dry-run=server -o yaml -k deploy/tmeit-jlh-name/
   lint-gh-actions:
     name: Lint GH Actions workflows
