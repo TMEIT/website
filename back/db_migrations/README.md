@@ -30,4 +30,4 @@ In order to run this script, you must have the dev environment running,
 and you need to have the poetry and the backend installed in a virtual enviroment on your local machine, 
 see Poetry's documentation on how to do that.
 
-To run the script, run `db_migrations/autogen_migrations.sh` with `back/` as your working directory.
+To run the script, run `db_migrations/scripts/autogen_migrations.sh` with `back/` as your working directory.
