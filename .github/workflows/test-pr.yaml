@@ -21,31 +21,14 @@ jobs:
     name: Lint Kustomize/Kubernetes
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.2.0
-      - name: 'Build dev manifests'
-        uses: stefanprodan/kube-tools@v1
-        with:
-          kustomize: '4.5.4'
-          command: |-
-            kustomize build deploy/dev -o dev-rendered.yaml
-      - name: 'Build tmeit.jlh.name manifests'
-        uses: stefanprodan/kube-tools@v1
-        with:
-          kustomize: '4.5.4'
-          command: |-
-            kustomize build deploy/tmeit-jlh-name -o jlh-rendered.yaml
-#      - name: 'Build tmeit.se manifests'
-#        uses: stefanprodan/kube-tools@v1
-#        with:
-#          kustomize: '4.5.4'
-#          command: |
-#            kustomize build deploy/tmeit-se -o tmeit-se-rendered.yaml
-      - uses: azure/setup-kubectl@v2.0
-      - name: 'Validate kubernetes manifests'
-        uses: piraces/kube-score-ga@v0.1.2
-        with:
-          manifests-folders: 'dev-rendered.yaml,jlh-rendered.yaml'
-          ignore-exit-code: true
+      - name: 'Dry-run apply all environments'
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          chmod +x kubectl
+          kubectl apply --dry-run=client -o yaml -k deploy/dev/
+          kubectl apply --dry-run=client -o yaml -k deploy/tmeit-jlh-name/
   lint-gh-actions:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
