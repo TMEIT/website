@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: tmeit-app
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: tmeit-app
