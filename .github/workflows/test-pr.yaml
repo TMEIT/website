@@ -27,18 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.2.0
-      - name: 'Build dev manifests'
-        uses: stefanprodan/kube-tools@v1
-        with:
-          kustomize: '4.5.4'
-          command: |-
-            kustomize build deploy/dev -o dev-rendered.yaml
-      - name: lint dev manifests
-        uses: azure/k8s-lint@v1
-        with:
-          lintType: kubeval
-          manifests: |
-            dev-rendered.yaml
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with:
