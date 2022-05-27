@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # This generates migrations for the database
+# Run from the back/ directory
+
 # You must have your tilt environment running for this to work
 # You also need poetry installed on your machine, and the backend dependencies installed to your current virtualenv
 
@@ -14,5 +16,5 @@ kubectl port-forward svc/tmeit-db 5432 > /dev/null &
 echo "Enter a short comment about what you're changing in this migration"
 read -r COMMENT
 
-VENV_PATH=$(. cd back && poetry env info --path)
+VENV_PATH=$(. cd .. && poetry env info --path)
 "$VENV_PATH"/bin/alembic -c db_migrations/alembic.ini revision --autogenerate -m "$COMMENT"
