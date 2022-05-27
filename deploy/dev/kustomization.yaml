@@ -6,7 +6,6 @@ bases:
 
 resources:
 - tmeit-app/regcred.yaml
-- postgres/kubegres-conf.yaml
 
 patchesJson6902:
   - target:
