@@ -40,8 +40,8 @@ jobs:
           curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl apply --dry-run=client -o yaml -k deploy/dev/
-          kubectl apply --dry-run=client -o yaml -k deploy/tmeit-jlh-name/
+          kubectl apply --dry-run=server -o yaml -k deploy/dev/
+          kubectl apply --dry-run=server -o yaml -k deploy/tmeit-jlh-name/
   lint-gh-actions:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
