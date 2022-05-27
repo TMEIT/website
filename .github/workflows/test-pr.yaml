@@ -21,6 +21,13 @@ jobs:
     name: Lint Kustomize/Kubernetes
     runs-on: ubuntu-latest
     steps:
+      - name: Setup KUBECONFIG
+        uses: vbem/kubeconfig4sa@v1
+        with:
+          server: ${{ secrets.JLH_CLUSTER_URL}}
+          ca-base64: ${{ env.TMEIT_JLH_NAME_CA_BASE64 }}
+          token: ${{ secrets.TMEIT_JLH_NAME_SA_TOKEN}}
+          namespace: tmeit
       - name: 'Dry-run apply all environments'
         run: |
           curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
