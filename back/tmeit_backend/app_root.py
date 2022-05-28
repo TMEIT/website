@@ -1,6 +1,9 @@
-from fastapi import FastAPI, Depends, Response, status
+from typing import Literal
+
+from fastapi import FastAPI, Depends, status
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
+from pydantic import BaseModel
 from starlette.routing import Mount
 
 from . import app_api
@@ -37,15 +40,28 @@ async def dont_load_empty_profile():
     return RedirectResponse('/team')
 
 
-@app.get("/health")
+class HealthyResponse(BaseModel):
+    healthy: Literal[True]
+
+
+@app.get("/health", response_model=HealthyResponse)
 async def healh_check():
     """Health check endpoint for kubernetes liveness probes"""
     return {"healthy": True}
 
 
+class ReadyResponse(BaseModel):
+    ready: Literal[True]
+
+
+class NotReadyResponse(BaseModel):
+    ready: Literal[False]
+    error: str
+
+
 # Health check endpoint
-@app.get("/ready")
-async def ready_check(response: Response, db=Depends(app_api.get_db)):
+@app.get("/ready", response_model=ReadyResponse, responses={503: {"model": NotReadyResponse}})
+async def ready_check(db=Depends(app_api.get_db)):
     """
     Ready check endpoint for kubernetes readiness probes
 
@@ -54,7 +70,7 @@ async def ready_check(response: Response, db=Depends(app_api.get_db)):
     try:
         await db.execute("SELECT 1")
     except Exception:
-        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-        return {"ready": False, "error": "Cannot connect to database"}
+        JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                     content={"ready": False, "error": "Cannot connect to database"})
     else:
         return {"ready": True}
