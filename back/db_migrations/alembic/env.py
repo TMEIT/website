@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from alembic import context
 
 from tmeit_backend.models import Base
-
+from tmeit_backend.database import get_production_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -33,8 +33,7 @@ if (db_url := os.getenv('SQLALCHEMY_DATABASE_URL')) is not None:
     config.set_main_option('sqlalchemy.url', db_url)
 else:
     # Running a migration in cluster
-    from tmeit_backend.database import SQLALCHEMY_DATABASE_URL
-    config.set_main_option('sqlalchemy.url', SQLALCHEMY_DATABASE_URL)
+    config.set_main_option('sqlalchemy.url', get_production_url())
 
 
 def run_migrations_offline():
