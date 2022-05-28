@@ -1,0 +1,25 @@
+# Job that wipes current database and builds a new one from scratch
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-test-db
+  labels:
+    job: tmeit-db
+spec:
+  template:
+    metadata:
+      labels:
+        job: tmeit-db
+    spec:
+      containers:
+      - name: script
+        image: create-test-db
+        env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kubegres-passwords
+                key: tmeitBackendUserPassword
+      restartPolicy: Never
+  backoffLimit: 4

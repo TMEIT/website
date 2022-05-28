@@ -20,6 +20,9 @@ spec:
       - podSelector:
           matchLabels:
             app: tmeit-db
+      - podSelector:
+          matchLabels:
+            job: tmeit-db
       ports:
         - protocol: TCP
           port: 5432
