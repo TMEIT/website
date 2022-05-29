@@ -61,7 +61,7 @@ jobs:
             containerfiles/tmeit-app-dev.Containerfile
             containerfiles/tmeit-app.Containerfile
   test-migrations:  # Run migrations and insert dummy data. Also make sure there are no migrations needed to be done
-      name: Build and test app
+      name: Test migrations
       runs-on: ubuntu-latest
       services:
         postgres:  # Run a postgres container alongside test to be tested on
@@ -79,4 +79,4 @@ jobs:
           run: |
             docker build . -f containerfiles/create-test-db.Containerfile -t create-test-db
             docker build . -f containerfiles/test-migrations.Containerfile -t test-migrations
-            docker run -it --rm test-migrations
+            docker run test-migrations
