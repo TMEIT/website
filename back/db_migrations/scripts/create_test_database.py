@@ -2,7 +2,6 @@ import asyncio
 
 from alembic.config import Config as AlembicConfig
 from alembic import command as alembic_command
-from sqlalchemy.ext.asyncio import AsyncEngine
 
 from tmeit_backend.database import get_production_url, get_async_engine, get_async_session
 from tmeit_backend.testing_data import populate_db

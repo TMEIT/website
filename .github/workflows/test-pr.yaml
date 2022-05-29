@@ -64,7 +64,7 @@ jobs:
       name: Test migrations
       runs-on: ubuntu-latest
       services:
-        postgres:  # Run a postgres container alongside test to be tested on
+        postgres:  # Run a postgres container alongside test to be tested on (The name of this key is also the hostname)
           image: postgres:15beta1
           env:
             POSTGRES_USER: tmeit_backend
@@ -75,8 +75,7 @@ jobs:
           options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
       steps:
         - uses: actions/checkout@v2.2.0
-        - name: Build containers
-          run: |
+        - run: |
             docker build . -f containerfiles/create-test-db.Containerfile -t create-test-db
             docker build . -f containerfiles/test-migrations.Containerfile -t test-migrations
             docker run test-migrations
