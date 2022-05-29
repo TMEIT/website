@@ -24,7 +24,7 @@ jobs:
         shell: sh
         id: release_version
 
-      - name: Build OCI image
+      - name: Build OCI image for tmeit-app
         uses: redhat-actions/buildah-build@v2
         with:
           image: ghcr.io/tmeit/tmeit-app
@@ -33,13 +33,29 @@ jobs:
           containerfiles: |-
             containerfiles/tmeit-app.Containerfile
 
-      - name: Export OCI image
-        run: "podman save  --format docker-archive -o docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"
-      - name: Send image to publish-tag job # https://stackoverflow.com/a/57877438
+      - name: Build OCI image for tmeit-run-migrations
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ghcr.io/tmeit/tmeit-run-migrations
+          tags: "${{ steps.release_version.outputs.version }}"
+          context: '.'
+          containerfiles: |-
+            containerfiles/tmeit-run-migrations.Containerfile
+
+      - name: Export OCI images
+        run: |
+          podman save  --format docker-archive -o tmeit-app-docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
+          podman save  --format docker-archive -o tmeit-run-migrations-docker-container.tar ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
+      - name: Send tmeit-app image to publish-tag job # https://stackoverflow.com/a/57877438
         uses: actions/upload-artifact@v3
         with:
           name: "tmeit-app-image"
-          path: "docker-container.tar"
+          path: "tmeit-app.tar"
+      - name: Send tmeit-run-migrations image to publish-tag job
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tmeit-run-migrations-image"
+          path: "tmeit-run-migrations"
 
       - name: Log in to gh registry
         uses: redhat-actions/podman-login@v1
@@ -47,8 +63,10 @@ jobs:
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
           registry: "ghcr.io/tmeit"
-      - name: Publish tmeit-app OCI image
-        run: "podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}"
+      - name: Publish OCI images  # This is where kubernetes will download the images from
+        run:  |
+          podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
+          podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with: # Super useful action with good docs on k8s SAs https://github.com/vbem/kubeconfig4sa
@@ -89,10 +107,14 @@ jobs:
           kustomize: '4.5.4'
           command: |-
             kustomize build deploy/tmeit-jlh-name -o k8s-manifests.yaml
-      - name: Receive image from build-push job # https://stackoverflow:com/a/57877438
+      - name: Receive tmeit-app image from build-push job # https://stackoverflow:com/a/57877438
         uses: actions/download-artifact@v3
         with:
           name: "tmeit-app-image"
+      - name: Receive tmeit-run-migrations image from build-push job
+        uses: actions/download-artifact@v3
+        with:
+          name: "tmeit-run-migrations-image"
       - name: Create git tag
         uses: anothrNick/github-tag-action@1.36.0
         env:
@@ -109,5 +131,6 @@ jobs:
           tag_name: "${{ steps.release_version.outputs.version }}"
           body: "${{ steps.changelog.outputs.changelog }}"
           files: |
-            docker-container.tar
+            tmeit-app-docker-container.tar
+            tmeit-run-migrations-docker-container.tar
             k8s-manifests.yaml
