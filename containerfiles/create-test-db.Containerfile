@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.10-slim as back-buildtest
+FROM docker.io/library/python:3.10-slim
 WORKDIR /code
 
 # Install poetry

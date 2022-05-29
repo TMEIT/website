@@ -70,12 +70,12 @@ jobs:
             POSTGRES_USER: tmeit_backend
             POSTGRES_PASSWORD: test  # Make sure this matches back/db_migrations/scripts/pr-migration-tests.sh
             POSTGRES_DB: tmeit_backend
-          ports:
-            - 5432:5432
           options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
       steps:
         - uses: actions/checkout@v2.2.0
-        - run: |
+        - name: Build tester container
+          run: |
             docker build . -f containerfiles/create-test-db.Containerfile -t create-test-db
             docker build . -f containerfiles/test-migrations.Containerfile -t test-migrations
-            docker run test-migrations
+        - name: Test migrations
+          run: docker run --network ${{ job.container.network }} test-migrations
