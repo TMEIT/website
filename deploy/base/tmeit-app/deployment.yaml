@@ -17,7 +17,6 @@ spec:
       initContainers:
         - name: wait-for-migrations
           image: ghcr.io/groundnuty/k8s-wait-for:v1.6
-          imagePullPolicy: Always
           args:
             - "job"
             - "run-migrations"
