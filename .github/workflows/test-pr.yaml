@@ -35,7 +35,7 @@ jobs:
         with:
           kustomize: '4.5.4'
           command: |-
-            kustomize build deploy/tmeit-jlh-name -o jlh-rendered.yaml
+            kustomize build deploy/tmeit-jlh-name -o jlh-rendered-with-jobs.yaml
       - name: Remove Job manifests from test # Jobs are immutable and if we do kubectl apply with one without deleting it on the cluster, the api will throw an error
         run: python release_utils/remove-job-manifests.py
         shell: sh
