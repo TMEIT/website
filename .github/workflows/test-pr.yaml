@@ -60,6 +60,7 @@ jobs:
           containerfiles: |-
             containerfiles/tmeit-app-dev.Containerfile
             containerfiles/tmeit-app.Containerfile
+            containerfiles/tmeit-run-migrations.Containerfile
   test-migrations:  # Run migrations and insert dummy data. Also make sure there are no migrations needed to be done
       name: Test migrations
       runs-on: ubuntu-latest
