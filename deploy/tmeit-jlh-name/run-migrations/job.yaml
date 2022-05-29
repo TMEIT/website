@@ -1,0 +1,25 @@
+# Job that runs all migrations for the production cluster
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-migrations
+  labels:
+    job: tmeit-db
+spec:
+  template:
+    metadata:
+      labels:
+        job: tmeit-db
+    spec:
+      containers:
+      - name: script
+        image: tmeit-run-migrations:0.4.0
+        env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kubegres-passwords
+                key: tmeitBackendUserPassword
+      restartPolicy: Never
+  backoffLimit: 10

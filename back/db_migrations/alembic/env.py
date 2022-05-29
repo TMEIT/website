@@ -8,8 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 
-from tmeit_backend.models import Base
-from tmeit_backend.database import get_production_url
+if os.getenv('TMEIT_PROD_MIGRATION') == "true":  # Import bare file when running prod migration Job
+    from database import get_production_url  # noqa
+else:
+    from tmeit_backend.database import get_production_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,7 +26,9 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+if os.getenv('TMEIT_PROD_MIGRATION') is None:  # Don't depend on app when running production migration Job
+    from tmeit_backend.models import Base
+    target_metadata = Base.metadata
 
 # OVERRIDE SQLACHEMY.URL PROGRAMATICALLY #
 if (db_url := os.getenv('SQLALCHEMY_DATABASE_URL')) is not None:

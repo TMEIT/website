@@ -11,6 +11,7 @@ replicas:
 resources:
 - tmeit-app/service.yaml
 - postgres/sealedsecret.yaml
+- run-migrations/job.yaml
 
 patchesJson6902:
   - target:
@@ -19,3 +20,9 @@ patchesJson6902:
       kind: Deployment
       name: tmeit-app
     path: tmeit-app/set_image_tag.json
+  - target:
+      group: batch
+      version: v1
+      kind: Job
+      name: run-migrations
+    path: run-migrations/set_image_tag.json

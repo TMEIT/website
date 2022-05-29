@@ -22,7 +22,7 @@ spec:
             app: tmeit-db
       - podSelector:
           matchLabels:
-            job: tmeit-db
+            job: tmeit-db  # Migration jobs that run in dev environment and prod
       ports:
         - protocol: TCP
           port: 5432
