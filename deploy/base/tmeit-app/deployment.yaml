@@ -14,6 +14,13 @@ spec:
       labels:
         app: tmeit-app
     spec:
+      initContainers:
+        - name: wait-for-migrations
+          image: ghcr.io/groundnuty/k8s-wait-for:v1.6
+          imagePullPolicy: Always
+          args:
+            - "job"
+            - "run-migrations"
       containers:
       - name: uvicorn
         image: tmeit-app:0.0.1
