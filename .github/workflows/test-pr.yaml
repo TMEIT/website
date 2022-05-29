@@ -27,6 +27,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.2.0
+      - name: 'Build tmeit.jlh.name manifests'
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kustomize: '4.5.4'
+          command: |-
+            kustomize build deploy/tmeit-jlh-name -o jlh-rendered.yaml
+      - name: Remove Job manifests from test # Jobs are immutable and if we do kubectl apply with one without deleting it on the cluster, the api will throw an error
+        run: |
+          sed -i ';apiVersion: batch/v1\nkind: Job[^\-]*---\n;d' jlh-rendered.yaml
+          cat jlh-rendered.yaml
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with:
@@ -40,7 +50,7 @@ jobs:
           curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl apply --dry-run=server -o yaml -k deploy/tmeit-jlh-name/
+          kubectl apply --dry-run=server -o yaml -f jlh-rendered.yaml
   lint-gh-actions:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
