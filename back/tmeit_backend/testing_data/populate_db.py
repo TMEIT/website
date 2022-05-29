@@ -1,3 +1,4 @@
+import datetime
 import itertools
 import random
 from uuid import uuid4
@@ -17,21 +18,28 @@ first_names: list[str] = list(itertools.chain(iter(men_names['dimension']['Forna
 last_names: list[str] = list(swedish_last_names['dimension']['Efternamn']['category']['label'].values())
 
 
+def random_date(start_date: datetime.date, stop_date: datetime.date) -> datetime.date:
+    interval = stop_date - start_date
+    num_days = round(interval / datetime.timedelta(days=1))
+    delta = datetime.timedelta(days=random.randint(0, num_days))
+    return start_date + delta
+
+
 def create_member() -> Member:
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
     return Member(
         uuid=str(uuid4()),
-        email=f"{random.randint(10000000, 99999999)}@kth.se",
+        login_email=f"{random.randint(10000000, 99999999)}@kth.se",
         current_role=CurrentRoleEnum.master.value,
         first_name=first_name,
-        nickname=first_name[:2] + last_name[:2],
+        nickname=random.choice([None, (first_name[:2] + last_name[:2])]),
         last_name=last_name,
-        phone=f"0{random.randint(100000000, 999999999)}",
-        drivers_license=bool(random.getrandbits(1)),
-        stad=bool(random.getrandbits(1)),
-        fest=bool(random.getrandbits(1)),
-        liquor_permit=bool(random.getrandbits(1)),
+        phone=random.choice([None, f"0{random.randint(100000000, 999999999)}"]),
+        drivers_license=random.choice([True, False, None]),
+        stad=random.choice([None, random_date(datetime.date(year=2005, month=1, day=1), datetime.date.today())]),
+        fest=random.choice([None, random_date(datetime.date(year=2005, month=1, day=1), datetime.date.today())]),
+        liquor_permit=random.choice([None, random_date(datetime.date(year=2005, month=1, day=1), datetime.date.today())]),
     )
 
 

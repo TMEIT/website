@@ -70,7 +70,7 @@ function Profile () {
 }
 
 const InfoList = React.memo(function InfoList(props) {
-    const email = "Email: " + props.data.email;
+    const email = "Email: " + props.data.login_email;
     const phone = "Phone number: " + props.data.phone;
 
     //fest and stad may be null, so we handle that here

@@ -17,4 +17,4 @@ echo "Enter a short comment about what you're changing in this migration"
 read -r COMMENT
 
 VENV_PATH=$(. cd .. && poetry env info --path)
-"$VENV_PATH"/bin/alembic -c db_migrations/alembic.ini revision --autogenerate -m "$COMMENT"
+"$VENV_PATH"/bin/alembic -c alembic.ini revision --autogenerate -m "$COMMENT"
