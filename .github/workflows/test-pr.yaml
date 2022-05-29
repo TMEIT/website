@@ -60,3 +60,23 @@ jobs:
           containerfiles: |-
             containerfiles/tmeit-app-dev.Containerfile
             containerfiles/tmeit-app.Containerfile
+  test-migrations:  # Run migrations and insert dummy data. Also make sure there are no migrations needed to be done
+      name: Build and test app
+      runs-on: ubuntu-latest
+      services:
+        postgres:  # Run a postgres container alongside test to be tested on
+          image: postgres:15beta1
+          env:
+            POSTGRES_USER: tmeit_backend
+            POSTGRES_PASSWORD: test  # Make sure this matches back/db_migrations/scripts/pr-migration-tests.sh
+            POSTGRES_DB: tmeit_backend
+          ports:
+            - 5432:5432
+          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      steps:
+        - uses: actions/checkout@v2.2.0
+        - name: Build containers
+          run: |
+            docker build . -f containerfiles/create-test-db.Containerfile -t create-test-db
+            docker build . -f containerfiles/test-migrations.Containerfile -t test-migrations
+            docker run -it --rm test-migrations

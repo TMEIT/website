@@ -11,10 +11,16 @@ Base = declarative_base()
 
 def get_production_url() -> str:
     """Gets the postgres url used for production. Requires that the POSTGRES_PASSWORD envvar is set."""
+
     postgres_user = "tmeit_backend"
     postgres_password = os.environ['POSTGRES_PASSWORD']
-    postgres_hostname = "tmeit-db"
-    portgres = "5432"
+
+    # Try to get hostname and port from envvars, else default to tmeit-db:5432
+    if (postgres_hostname := os.getenv('POSTGRES_HOSTNAME')) is None:
+        postgres_hostname = "tmeit-db"  # default db svc name
+    if (portgres := os.getenv('POSTGRES_PORT')) is None:
+        portgres = "5432"  # default port
+
     postgres_db_name = "tmeit_backend"
 
     sqlalchemy_database_url = (f"postgresql+asyncpg://{postgres_user}:{postgres_password}@"
