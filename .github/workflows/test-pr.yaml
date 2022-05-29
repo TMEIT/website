@@ -27,6 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.2.0
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
       - name: 'Build tmeit.jlh.name manifests'
         uses: stefanprodan/kube-tools@v1
         with:
@@ -34,9 +37,8 @@ jobs:
           command: |-
             kustomize build deploy/tmeit-jlh-name -o jlh-rendered.yaml
       - name: Remove Job manifests from test # Jobs are immutable and if we do kubectl apply with one without deleting it on the cluster, the api will throw an error
-        run: |
-          sed -i ';apiVersion: batch/v1\nkind: Job[^\-]*---\n;d' jlh-rendered.yaml
-          cat jlh-rendered.yaml
+        run: python release_utils/remove-job-manifests.py
+        shell: sh
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with:
