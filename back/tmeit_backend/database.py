@@ -24,7 +24,7 @@ def get_production_url() -> str:
 
 def get_async_engine(sqlalchemy_database_url: str, echo: bool = False) -> AsyncEngine:
     """Creates SQLAlchemy engine."""
-    engine = create_async_engine(sqlalchemy_database_url, echo=echo, future=True)
+    engine = create_async_engine(sqlalchemy_database_url, echo=echo, future=True, pool_size=10, max_overflow=40)
     return engine
 
 
