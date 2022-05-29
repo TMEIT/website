@@ -1,3 +1,4 @@
+import datetime
 from typing import TypedDict, Any, Literal, Union, Optional
 from uuid import UUID
 
@@ -38,14 +39,14 @@ member_fields = {
     "current_role":     FieldDescription(master=edit,   self=read,  member=read,    public=read,    type=CurrentRoleEnum),
 
     # Fields that a member can edit themselves, but only visible to TMEIT members
-    "email":            FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=EmailStr),
+    "login_email":      FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=EmailStr),
     "phone":            FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=Optional[str]),
     "drivers_license":  FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=Optional[bool]),
 
     # Fields that are only visible to TMEIT members, and can only be edited by a master
-    "stad":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[bool]),
-    "fest":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[bool]),
-    "liquor_permit":    FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=bool),
+    "stad":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[datetime.date]),
+    "fest":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[datetime.date]),
+    "liquor_permit":    FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[datetime.date]),
 
     # Object relations (Read-only from /member/ endpoints)
     "role_histories":   FieldDescription(master=edit,   self=read, member=read,     public=denied, type=list[UUID]),
