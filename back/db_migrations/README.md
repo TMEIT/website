@@ -27,7 +27,25 @@ and run Alembic outside of a container on your local computer.
 
 I have made a bash script to do this, which port-forwards the database in the dev environment to localhost and runs Alembic.
 In order to run this script, you must have the dev environment running, 
-and you need to have the poetry and the backend installed in a virtual enviroment on your local machine, 
-see Poetry's documentation on how to do that.
+and you need to have the poetry and the backend installed in a virtual environment on your local machine, 
+This can be done by running `poetry install` with `back/` as your working directory and then activating the venv it creates.
+To run the script, run `scripts/autogen_migrations.sh` with `back/db_migrations` as your working directory.
 
-To run the script, run `db_migrations/scripts/autogen_migrations.sh` with `back/` as your working directory.
+## Generating a test database
+The `create-test-db` kubernetes Job runs on every deploy of the dev environment, 
+deleting all tables in the dev database and creating new ones populated with test data.
+
+If you want to add more test data or the database schema has changed, 
+update the code in `back/db_migrations/scripts/create_test_database.py` and `back/tmeit_backend/testing_data` to match.
+
+## Running migrations in production
+Migrations are tested in PR in the "test migrations" Job, 
+using the OCI container defined by `containerfiles/test-migrations.Containerfile`.
+
+Migrations are applied in production by the "run-migrations" kubernetes Job, 
+which is defined in `deploy/tmeit-jlh-name/run-migrations/`, 
+and uses the OCI container defined by `containerfiles/tmeit-run-migrations.Containerfile`
+
+An init container called "wait-for-migrations" on the app pods pause the deployment of new app pods until the migrations are completed.
+This ensures that new versions of the app don't start serving requests before the migrations are fully applied and start
+returning 500s for missing data.
