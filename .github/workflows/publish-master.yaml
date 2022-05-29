@@ -77,12 +77,13 @@ jobs:
           # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
           # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
 
-      - name: 'Push manifests to prod'
+      - name: 'Push manifests to prod' # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with a ttl
         run: |
           curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
           curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
+          kubectl delete -f deploy/tmeit-jlh-name/run-migrations/job.yaml
           kubectl apply -k deploy/tmeit-jlh-name/
 # kubectl 1.24.0 has kustomize 4.5.4 built in
 
