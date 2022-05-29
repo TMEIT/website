@@ -50,12 +50,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: "tmeit-app-image"
-          path: "tmeit-app.tar"
+          path: "tmeit-app-docker-container.tar"
       - name: Send tmeit-run-migrations image to publish-tag job
         uses: actions/upload-artifact@v3
         with:
           name: "tmeit-run-migrations-image"
-          path: "tmeit-run-migrations"
+          path: "tmeit-run-migrations-docker-container.tar"
 
       - name: Log in to gh registry
         uses: redhat-actions/podman-login@v1
