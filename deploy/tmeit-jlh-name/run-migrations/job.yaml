@@ -30,8 +30,8 @@ spec:
             cpu: "100m"
             memory: "100Mi"
             ephemeral-storage: 500Mi
-          securityContext:
-            readOnlyRootFilesystem: true
+        securityContext:
+          readOnlyRootFilesystem: true
       securityContext:
         runAsUser: 20001
         runAsGroup: 20001
