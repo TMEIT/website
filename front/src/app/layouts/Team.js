@@ -20,7 +20,7 @@ function Team() {
     else {
         memberList = data.map(member =>
                 <h2 key={member.guid} >
-                    <Link to={`/profile/${member.short_guid}/${member.first_name}_${member.last_name}` } >
+                    <Link to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` } >
                         {member.first_name + " " + member.last_name}
                     </Link>
                 </h2>

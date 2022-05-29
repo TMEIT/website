@@ -1,4 +1,4 @@
-from typing import TypedDict, Any, Literal
+from typing import TypedDict, Any, Literal, Union, Optional
 from uuid import UUID
 
 from pydantic import EmailStr, constr, create_model, Field
@@ -33,18 +33,18 @@ member_fields = {
 
     # Publicly visible fields
     "first_name":       FieldDescription(master=edit,   self=read,  member=read,    public=read,    type=str),
-    "nickname":         FieldDescription(master=edit,   self=edit,  member=read,    public=read,    type=str | None),
+    "nickname":         FieldDescription(master=edit,   self=edit,  member=read,    public=read,    type=Optional[str]),
     "last_name":        FieldDescription(master=edit,   self=read,  member=read,    public=read,    type=str),
     "current_role":     FieldDescription(master=edit,   self=read,  member=read,    public=read,    type=CurrentRoleEnum),
 
     # Fields that a member can edit themselves, but only visible to TMEIT members
     "email":            FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=EmailStr),
-    "phone":            FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=str | None),
-    "drivers_license":  FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=bool | None),
+    "phone":            FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=Optional[str]),
+    "drivers_license":  FieldDescription(master=edit,   self=edit,  member=read,    public=denied,  type=Optional[bool]),
 
     # Fields that are only visible to TMEIT members, and can only be edited by a master
-    "stad":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=bool | None),
-    "fest":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=bool | None),
+    "stad":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[bool]),
+    "fest":             FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[bool]),
     "liquor_permit":    FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=bool),
 
     # Object relations (Read-only from /member/ endpoints)
@@ -84,6 +84,9 @@ MemberMemberView = create_model('MemberMemberView', **database_fields, **build_m
 MemberSelfView = create_model('MemberSelfView', **database_fields, **build_member_schema_dict("self", read))
 MemberMasterView = create_model('MemberMasterView', **database_fields, **build_member_schema_dict("master", read))
 
+
 # Edit models
 MemberSelfPatch = create_model('MemberSelfPatch', **database_fields, **build_member_schema_dict("self", edit))
 MemberMasterPatch = create_model('MemberMasterPatch', **database_fields, **build_member_schema_dict("master", edit))
+
+MemberViewResponse = Union[MemberPublicView, MemberMemberView, MemberSelfView, MemberMasterView]
