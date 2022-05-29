@@ -1,17 +1,12 @@
-import random
-import string
-from uuid import uuid4
-
-from fastapi import FastAPI, Depends
-
-from sqlalchemy.future import select
+from fastapi import FastAPI, Depends, status
+from fastapi.responses import JSONResponse
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas.members.schemas import base64url_length_8
-from .schemas.members.enums import CurrentRoleEnum
+from .schemas.members.schemas import base64url_length_8, MemberViewResponse, MemberMasterView, MemberMemberView
 
-from . import models, database
+from . import database
+from .crud.members import get_members, get_member_by_short_uuid
 
 
 # Our FastAPI sub-app for the v1 API
@@ -29,28 +24,17 @@ async def get_db():
     async with async_session() as db:
         yield db
 
-#
-# def get_dummy_member(short_guid: base64url_length_8) -> Member:
-#     return Member(
-#         guid=uuid4(),
-#         short_guid=short_guid,
-#         email="lmao@lol.se",
-#         first_name="Rofl",
-#         last_name="Lmao",
-#         current_role=CurrentRoleEnum.master,
-#         role_histories=[],
-#         workteams=[],
-#         workteams_leading=[],
-#     )
-#
-#
-# @app.get("/members/", response_model=list[Member])
-# async def get_members(db: AsyncSession = Depends(get_db)):
-#     # members = await db.execute(select(models.Member))
-#     random_short_guid = ''.join(random.choices(string.ascii_letters+string.digits+"-_", k=8))
-#     return [get_dummy_member(random_short_guid)]
-#
-#
-# @app.get("/members/{short_guid}", response_model=Member)
-# def get_member(short_guid: base64url_length_8):
-#     return get_dummy_member(short_guid)
+
+@app.get("/members/")  # TODO: investigate output validation
+async def read_members(db: AsyncSession = Depends(get_db)):
+    return await get_members(db=db, response_schema=MemberMemberView)
+
+
+@app.get("/members/{short_uuid}")  # TODO: investigate output validation
+async def read_member(short_uuid: base64url_length_8, db: AsyncSession = Depends(get_db)):
+    try:
+        member = await get_member_by_short_uuid(db=db, short_uuid=short_uuid, response_schema=MemberMemberView)
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={"error": f"No member with the {short_uuid=} was found."})
+    return member
