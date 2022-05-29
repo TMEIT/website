@@ -70,7 +70,7 @@ async def ready_check(db=Depends(app_api.get_db)):
     try:
         await db.execute("SELECT 1")
     except Exception:
-        JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                     content={"ready": False, "error": "Cannot connect to database"})
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                            content={"ready": False, "error": "Cannot connect to database"})
     else:
         return {"ready": True}
