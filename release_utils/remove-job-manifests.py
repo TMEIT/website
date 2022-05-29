@@ -12,7 +12,7 @@ if __name__ == '__main__':
         for manifest in manifests:
             # Write manifests to new file but skip any Jobs
             if manifest.startswith("apiVersion: batch/v1\nkind: Job"):
-                print("Deleting Job manifest")
+                print("[INFO: Deleting Job manifest]")
             else:
                 manifest_with_separator = manifest + "---\n"
                 print(manifest_with_separator, end='')
