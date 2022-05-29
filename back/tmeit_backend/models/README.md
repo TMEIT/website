@@ -18,5 +18,9 @@ and end up with a fully laid-out database, ready to run our app in production. (
 Updating the database schema from a previous version is as easy as running the latest migrations,
 and the schema will be updated, preserving the data inside.
 
+The migration system is fully automated, so as long as you are generating new migrations when making changes
+to the models in this directory, the automatic deployment system will handle 
+applying those migrations to the database for you.
+
 ## Generating new migrations
 See `db_migrations/README.md` for how to generate migration files when you have made changes to the models. 
