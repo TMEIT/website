@@ -27,3 +27,9 @@ spec:
       ports:
         - protocol: TCP
           port: 5432
+    - to:  # Allow access to kubernetes API
+      - ipBlock:
+          cidr: 10.43.0.1/32
+      ports:
+        - protocol: TCP
+          port: 443
