@@ -26,7 +26,9 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-if os.getenv('TMEIT_PROD_MIGRATION') is None:  # Don't depend on app when running production migration Job
+if os.getenv('TMEIT_PROD_MIGRATION') == "true":  # Don't depend on app when running production migration Job
+    target_metadata = None
+else:
     from tmeit_backend.models import Base
     target_metadata = Base.metadata
 
