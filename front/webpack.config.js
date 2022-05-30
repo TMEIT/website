@@ -40,7 +40,6 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "TMEIT",
             filename: './index.html', //relative to root of the application
             favicon: "./src/favicon.png",
             hash: true,
@@ -48,6 +47,7 @@ module.exports = {
               <!DOCTYPE html>
               <html lang="en">
                 <head>
+                    <title>TMEIT</title>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=0.86, maximum-scale=5.0, minimum-scale=0.86">
                 </head>

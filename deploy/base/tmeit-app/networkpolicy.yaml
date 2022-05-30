@@ -20,16 +20,4 @@ spec:
         - protocol: TCP
           port: 8080
   egress:
-    - to:
-      - podSelector:
-          matchLabels:
-            app: tmeit-db
-      ports:
-        - protocol: TCP
-          port: 5432
-    - to:  # Allow access to kubernetes API for initContainer
-      - ipBlock:
-          cidr: 0.0.0.0/0
-      ports:
-        - protocol: TCP
-          port: 443
+    - {} # Just allow all egress, the initcontainer wasn't working.
