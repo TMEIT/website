@@ -7,7 +7,6 @@ bases:
 resources:
 - tmeit-app/regcred.yaml
 - create-test-db/job.yaml
-- create-test-db/networkpolicy.yaml
 
 patchesJson6902:
   - target:

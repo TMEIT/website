@@ -3,10 +3,7 @@ kind: Kustomization
 
 resources:
 - tmeit-app/deployment.yaml
-- tmeit-app/networkpolicy.yaml
 - tmeit-app/poddisruptionbudget.yaml
 - postgres/kubegres.yaml
-- postgres/networkpolicy.yaml
 - postgres/poddisruptionbudget.yaml
 - postgres/kubegres-conf.yaml
-- networkpolicy-allow-dns.yaml
