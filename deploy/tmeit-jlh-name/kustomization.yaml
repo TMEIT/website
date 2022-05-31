@@ -12,7 +12,6 @@ resources:
 - tmeit-app/service.yaml
 - postgres/sealedsecret.yaml
 - run-migrations/job.yaml
-- run-migrations/networkpolicy.yaml
 
 patchesJson6902:
   - target:
