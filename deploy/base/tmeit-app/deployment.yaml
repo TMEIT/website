@@ -46,11 +46,11 @@ spec:
         resources:
           requests:
             cpu: "100m"
-            memory: "50Mi"
+            memory: "100Mi"
             ephemeral-storage: 2Gi # I think this is used for logs? kube-score says that it's important to limit this.
           limits:
             cpu: "1"
-            memory: "200Mi"
+            memory: "300Mi"
             ephemeral-storage: 2Gi
         securityContext:
           readOnlyRootFilesystem: true
