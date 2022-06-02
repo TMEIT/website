@@ -45,7 +45,7 @@ class HealthyResponse(BaseModel):
 
 
 @app.get("/health", response_model=HealthyResponse)
-async def healh_check():
+async def health_check():
     """Health check endpoint for kubernetes liveness probes"""
     return {"healthy": True}
 
