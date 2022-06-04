@@ -11,14 +11,23 @@ from hypothesis.strategies import emails, timedeltas, datetimes
 from jose import jwt
 
 from tmeit_backend import auth, deps
+from tmeit_backend.auth import JwtAuthenticator
+
+
+@pytest.fixture(scope="module")
+def jwt_authenticator():
+    return JwtAuthenticator(secret_key='yeet')
 
 
 @given(email=emails(),
        life=timedeltas(min_value=datetime.timedelta(seconds=1),
                        max_value=datetime.timedelta(days=3650)))
-def test_create_member_access_token(email, life):
-    token = auth.create_member_access_token(login_email=email, expires_delta=life)
-    claims = jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
+def test_create_member_access_token(email, life, jwt_authenticator):
+    token = jwt_authenticator.create_member_access_token(login_email=email,
+                                                         expires_delta=life)
+    claims = jwt.decode(token,
+                        jwt_authenticator.SECRET_KEY,
+                        algorithms=[jwt_authenticator.ALGORITHM])
     assert claims['sub'] == "email:" + email
 
 
@@ -39,8 +48,8 @@ def fake_db_session():
 @given(email=emails(),
        life=timedeltas(min_value=datetime.timedelta(seconds=1),
                        max_value=datetime.timedelta(days=3650)))
-async def test_get_current_user(email, life, fake_db_session):
-    good_token = auth.create_member_access_token(login_email=email, expires_delta=life)
+async def test_get_current_user(email, life, jwt_authenticator, fake_db_session):
+    good_token = jwt_authenticator.create_member_access_token(login_email=email, expires_delta=life)
 
     fake_oauth_token = AsyncMock()
     fake_oauth_token.return_value = good_token
@@ -49,6 +58,7 @@ async def test_get_current_user(email, life, fake_db_session):
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
+                                                  jwt_authenticator=jwt_authenticator,
                                                   _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
 
@@ -57,10 +67,7 @@ async def test_get_current_user(email, life, fake_db_session):
 
 
 @pytest.mark.asyncio
-@given(email=emails(),
-       life=timedeltas(min_value=datetime.timedelta(seconds=1),
-                       max_value=datetime.timedelta(days=3650)))
-async def test_get_current_user_no_token(email, life, fake_db_session):
+async def test_get_current_user_no_token(jwt_authenticator, fake_db_session):
     fake_oauth_token = AsyncMock()
     fake_oauth_token.return_value = None  # No token in request
 
@@ -68,6 +75,7 @@ async def test_get_current_user_no_token(email, life, fake_db_session):
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
+                                                  jwt_authenticator=jwt_authenticator,
                                                   _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     member = await anext(get_current_user(Mock()))
@@ -78,8 +86,8 @@ async def test_get_current_user_no_token(email, life, fake_db_session):
 @given(email=emails(),
        life=timedeltas(min_value=datetime.timedelta(seconds=1),
                        max_value=datetime.timedelta(days=3650)))
-async def test_get_current_user_user_does_not_exist(email, life, fake_db_session):
-    good_token = auth.create_member_access_token(login_email=email, expires_delta=life)
+async def test_get_current_user_user_does_not_exist(email, life, jwt_authenticator, fake_db_session):
+    good_token = jwt_authenticator.create_member_access_token(login_email=email, expires_delta=life)
 
     fake_oauth_token = AsyncMock()
     fake_oauth_token.return_value = good_token
@@ -91,6 +99,7 @@ async def test_get_current_user_user_does_not_exist(email, life, fake_db_session
         await fake_crud()
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
+                                                  jwt_authenticator=jwt_authenticator,
                                                   _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
 
@@ -99,9 +108,9 @@ async def test_get_current_user_user_does_not_exist(email, life, fake_db_session
 
 
 @pytest.mark.asyncio
-async def test_get_current_user_expired_token(fake_db_session):
-    dead_token = auth.create_member_access_token(login_email="test@test.se",
-                                                 expires_delta=datetime.timedelta(microseconds=1))
+async def test_get_current_user_expired_token(jwt_authenticator, fake_db_session):
+    dead_token = jwt_authenticator.create_member_access_token(login_email="test@test.se",
+                                                              expires_delta=datetime.timedelta(microseconds=1))
 
     await asyncio.sleep(1)  # let token expire
 
@@ -112,6 +121,7 @@ async def test_get_current_user_expired_token(fake_db_session):
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
+                                                  jwt_authenticator=jwt_authenticator,
                                                   _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     with pytest.raises(HTTPException):
@@ -122,10 +132,10 @@ async def test_get_current_user_expired_token(fake_db_session):
 @given(email=emails(),
        exp=datetimes(min_value=datetime.datetime.utcnow(),
                      max_value=datetime.datetime.max))
-async def test_get_current_user_invalid_signature(email, exp, fake_db_session):
+async def test_get_current_user_invalid_signature(email, exp, jwt_authenticator, fake_db_session):
     forged_claims = {"sub": f"email:{email}",
                      "exp": exp}
-    forged_token = jwt.encode(claims=forged_claims, key="00fdead", algorithm=auth.ALGORITHM)
+    forged_token = jwt.encode(claims=forged_claims, key="00fdead", algorithm=jwt_authenticator.ALGORITHM)
 
     fake_oauth_token = AsyncMock()
     fake_oauth_token.return_value = forged_token
@@ -134,6 +144,7 @@ async def test_get_current_user_invalid_signature(email, exp, fake_db_session):
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
+                                                  jwt_authenticator=jwt_authenticator,
                                                   _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     with pytest.raises(HTTPException):
@@ -144,10 +155,10 @@ async def test_get_current_user_invalid_signature(email, exp, fake_db_session):
 @given(email=emails(),
        exp=datetimes(min_value=datetime.datetime.utcnow(),
                      max_value=datetime.datetime.max))
-async def test_get_current_user_invalid_algorithm(email, exp, fake_db_session):
+async def test_get_current_user_invalid_algorithm(email, exp, jwt_authenticator, fake_db_session):
     forged_claims = {"sub": f"email:{email}",
                      "exp": exp}
-    forged_token = jwt.encode(claims=forged_claims, key=auth.SECRET_KEY, algorithm="HS512")
+    forged_token = jwt.encode(claims=forged_claims, key=jwt_authenticator.SECRET_KEY, algorithm="HS512")
 
     fake_oauth_token = AsyncMock()
     fake_oauth_token.return_value = forged_token
@@ -156,6 +167,7 @@ async def test_get_current_user_invalid_algorithm(email, exp, fake_db_session):
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
+                                                  jwt_authenticator=jwt_authenticator,
                                                   _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     with pytest.raises(HTTPException):

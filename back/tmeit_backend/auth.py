@@ -1,17 +1,9 @@
 import datetime
-
-from fastapi.security import OAuth2PasswordBearer
-
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 import argon2
 
-from jose import jwt
-
-
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"  # TODO
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_DAYS = 180
+from jose import jwt, JWTError
 
 # Init argon2 hasher
 # Takes 150ms of cpu and 64MiB of memory to verify a password on a Zen 3 core @ 4.5Ghz.
@@ -23,11 +15,41 @@ def verify_password(pw: str, pw_hash: str) -> None:
     ph.verify(password=pw, hash=pw_hash)
 
 
-def create_member_access_token(login_email: str, expires_delta: datetime.timedelta) -> str:
-    expire = datetime.datetime.utcnow() + expires_delta
-    claims = {"sub": f"email:{login_email}",
-              "exp": expire}
-    encoded_jwt = jwt.encode(claims=claims,
-                             key=SECRET_KEY,
-                             algorithm=ALGORITHM)
-    return encoded_jwt
+ACCESS_TOKEN_EXPIRE_DAYS = 180
+
+
+class JwtAuthenticator:
+    """
+    Class for generating and verifying JWTs
+
+    initialized with the hexadecimal secret key used to sign/verify the JWTs
+    """
+
+    def __init__(self, secret_key: str):
+
+        self.SECRET_KEY = secret_key
+        self.ALGORITHM = "HS256"
+
+    def create_member_access_token(self, login_email: str, expires_delta: datetime.timedelta) -> str:
+        expire = datetime.datetime.utcnow() + expires_delta
+        claims = {"sub": f"email:{login_email}",
+                  "exp": expire}
+        encoded_jwt = jwt.encode(claims=claims,
+                                 key=self.SECRET_KEY,
+                                 algorithm=self.ALGORITHM)
+        return encoded_jwt
+
+    def verify_jwt(self, token) -> str:
+        """
+        Verifies JWT and returns the login_email it identifies.
+
+        Raises a subclass of JWTError if the JWT is invalid.
+        """
+
+        payload: dict[str, str] = jwt.decode(token=token,
+                                             key=self.SECRET_KEY,
+                                             algorithms=[self.ALGORITHM])
+        email: str = payload.get("sub").removeprefix("email:")
+        if email is None:
+            raise JWTError
+        return email

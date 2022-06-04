@@ -44,6 +44,9 @@ secretGenerator:
   - superUserPassword=rzQ4aWQGkvWk8QfQkFPTjmE5ErJrpf
   - replicationUserPassword=7t3zfOH9GaFBjl4RA6gXIBhkImbsgw
   - tmeitBackendUserPassword=HBXOHEc6TpkquVHKy2zmSeUIEaUFvW
+- name: jwt-secret
+  literals:
+  - jwtSecret=4fe7687511fdffb2ce5704136156ac7d9a973a56a195c61f51cbcecdf37b2792
 
 generatorOptions:
   disableNameSuffixHash: true

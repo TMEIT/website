@@ -18,6 +18,7 @@ BAD_PASSWORD = "uruselt"
 @pytest.fixture(scope="module")
 def test_client_with_fake_db():
     os.environ['POSTGRES_PASSWORD'] = ''
+    os.environ['JWT_KEY'] = ''
     from tmeit_backend import app_api
 
     app = app_api.app
