@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .. import auth
 from ..models import Member
 
 from ..schemas.members.enums import CurrentRoleEnum
@@ -25,12 +26,13 @@ def random_date(start_date: datetime.date, stop_date: datetime.date) -> datetime
     return start_date + delta
 
 
-def create_member() -> Member:
+def create_member(hashed_password) -> Member:
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
     return Member(
         uuid=str(uuid4()),
         login_email=f"{random.randint(10000000, 99999999)}@kth.se",
+        hashed_password=hashed_password,
         current_role=CurrentRoleEnum.master.value,
         first_name=first_name,
         nickname=random.choice([None, (first_name[:2] + last_name[:2])]),
@@ -44,7 +46,9 @@ def create_member() -> Member:
 
 
 async def create_members(number: int, db: AsyncSession) -> None:
-    members: list[Member] = [create_member() for _ in range(number)]
+    hashed_password = auth.ph.hash('yeet')
+
+    members: list[Member] = [create_member(hashed_password) for _ in range(number)]
 
     async with db.begin():
         db.add_all(members)
