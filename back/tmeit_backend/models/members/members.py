@@ -1,9 +1,6 @@
-from sqlalchemy import Column, String, Boolean, Index, Computed, Date, DateTime
+from sqlalchemy import Column, String, Boolean, Computed, Date, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.orm import column_property
-from sqlalchemy.sql.expression import ColumnClause, cast, text
-from sqlalchemy.sql.functions import FunctionElement, func
+from sqlalchemy.sql.functions import func
 
 from ...database import Base
 from ..utils import short_uuid_from_uuid
