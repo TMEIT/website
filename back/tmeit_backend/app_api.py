@@ -1,13 +1,18 @@
-from fastapi import FastAPI, Depends, status
+import datetime
+import traceback
+
+from fastapi import FastAPI, Depends, status, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
+
+from pydantic import BaseModel
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas.members.schemas import base64url_length_8, MemberViewResponse, MemberMasterView, MemberMemberView
+from .schemas.members.schemas import base64url_length_8, MemberMemberView
 
-from . import database
-from .crud.members import get_members, get_member_by_short_uuid
-
+from . import deps, auth, database
+from .crud.members import get_members, get_member_by_short_uuid, get_password_hash
 
 # Our FastAPI sub-app for the v1 API
 app = FastAPI()
@@ -18,11 +23,8 @@ db_url = database.get_production_url()
 engine = database.get_async_engine(db_url)
 async_session = database.get_async_session(engine)
 
-
-async def get_db():
-    """DB dependency for FastAPI endpoints. Yields an AsyncSession."""
-    async with async_session() as db:
-        yield db
+get_db = deps.DatabaseDependency(async_session=async_session)
+get_current_user = deps.CurrentUserDependency(async_session=async_session)
 
 
 @app.get("/members/")  # TODO: investigate output validation
@@ -38,3 +40,25 @@ async def read_member(short_uuid: base64url_length_8, db: AsyncSession = Depends
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No member with the {short_uuid=} was found."})
     return member
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
+                                 db: AsyncSession = Depends(get_db)):
+    try:
+        member = await get_password_hash(db=db, login_email=form_data.username)
+        auth.verify_password(pw=form_data.password, pw_hash=member.hashed_password)
+    except Exception:
+        traceback.print_exc()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Incorrect username or password",
+                            headers={"WWW-Authenticate": "Bearer"})
+    access_token_expires = datetime.timedelta(days=auth.ACCESS_TOKEN_EXPIRE_DAYS)
+    access_token = auth.create_member_access_token(login_email=member.login_email,
+                                                   expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}

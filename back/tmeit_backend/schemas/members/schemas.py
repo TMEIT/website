@@ -2,7 +2,7 @@ import datetime
 from typing import TypedDict, Any, Literal, Union, Optional
 from uuid import UUID
 
-from pydantic import EmailStr, constr, create_model, Field
+from pydantic import EmailStr, constr, create_model, Field, BaseModel
 
 from ..access_levels import APIAccessLevelsEnum
 from .enums import CurrentRoleEnum
@@ -91,3 +91,8 @@ MemberSelfPatch = create_model('MemberSelfPatch', **database_fields, **build_mem
 MemberMasterPatch = create_model('MemberMasterPatch', **database_fields, **build_member_schema_dict("master", edit))
 
 MemberViewResponse = Union[MemberPublicView, MemberMemberView, MemberSelfView, MemberMasterView]
+
+
+class MemberAuthentication(BaseModel):
+    login_email: EmailStr
+    hashed_password: str | None
