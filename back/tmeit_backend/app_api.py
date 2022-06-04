@@ -1,4 +1,5 @@
 import datetime
+import os
 import traceback
 
 from fastapi import FastAPI, Depends, status, HTTPException
@@ -12,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas.members.schemas import base64url_length_8, MemberMemberView
 
 from . import deps, auth, database
+from .auth import JwtAuthenticator, ACCESS_TOKEN_EXPIRE_DAYS
 from .crud.members import get_members, get_member_by_short_uuid, get_password_hash
 
 # Our FastAPI sub-app for the v1 API
@@ -23,8 +25,11 @@ db_url = database.get_production_url()
 engine = database.get_async_engine(db_url)
 async_session = database.get_async_session(engine)
 
+jwt_authenticator = JwtAuthenticator(secret_key=os.environ['JWT_KEY'])
+
 get_db = deps.DatabaseDependency(async_session=async_session)
-get_current_user = deps.CurrentUserDependency(async_session=async_session)
+get_current_user = deps.CurrentUserDependency(async_session=async_session,
+                                              jwt_authenticator=jwt_authenticator)
 
 
 @app.get("/members/")  # TODO: investigate output validation
@@ -58,7 +63,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Incorrect username or password",
                             headers={"WWW-Authenticate": "Bearer"})
-    access_token_expires = datetime.timedelta(days=auth.ACCESS_TOKEN_EXPIRE_DAYS)
-    access_token = auth.create_member_access_token(login_email=member.login_email,
-                                                   expires_delta=access_token_expires)
+    access_token_expires = datetime.timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
+    access_token = jwt_authenticator.create_member_access_token(login_email=member.login_email,
+                                                                expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}

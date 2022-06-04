@@ -10,7 +10,7 @@ from jose import jwt
 
 from .schemas.members.schemas import MemberSelfView
 
-from . import auth
+from .auth import JwtAuthenticator
 from .crud.members import get_member_by_login_email
 
 
@@ -49,6 +49,8 @@ class CurrentUserDependency:
             self,
             async_session:
             Callable[[], AsyncSession],
+            jwt_authenticator:
+            JwtAuthenticator,
             _oauth2_scheme:
             Callable[[Request], Coroutine[any, any, str]]
             = OAuth2PasswordBearer(tokenUrl="token",
@@ -60,6 +62,7 @@ class CurrentUserDependency:
             = get_member_by_login_email
     ):
         self.async_session = async_session
+        self.jwt_authenticator = jwt_authenticator
         self.oauth2_scheme = _oauth2_scheme
         self.get_member_by_login_email = _crud_function
 
@@ -72,12 +75,9 @@ class CurrentUserDependency:
 
         else:
 
-            # Parse token
+            # Parse and verify token
             try:
-                payload: dict[str, str] = jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
-                email: str = payload.get("sub").removeprefix("email:")
-                if email is None:
-                    raise RuntimeError
+                self.jwt_authenticator.verify_jwt(token=token)
             except Exception:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                     detail="Could not validate credentials",
