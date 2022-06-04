@@ -1,0 +1,92 @@
+from typing import Generator, Callable, Coroutine
+
+from fastapi import Depends, status, HTTPException, Request
+from fastapi.security import OAuth2PasswordBearer
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+
+from jose import jwt
+
+from .schemas.members.schemas import MemberSelfView
+
+from . import auth
+from .crud.members import get_member_by_login_email
+
+
+class DatabaseDependency:
+    """
+    Parameterized dependency for getting a database session during a request.
+
+    This Dep is written as a parameterized dependency so that we can
+    initialize the database connection alongside the app in api_app.py, instead of in this module.
+    That way, we can test this module without an active database.
+
+    https://fastapi.tiangolo.com/advanced/advanced-dependencies/
+    """
+    def __init__(self, async_session: Callable[[], AsyncSession]):
+        self.async_session = async_session
+
+    async def __call__(self) -> Generator:
+        """DB dependency for FastAPI endpoints. Yields an AsyncSession."""
+        async with self.async_session() as db:
+            yield db
+
+
+class CurrentUserDependency:
+    """
+    Parameterized dependency for getting the current user of an authorized request.
+
+    Returns None if there was no token given, or the user no longer exists.
+
+    arguments with underscores are overridden with Mocks during unit tests,
+    but should be left as their defaults in normal operation.
+
+    https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#update-the-dependencies
+    https://fastapi.tiangolo.com/advanced/advanced-dependencies/
+    """
+    def __init__(
+            self,
+            async_session:
+            Callable[[], AsyncSession],
+            _oauth2_scheme:
+            Callable[[Request], Coroutine[any, any, str]]
+            = OAuth2PasswordBearer(tokenUrl="token",
+
+                                   # makes the function return None for the token instead of raising an exception
+                                   auto_error=False),
+            _crud_function:
+            Callable
+            = get_member_by_login_email
+    ):
+        self.async_session = async_session
+        self.oauth2_scheme = _oauth2_scheme
+        self.get_member_by_login_email = _crud_function
+
+    async def __call__(self, request: Request) -> Generator[MemberSelfView, None, None]:
+        token = await self.oauth2_scheme(request)
+
+        # Skip if no token was passed
+        if token is None:
+            yield None
+
+        else:
+
+            # Parse token
+            try:
+                payload: dict[str, str] = jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
+                email: str = payload.get("sub").removeprefix("email:")
+                if email is None:
+                    raise RuntimeError
+            except Exception:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                    detail="Could not validate credentials",
+                                    headers={"WWW-Authenticate": "Bearer"})
+
+            # Get member from db
+            try:
+                async with self.async_session() as db:
+                    member = await self.get_member_by_login_email(db=db, login_email=email, response_schema=MemberSelfView)
+                yield member
+            except Exception as e:
+                yield None

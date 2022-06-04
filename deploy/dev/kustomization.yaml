@@ -6,6 +6,7 @@ bases:
 
 resources:
 - tmeit-app/regcred.yaml
+- tmeit-app/test-job.yaml
 - create-test-db/job.yaml
 
 patchesJson6902:
@@ -23,6 +24,15 @@ patchesJson6902:
       version: v1
       kind: Job
       name: create-test-db
+    patch: |-
+        - op: add
+          path: /spec/template/spec/imagePullSecrets
+          value: [{ name: regcred }]
+  - target:
+      group: batch
+      version: v1
+      kind: Job
+      name: tmeit-app-test
     patch: |-
         - op: add
           path: /spec/template/spec/imagePullSecrets

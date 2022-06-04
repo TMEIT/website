@@ -1,0 +1,19 @@
+# Job that runs tests on the app
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tmeit-app-test
+  labels:
+    job: tmeit-app-test
+spec:
+  template:
+    metadata:
+      labels:
+        job: tmeit-app-test
+    spec:
+      containers:
+      - name: script
+        image: tmeit-app-test
+      restartPolicy: Never
+  backoffLimit: 0

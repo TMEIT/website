@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from .. import models
-
+from ..schemas.members.schemas import MemberAuthentication
 
 S = TypeVar('S', bound=BaseModel)
 
@@ -35,8 +35,8 @@ async def get_member_by_short_uuid(db: AsyncSession, short_uuid: str, response_s
     return response_schema.parse_obj(sql_member)
 
 
-async def get_member_by_email(db: AsyncSession, email: str, response_schema: Type[S]) -> S:
-    stmt = select(models.Member).where(models.Member.email == email)
+async def get_member_by_login_email(db: AsyncSession, login_email: str, response_schema: Type[S]) -> S:
+    stmt = select(models.Member).where(models.Member.login_email == login_email)
     result = (await db.execute(stmt)).fetchone()
     if result is None:
         raise KeyError()
@@ -45,6 +45,15 @@ async def get_member_by_email(db: AsyncSession, email: str, response_schema: Typ
     sql_member['workteams'] = []
     sql_member['workteams_leading'] = []
     return response_schema.parse_obj(sql_member)
+
+
+async def get_password_hash(db: AsyncSession, login_email: str) -> MemberAuthentication:
+    stmt = select(models.Member).where(models.Member.login_email == login_email)
+    result = (await db.execute(stmt)).fetchone()
+    if result is None:
+        raise KeyError()
+    return MemberAuthentication(login_email=result.Member.login_email,
+                                hashed_password=result.Member.hashed_password)
 
 
 async def get_members(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 100) -> list[S]:
