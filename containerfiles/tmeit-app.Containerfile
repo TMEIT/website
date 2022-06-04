@@ -8,7 +8,8 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /code
 COPY front/package.json front/package-lock.json /code/
 RUN npm install --silent
-COPY front/ /code/
+COPY front/src/ /code/
+COPY front/webpack.config.js /code/
 RUN npm run-script build:prod
 
 # Backend builder/tester.

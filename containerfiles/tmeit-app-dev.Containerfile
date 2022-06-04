@@ -9,7 +9,8 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /code
 COPY front/package.json front/package-lock.json /code/
 RUN npm install --silent
-COPY front/ /code/
+COPY front/src/ /code/src/
+COPY front/webpack.config.js /code/
 RUN npm run-script build
 
 FROM docker.io/library/python:3.10-slim as back-buildtest
