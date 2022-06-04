@@ -59,8 +59,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2.2.0
       - uses: reviewdog/action-actionlint@v1
-  test-app: # do a build (which lints and runs tests)
-    name: Build and test app
+  test-containerfile: # Build containers to test that they build properly
+    name: Build app containers
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.2.0
@@ -70,9 +70,21 @@ jobs:
           image: tmeit-app
           context: '.'
           containerfiles: |-
-            containerfiles/tmeit-app-dev.Containerfile
             containerfiles/tmeit-app.Containerfile
             containerfiles/tmeit-run-migrations.Containerfile
+  test-app: # Run app tests
+    name: Test app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.2.0
+      - name: Build test container
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: tmeit-app-test
+          context: '.'
+          containerfiles: containerfiles/tmeit-app-test.Containerfile
+      - name: run test
+        run: podman run tmeit-app-test
   test-migrations:  # Run migrations and insert dummy data. Also make sure there are no migrations needed to be done
       name: Test migrations
       runs-on: ubuntu-latest
