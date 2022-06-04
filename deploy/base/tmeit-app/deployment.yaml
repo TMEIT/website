@@ -26,6 +26,11 @@ spec:
               secretKeyRef:
                 name: kubegres-passwords
                 key: tmeitBackendUserPassword
+          - name: JWT_KEY
+            valueFrom:
+              secretKeyRef:
+                name: jwt-secret
+                key: jwtSecret
         livenessProbe:
           httpGet:
             path: /health
