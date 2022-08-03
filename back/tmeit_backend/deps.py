@@ -1,12 +1,10 @@
-from typing import Generator, Callable, Coroutine
+from typing import Generator, Callable
 
-from fastapi import Depends, status, HTTPException, Request
+from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
-from jose import jwt
 
 from .schemas.members.schemas import MemberSelfView
 
@@ -33,6 +31,11 @@ class DatabaseDependency:
             yield db
 
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token",
+                                     # makes the function return None for the token instead of raising an exception
+                                     auto_error=False)
+
+
 class CurrentUserDependency:
     """
     Parameterized dependency for getting the current user of an authorized request.
@@ -47,28 +50,29 @@ class CurrentUserDependency:
     """
     def __init__(
             self,
+
             async_session:
             Callable[[], AsyncSession],
+
             jwt_authenticator:
             JwtAuthenticator,
-            _oauth2_scheme:
-            Callable[[Request], Coroutine[any, any, str]]
-            = OAuth2PasswordBearer(tokenUrl="token",
 
-                                   # makes the function return None for the token instead of raising an exception
-                                   auto_error=False),
             _crud_function:
             Callable
             = get_member_by_login_email
+
     ):
         self.async_session = async_session
         self.jwt_authenticator = jwt_authenticator
-        self.oauth2_scheme = _oauth2_scheme
+        self.oauth2_scheme = oauth2_scheme
         self.get_member_by_login_email = _crud_function
 
-    async def __call__(self, request: Request) -> Generator[MemberSelfView, None, None]:
-        token = await self.oauth2_scheme(request)
+    async def __call__(
+            self,
 
+            # Needs to be called through Depends() for "Authorize" button to show in /docs
+            token: str = Depends(oauth2_scheme)
+    ) -> Generator[MemberSelfView, None, None]:
         # Skip if no token was passed
         if token is None:
             yield None

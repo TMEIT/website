@@ -4,13 +4,14 @@ import traceback
 
 from fastapi import FastAPI, Depends, status, HTTPException
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 from pydantic import BaseModel
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas.members.schemas import base64url_length_8, MemberMemberView
+from .schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
+    MemberMasterView
 
 from . import deps, auth, database
 from .auth import JwtAuthenticator, ACCESS_TOKEN_EXPIRE_DAYS
@@ -32,15 +33,36 @@ get_current_user = deps.CurrentUserDependency(async_session=async_session,
                                               jwt_authenticator=jwt_authenticator)
 
 
-@app.get("/members/")  # TODO: investigate output validation
-async def read_members(db: AsyncSession = Depends(get_db)):
-    return await get_members(db=db, response_schema=MemberMemberView)
+@app.get("/members/")  # TODO: investigate FastAPI's builtin output validation
+async def read_members(db: AsyncSession = Depends(get_db),
+                       current_user: MemberSelfView = Depends(get_current_user)):
+
+    # Check authentication level and set response level accordingly
+    response_schema = MemberPublicView
+    if current_user is not None:
+        response_schema = MemberMemberView
+        if current_user.current_role == "master":
+            response_schema = MemberMasterView
+
+    return await get_members(db=db, response_schema=response_schema)
 
 
-@app.get("/members/{short_uuid}")  # TODO: investigate output validation
-async def read_member(short_uuid: base64url_length_8, db: AsyncSession = Depends(get_db)):
+@app.get("/members/{short_uuid}")  # TODO: investigate FastAPI's builtin output validation
+async def read_member(short_uuid: base64url_length_8,
+                      db: AsyncSession = Depends(get_db),
+                      current_user: MemberSelfView = Depends(get_current_user)):
+
+    # Check authentication level and set response level accordingly
+    response_schema = MemberPublicView
+    if current_user is not None:
+        response_schema = MemberMemberView
+        if current_user.short_uuid == short_uuid:
+            response_schema = MemberSelfView
+        if current_user.current_role == "master":
+            response_schema = MemberMasterView
+
     try:
-        member = await get_member_by_short_uuid(db=db, short_uuid=short_uuid, response_schema=MemberMemberView)
+        member = await get_member_by_short_uuid(db=db, short_uuid=short_uuid, response_schema=response_schema)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No member with the {short_uuid=} was found."})
