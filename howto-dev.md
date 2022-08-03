@@ -55,9 +55,9 @@ making changes to the database configuration to allow for running the app in a k
 but before the chart is deployed to production
 
 ## Local development environment
-* Local requirements: Tilt and Podman
+* Local requirements: kubectl, Tilt and Podman
   * Works on Linux
-  * should also work on Windows and MacOS
+  * On macOS and Windows, you will probably need to use Tilt and Docker Desktop instead
 * Live testing is done on a Kubernetes cluster by deploying with Tilt
 * Container building is done with Podman on your local machine
   * I am biased against the Docker daemon and do not have it installed.
@@ -71,7 +71,7 @@ but before the chart is deployed to production
 * cluster and repository specific variables are defined in tilt_options.json
   * You shouldn't have to change anything in Tiltfile, just tilt_options
 # Starting local environment
-Run `tilt up`
+Run `tilt up`, if you're running Docker Desktop, run `tilt up -f Tiltfile-docker`.
 
 ## Creating a new release
 * Everything in master is automatically pushed to prod
