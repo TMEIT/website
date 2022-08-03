@@ -1,5 +1,4 @@
 import asyncio
-import os
 from unittest.mock import Mock, AsyncMock
 import datetime
 
@@ -59,26 +58,22 @@ async def test_get_current_user(email, life, jwt_authenticator, fake_db_session)
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
                                                   jwt_authenticator=jwt_authenticator,
-                                                  _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
 
-    member = await anext(get_current_user(Mock()))
+    # Inject good token over oauth2_scheme dependency call in the CurrentUserDependency __call__() fn
+    member = await anext(get_current_user(token=good_token))
     assert member == "I am a member"
 
 
 @pytest.mark.asyncio
 async def test_get_current_user_no_token(jwt_authenticator, fake_db_session):
-    fake_oauth_token = AsyncMock()
-    fake_oauth_token.return_value = None  # No token in request
-
     fake_crud = AsyncMock()
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
                                                   jwt_authenticator=jwt_authenticator,
-                                                  _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
-    member = await anext(get_current_user(Mock()))
+    member = await anext(get_current_user(token=None))
     assert member is None
 
 
@@ -89,9 +84,6 @@ async def test_get_current_user_no_token(jwt_authenticator, fake_db_session):
 async def test_get_current_user_user_does_not_exist(email, life, jwt_authenticator, fake_db_session):
     good_token = jwt_authenticator.create_member_access_token(login_email=email, expires_delta=life)
 
-    fake_oauth_token = AsyncMock()
-    fake_oauth_token.return_value = good_token
-
     fake_crud = AsyncMock()
     fake_crud.side_effect = ValueError()  # Pretending that trying to get the user failed
 
@@ -100,10 +92,9 @@ async def test_get_current_user_user_does_not_exist(email, life, jwt_authenticat
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
                                                   jwt_authenticator=jwt_authenticator,
-                                                  _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
 
-    member = await anext(get_current_user(Mock()))
+    member = await anext(get_current_user(token=good_token))
     assert member is None
 
 
@@ -114,18 +105,14 @@ async def test_get_current_user_expired_token(jwt_authenticator, fake_db_session
 
     await asyncio.sleep(1)  # let token expire
 
-    fake_oauth_token = AsyncMock()
-    fake_oauth_token.return_value = dead_token
-
     fake_crud = AsyncMock()
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
                                                   jwt_authenticator=jwt_authenticator,
-                                                  _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     with pytest.raises(HTTPException):
-        await anext(get_current_user(Mock()))
+        await anext(get_current_user(token=dead_token))
 
 
 @pytest.mark.asyncio
@@ -137,18 +124,14 @@ async def test_get_current_user_invalid_signature(email, exp, jwt_authenticator,
                      "exp": exp}
     forged_token = jwt.encode(claims=forged_claims, key="00fdead", algorithm=jwt_authenticator.ALGORITHM)
 
-    fake_oauth_token = AsyncMock()
-    fake_oauth_token.return_value = forged_token
-
     fake_crud = AsyncMock()
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
                                                   jwt_authenticator=jwt_authenticator,
-                                                  _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     with pytest.raises(HTTPException):
-        await anext(get_current_user(Mock()))
+        await anext(get_current_user(token=forged_token))
 
 
 @pytest.mark.asyncio
@@ -160,15 +143,11 @@ async def test_get_current_user_invalid_algorithm(email, exp, jwt_authenticator,
                      "exp": exp}
     forged_token = jwt.encode(claims=forged_claims, key=jwt_authenticator.SECRET_KEY, algorithm="HS512")
 
-    fake_oauth_token = AsyncMock()
-    fake_oauth_token.return_value = forged_token
-
     fake_crud = AsyncMock()
     fake_crud.return_value = "I am a member"
 
     get_current_user = deps.CurrentUserDependency(async_session=fake_db_session,
                                                   jwt_authenticator=jwt_authenticator,
-                                                  _oauth2_scheme=fake_oauth_token,
                                                   _crud_function=fake_crud)
     with pytest.raises(HTTPException):
-        await anext(get_current_user(Mock()))
+        await anext(get_current_user(token=forged_token))
