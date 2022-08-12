@@ -2,3 +2,4 @@
 *.code-workspace
 .DS_Store
 **/__pycache__/
+dockerlogin.txt
