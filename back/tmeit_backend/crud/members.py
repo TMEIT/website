@@ -1,18 +1,28 @@
 from typing import TypeVar, Type
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from .. import models
-from ..schemas.members.schemas import MemberAuthentication
+from ..models import Member
+from ..schemas.members.schemas import MemberAuthentication, MemberMasterCreate, MemberMasterView
 
 S = TypeVar('S', bound=BaseModel)
 
 
+async def create_member(db: AsyncSession, data: MemberMasterCreate) -> MemberMasterView:
+    uuid = uuid4()
+    async with db.begin():
+        db.add_all([
+            Member(uuid=str(uuid), **data.dict()),
+        ])
+    return await get_member(db=db, uuid=uuid, response_schema=MemberMasterView)
+
+
 async def get_member(db: AsyncSession, uuid: UUID, response_schema: Type[S]) -> S:
-    stmt = select(models.Member).where(models.Member.uuid == uuid)
+    stmt = select(models.Member).where(models.Member.uuid == str(uuid))
     result = (await db.execute(stmt)).fetchone()
     if result is None:
         raise KeyError()
