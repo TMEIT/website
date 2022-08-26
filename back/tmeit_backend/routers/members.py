@@ -1,18 +1,20 @@
+from typing import Union
+
 from fastapi import Depends, status, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
+from ._error_responses import NotFoundResponse, ForbiddenResponse
 from ..crud.members import get_members, get_member_by_short_uuid, create_member
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
-    MemberMasterView, MemberMasterCreate
-
+    MemberMasterView, MemberMasterCreate, MemberViewResponse
 
 router = APIRouter()
 
 
-@router.get("/")  # TODO: investigate FastAPI's builtin output validation
+@router.get("/", response_model=list[Union[MemberPublicView, MemberMemberView, MemberMasterView]])
 async def read_members(db: AsyncSession = Depends(get_db),
                        current_user: MemberSelfView = Depends(get_current_user)):
 
@@ -26,7 +28,7 @@ async def read_members(db: AsyncSession = Depends(get_db),
     return await get_members(db=db, response_schema=response_schema)
 
 
-@router.get("/{short_uuid}")  # TODO: investigate FastAPI's builtin output validation
+@router.get("/{short_uuid}", response_model=MemberViewResponse, responses={404: {"model": NotFoundResponse}})
 async def read_member(short_uuid: base64url_length_8,
                       db: AsyncSession = Depends(get_db),
                       current_user: MemberSelfView = Depends(get_current_user)):
@@ -48,10 +50,10 @@ async def read_member(short_uuid: base64url_length_8,
     return member
 
 
-@router.post("/create")  # TODO: investigate FastAPI's builtin output validation
+@router.post("/create", response_model=MemberMasterView, responses={403: {"model": ForbiddenResponse}})
 async def create_new_member(member_data: MemberMasterCreate,
-                        db: AsyncSession = Depends(get_db),
-                        current_user: MemberSelfView = Depends(get_current_user)):
+                            db: AsyncSession = Depends(get_db),
+                            current_user: MemberSelfView = Depends(get_current_user)):
 
     # Make sure user is authenticated with Master permissions
     if current_user.current_role != "master":
