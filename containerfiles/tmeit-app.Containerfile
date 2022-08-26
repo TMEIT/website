@@ -14,7 +14,7 @@ RUN npm run-script build:prod
 
 # Backend builder.
 # Installs and builds backend deps, precompiled deps in .venv can then be copied to next stage.
-FROM docker.io/library/python:3.10-slim as back-build
+FROM docker.io/library/python:3.10 as back-build
 WORKDIR /code
 RUN pip install poetry~=1.1
 # Install dependencies and dev dependencies (keep venv inside /code/ because it's simpler)
