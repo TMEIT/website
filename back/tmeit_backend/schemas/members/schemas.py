@@ -49,9 +49,9 @@ member_fields = {
     "liquor_permit":    FieldDescription(master=edit,   self=read,  member=read,    public=denied,  type=Optional[datetime.date]),
 
     # Object relations (Read-only from /member/ endpoints)
-    "role_histories":   FieldDescription(master=edit,   self=read, member=read,     public=denied, type=list[UUID]),
-    "workteams":        FieldDescription(master=edit,   self=read, member=read,     public=denied, type=list[UUID]),
-    "workteams_leading":FieldDescription(master=edit,   self=read, member=read,     public=denied, type=list[UUID]),
+    "role_histories":   FieldDescription(master=read,   self=read, member=read,     public=denied, type=list[UUID]),
+    "workteams":        FieldDescription(master=read,   self=read, member=read,     public=denied, type=list[UUID]),
+    "workteams_leading":FieldDescription(master=read,   self=read, member=read,     public=denied, type=list[UUID]),
 
 }
 
@@ -89,6 +89,9 @@ MemberMasterView = create_model('MemberMasterView', **database_fields, **build_m
 # Edit models
 MemberSelfPatch = create_model('MemberSelfPatch', **database_fields, **build_member_schema_dict("self", edit))
 MemberMasterPatch = create_model('MemberMasterPatch', **database_fields, **build_member_schema_dict("master", edit))
+
+# Create models
+MemberMasterCreate = create_model('MemberMasterCreate', **build_member_schema_dict("master", edit))
 
 MemberViewResponse = Union[MemberPublicView, MemberMemberView, MemberSelfView, MemberMasterView]
 

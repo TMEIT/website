@@ -11,11 +11,11 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
-    MemberMasterView
+    MemberMasterView, MemberMasterCreate
 
 from . import deps, auth, database
 from .auth import JwtAuthenticator, ACCESS_TOKEN_EXPIRE_DAYS
-from .crud.members import get_members, get_member_by_short_uuid, get_password_hash
+from .crud.members import get_members, get_member_by_short_uuid, get_password_hash, create_member
 
 # Our FastAPI sub-app for the v1 API
 app = FastAPI()
@@ -66,6 +66,19 @@ async def read_member(short_uuid: base64url_length_8,
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No member with the {short_uuid=} was found."})
+    return member
+
+
+@app.post("/members/create")  # TODO: investigate FastAPI's builtin output validation
+async def create_new_member(member_data: MemberMasterCreate,
+                        db: AsyncSession = Depends(get_db),
+                        current_user: MemberSelfView = Depends(get_current_user)):
+
+    # Make sure user is authenticated with Master permissions
+    if current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters may create new members."})
+    member = await create_member(db=db, data=member_data)
     return member
 
 
