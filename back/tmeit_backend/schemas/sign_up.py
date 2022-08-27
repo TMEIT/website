@@ -8,6 +8,7 @@ from ._check_password import is_password_strong
 
 
 class SignUpBase(BaseModel):
+    """Editable fields for SignUps. Mostly used as a baseclass."""
     login_email: EmailStr
     first_name: constr(min_length=1)
     last_name: constr(min_length=1)
@@ -15,11 +16,13 @@ class SignUpBase(BaseModel):
 
 
 class SignUp(SignUpBase):
+    """Visible fields on the SignUp database model"""
     uuid: UUID
     time_created: datetime.datetime
 
 
 class SignUpForm(SignUpBase):
+    """Fields that prao fills in to sign up, including setting a password."""
     password: SecretStr
 
     @validator('password')
