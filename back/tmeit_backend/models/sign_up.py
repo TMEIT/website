@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.functions import func
 
-from ...database import Base
+from ..database import Base
 
 
 class SignUp(Base):

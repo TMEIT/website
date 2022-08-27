@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.functions import func
 
 from ...database import Base
-from ..utils import short_uuid_from_uuid
+from .._utils import short_uuid_from_uuid
 
 
 class Member(Base):
