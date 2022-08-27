@@ -20,8 +20,13 @@ class SignUp(Base):
     # Created/Updated timestamps
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
+    # Log the IP address that submitted the form to help prevent abuse.
+    # Always stored in standard IPv6 text format, as specified by RFC 4291.
+    # IPv4 addresses are represented as an IPv4-Mapped IPv6 Address in the format ::FFFF:XXXX:XXXX
+    ip_address = Column(String, nullable=False)
+
     # Email, will be used to log in when converted to full member
-    login_email = Column(String, nullable=False, unique=True, index=True)
+    login_email = Column(String, nullable=False, unique=True)
 
     # Future password, hashed with argon2
     hashed_password = Column(String, nullable=False)
