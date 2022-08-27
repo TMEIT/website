@@ -1,3 +1,5 @@
+import ipaddress
+from typing import Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,14 +11,23 @@ from ..schemas.members.schemas import MemberMasterView
 from ..schemas.sign_up import SignUp, SignUpForm
 
 
-async def sign_up(db: AsyncSession, data: SignUpForm) -> SignUp:
+async def sign_up(db: AsyncSession, data: SignUpForm, ip_address: Union[ipaddress.IPv4Address, ipaddress.IPv6Address]) -> SignUp:
     uuid = uuid4()
     hashed_password = ph.hash(data.password)
+    match ip_address:
+        case ipaddress.IPv6Address:
+            ip = str(ip_address)
+        case ipaddress.IPv4Address:  # Convert IPv4 address to an IPv4-Mapped IPv6 Address
+            ip_bytes = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff' + ip_address.packed
+            ip = str(ipaddress.IPv6Address(ip_bytes))
+        case _:
+            raise ValueError("Invalid IP address!")
     async with db.begin():
         db.add_all([
             models.SignUp(uuid=str(uuid),
                           login_email=data.login_email,
                           hashed_password=hashed_password,
+                          ip_address=ip,
                           first_name=data.first_name,
                           last_name=data.last_name,
                           phone=data.phone),

@@ -1,4 +1,5 @@
 import datetime
+import ipaddress
 from typing import Optional
 from uuid import UUID
 
@@ -13,6 +14,7 @@ class SignUpBase(BaseModel):
     first_name: constr(min_length=1)
     last_name: constr(min_length=1)
     phone: Optional[str]
+    ip_address: ipaddress.IPv6Address
 
 
 class SignUp(SignUpBase):
