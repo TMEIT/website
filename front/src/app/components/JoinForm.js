@@ -31,6 +31,11 @@ function JoinForm() {
     if (password === confirmPassword) {
       console.log("confirmed");
     }
+    if (validator.isEmail(email)) {
+      console.log("Email confirmed");
+    } else {
+      console.log();
+    }
   };
 
   return (
