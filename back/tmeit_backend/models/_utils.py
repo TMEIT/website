@@ -1,6 +1,5 @@
 from sqlalchemy import String
 from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.sql.elements import ColumnClause
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.sql.functions import FunctionElement, func
 
