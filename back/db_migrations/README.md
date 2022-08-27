@@ -31,6 +31,9 @@ and you need to have the poetry and the backend installed in a virtual environme
 This can be done by running `poetry install` with `back/` as your working directory and then activating the venv it creates.
 To run the script, run `scripts/autogen_migrations.sh` with `back/db_migrations` as your working directory.
 
+If you are creating a new model, make sure that the model is imported in the module file models/__init__.py,
+so that the model is initialized when running Alembic
+
 ## Generating a test database
 The `create-test-db` kubernetes Job runs on every deploy of the dev environment, 
 deleting all tables in the dev database and creating new ones populated with test data.

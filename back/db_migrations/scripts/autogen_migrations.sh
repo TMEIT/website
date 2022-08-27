@@ -9,10 +9,6 @@
 # Password in url must be same as deploy/dev/kustomization.yaml
 export SQLALCHEMY_DATABASE_URL='postgresql+asyncpg://tmeit_backend:HBXOHEc6TpkquVHKy2zmSeUIEaUFvW@localhost:5432/tmeit_backend'
 
-# Port forward to db while script is running
-trap 'kill $(jobs -p)' EXIT;
-kubectl port-forward svc/tmeit-db 5432 > /dev/null &
-
 echo "Enter a short comment about what you're changing in this migration"
 read -r COMMENT
 
