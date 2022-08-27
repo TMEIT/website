@@ -20,6 +20,7 @@ def test_client_with_fake_db():
     os.environ['POSTGRES_PASSWORD'] = ''
     os.environ['JWT_KEY'] = ''
     from tmeit_backend import app_api
+    from tmeit_backend.routers import _database_deps
 
     app = app_api.app
 
@@ -45,7 +46,7 @@ def test_client_with_fake_db():
         fake_db.execute = fake_execute
         return fake_db
 
-    app.dependency_overrides[app_api.get_db] = override_get_db
+    app.dependency_overrides[_database_deps.get_db] = override_get_db
 
     return client
 
