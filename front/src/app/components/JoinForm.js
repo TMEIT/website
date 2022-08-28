@@ -145,7 +145,7 @@ function JoinForm() {
             We store your name, email address, and any information you or other
             members of TMEIT enter about you. All data is stored securely within
             the EU. Contact a master for questions or issues regarding your
-            personal data. By checking this box you aknowledge this in
+            personal data. By checking this box you acknowledge this in
             conpliance with GDPR.
           </label>
           <input
@@ -167,11 +167,11 @@ function JoinForm() {
               return <></>;
             case 1:
               return (
-                <>You must check the box to constent and register to TMEIT</>
+                <>You must check the box to consent and register to TMEIT</>
               );
 
             case 2:
-              return <>Passwords does not match or is empty</>;
+              return <>Password does not match or is empty</>;
 
             case 3:
               return <>Message has been sent and received</>;
