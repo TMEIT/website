@@ -56,7 +56,7 @@ async def create_new_member(member_data: MemberMasterCreate,
                             current_user: MemberSelfView = Depends(get_current_user)):
 
     # Make sure user is authenticated with Master permissions
-    if current_user.current_role != "master":
+    if current_user is None or current_user.current_role != "master":
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"error": f"Only masters may create new members."})
     member = await create_member(db=db, data=member_data)
