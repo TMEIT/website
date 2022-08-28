@@ -15,9 +15,9 @@ async def sign_up(db: AsyncSession, data: SignUpForm, ip_address: Union[ipaddres
     uuid = uuid4()
     hashed_password = ph.hash(data.password)
     match ip_address:
-        case ipaddress.IPv6Address:
+        case ipaddress.IPv6Address():
             ip = str(ip_address)
-        case ipaddress.IPv4Address:  # Convert IPv4 address to an IPv4-Mapped IPv6 Address
+        case ipaddress.IPv4Address():  # Convert IPv4 address to an IPv4-Mapped IPv6 Address
             ip_bytes = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff' + ip_address.packed
             ip = str(ipaddress.IPv6Address(ip_bytes))
         case _:
@@ -47,5 +47,5 @@ async def get_sign_up(db: AsyncSession, uuid: UUID) -> SignUp:
     result = (await db.execute(stmt)).fetchone()
     if result is None:
         raise KeyError()
-    sql_signup = dict(result.Member.__dict__)
+    sql_signup = dict(result.SignUp.__dict__)
     return SignUp.parse_obj(sql_signup)
