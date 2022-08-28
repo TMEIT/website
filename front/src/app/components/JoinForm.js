@@ -88,6 +88,16 @@ function JoinForm() {
           onChange={(e) => handleInputChange(e)}
         ></input>
       </div>
+      <div>
+        <label htmlFor="GDPR">
+          We store your name, email address, and any information you or other
+          members of TMEIT enter about you. All data is stored securely within
+          the EU. Contact a master for questions or issues regarding your
+          personal data. By checking this box you aknowledge this in conpliance
+          with GDPR.
+        </label>
+        <input type="checkbox" id="GDPR" />
+      </div>
       <div className="submit">
         <button type="submit" onClick={() => submit()}>
           Register
