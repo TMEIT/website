@@ -14,19 +14,20 @@ class SignUpBase(BaseModel):
     first_name: constr(min_length=1)
     last_name: constr(min_length=1)
     phone: Optional[str]
-    ip_address: ipaddress.IPv6Address
 
 
 class SignUp(SignUpBase):
     """Visible fields on the SignUp database model"""
     uuid: UUID
     time_created: datetime.datetime
+    ip_address: ipaddress.IPv6Address
 
 
 class SignUpForm(SignUpBase):
     """Fields that prao fills in to sign up, including setting a password."""
-    password: SecretStr
+    password: str
 
     @validator('password')
     def check_password(cls, v):
-        is_password_strong(v)
+        return is_password_strong(v)
+

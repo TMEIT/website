@@ -1,7 +1,7 @@
 from ._owasp_common_passwords import passwords
 
 
-def is_password_strong(pw: str) -> None:
+def is_password_strong(pw: str) -> str:
     """
     Checks if a password has at least 6 characters and isn't very common. Raises a ValueError if the password isn't good enough.
 
@@ -17,5 +17,7 @@ def is_password_strong(pw: str) -> None:
 
     pw_set = {p for p in passwords.split(" ")}  # Use a Set (aka hashmap) for fast searches
     if pw in pw_set:
-        raise ValueError(f'"{pw}" is a bad password."'
+        raise ValueError(f'"{pw}" is a bad password.'
                          ' I found it here: https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/10-million-password-list-top-100000.txt')
+
+    return pw
