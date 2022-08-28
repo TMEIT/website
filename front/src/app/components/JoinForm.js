@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function JoinForm() {
   const [firstName, setFirstName] = useState("");
@@ -12,7 +12,7 @@ function JoinForm() {
 
   const [errorMessage, setErrorMessage] = useState(0);
   const [errorSpec, setErrorSpec] = useState("");
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -71,7 +71,7 @@ function JoinForm() {
           setErrorMessage(4);
         } else if (signUp.status === 200) {
           setErrorMessage(3);
-          history.push("/join_completed");
+          navigate("/join_completed");
         } else {
           alert(`Error ${signUp.status}: ${signUp.statusText}`);
         }
