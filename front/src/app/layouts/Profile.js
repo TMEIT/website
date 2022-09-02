@@ -10,6 +10,8 @@ import {WorkteamItem} from "../components/Listables";
 
 function Profile () {
 
+    let loggedIn = false;
+
     let { shortUuid, _ } = useParams();
 
     const {loading, data} = useFetch("/api/v1/members/" + shortUuid);
@@ -42,31 +44,37 @@ function Profile () {
             <h1>{nickname}</h1>
             <h2>{fullName}</h2>
             <h3>{role}</h3>
-           <Tabs>
-               <TabList>
-                   <Tab>Info</Tab>
-                   <Tab>Quotes and Pictures</Tab>
-                   <Tab>Events</Tab>
-                   <Tab>Workteams</Tab>
-               </TabList>
-
-               <TabPanel>
-                   <div id={"info"}>
-                       <InfoList data={data}/>
-                       <HistoryList histories={data.role_histories} />
-                   </div>
-               </TabPanel>
-               <TabPanel>"Det var bättre förr"</TabPanel>
-               <TabPanel>All of them</TabPanel>
-               <TabPanel>
-                   {data.workteams.map( team => <WorkteamItem key={team} team={team}/>)}
-               </TabPanel>
-
-
-
-           </Tabs>
+            <DetailsBox data={data} loggedIn={loggedIn} />
        </>
     )
+}
+
+function DetailsBox(props) {
+    if(props.loggedIn == false)
+        return null;
+
+    return (
+        <Tabs>
+           <TabList>
+               <Tab>Info</Tab>
+               <Tab>Quotes and Pictures</Tab>
+               <Tab>Events</Tab>
+               <Tab>Workteams</Tab>
+           </TabList>
+
+           <TabPanel>
+               <div id={"info"}>
+                   <InfoList data={props.data}/>
+                   <HistoryList histories={props.data.role_histories} />
+               </div>
+           </TabPanel>
+           <TabPanel>"Det var bättre förr"</TabPanel>
+           <TabPanel>All of them</TabPanel>
+           <TabPanel>
+               {props.data.workteams.map( team => <WorkteamItem key={team} team={team}/>)}
+           </TabPanel>
+       </Tabs>
+   )
 }
 
 const InfoList = React.memo(function InfoList(props) {
