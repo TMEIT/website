@@ -1,12 +1,8 @@
 import React from "react";
+import JoinForm from "../components/JoinForm";
 
 function Join() {
-    return(
-        <>
-            <h1>Join TMEIT</h1>
-            <p>PRAO signup form coming soon!</p>
-        </>
-    );
+  return <JoinForm />;
 }
 
-export default Join
+export default Join;
