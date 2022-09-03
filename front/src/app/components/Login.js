@@ -3,6 +3,7 @@ import "./login.css";
 
 function Login() {
   const [open, setOpen] = useState(false);
+  const [openLogout, setOpenLogout] = useState(false);
   const [email, setEmail] = useState("");
   const [pswrd, setPswrd] = useState("");
 
@@ -68,13 +69,14 @@ function Login() {
   function handleLogout() {
     document.cookie = "access_token = ;";
     setLogged(false);
+    setOpenLogout(false);
   }
 
   return (
     <div>
       <li>
         {logged ? (
-          <a href={"#"} onClick={() => handleLogout()}>
+          <a href={"#"} onClick={() => setOpenLogout(true)}>
             Logout
           </a>
         ) : (
@@ -130,6 +132,29 @@ function Login() {
                       }
                     })()}
                   </div>
+                </main>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      <div id="logoutModal">
+        {openLogout && (
+          <>
+            <div className="overlay">
+              <div className="modal">
+                <header className="modalHeader">
+                  <h2>Logout</h2>
+                  <button
+                    onClick={() => setOpenLogout(false)}
+                    className="closeButton"
+                  >
+                    &times;
+                  </button>
+                </header>
+                <main className="modalMain">
+                  <h4>Are you sure you want to log out?</h4>
+                  <button onClick={() => handleLogout()}>Yes, I am</button>
                 </main>
               </div>
             </div>
