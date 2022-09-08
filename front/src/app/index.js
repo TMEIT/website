@@ -18,7 +18,7 @@ import Team from "./layouts/Team";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Profile from "./layouts/Profile";
-import Joined from "./components/Joined";
+import Joined from "./layouts/Joined";
 
 function App() {
   return (
