@@ -61,7 +61,6 @@ function JoinForm() {
 
       signUp.onload = function () {
         if (signUp.status === 422) {
-          console.log(signUp.response);
           let responseObj = "";
           signUp.response["detail"].forEach((e) => {
             responseObj += e.msg + "\n";

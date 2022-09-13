@@ -47,7 +47,6 @@ function App() {
 function Login() {
   return <h1>Login</h1>;
 }
-
 const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(<App />);
