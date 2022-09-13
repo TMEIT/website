@@ -1,7 +1,8 @@
-from typing import Union
+from typing import Union, Literal
 
 from fastapi import Depends, status, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,6 +13,11 @@ from ..schemas.members.schemas import base64url_length_8, MemberMemberView, Memb
     MemberMasterView, MemberMasterCreate, MemberViewResponse
 
 router = APIRouter()
+me_router = APIRouter()
+
+
+class NotLoggedInResponse(BaseModel):
+    detail: Literal["You are not logged in."]
 
 
 @router.get("/", response_model=list[Union[MemberPublicView, MemberMemberView, MemberMasterView]])
@@ -26,6 +32,16 @@ async def read_members(db: AsyncSession = Depends(get_db),
             response_schema = MemberMasterView
 
     return await get_members(db=db, response_schema=response_schema)
+
+
+@me_router.get("/me", response_model=MemberSelfView, responses={401: {"model": NotLoggedInResponse}})
+async def me(current_user: MemberSelfView = Depends(get_current_user)):
+    """Returns the member data for the currently logged in member."""
+    if current_user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="You are not logged in.",
+                            headers={"WWW-Authenticate": "Bearer"})
+    return current_user
 
 
 @router.get("/{short_uuid}", response_model=MemberViewResponse, responses={404: {"model": NotFoundResponse}})
