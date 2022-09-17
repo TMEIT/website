@@ -1,4 +1,4 @@
-async function CheckLogin() {
+async function GetMyInfo() {
   var name = "access_token";
   var cookieArr = document.cookie.split(";");
 
@@ -8,18 +8,17 @@ async function CheckLogin() {
 
     if (name === cookiePair[0].trim()) {
       if (decodeURIComponent(cookiePair[1]) === "") {
-        // If value for access_token is empty, return false
-        return false;
+        // If value for access_token is empty
+        return "{}";
       } else {
         const tokenText = "Bearer " + decodeURIComponent(cookiePair[1]);
         let result = await makeRequest(tokenText);
-        if (result === 200) return true;
+        return result;
       }
     }
   }
-
-  // If there is no cookie for access_token, return false
-  return false;
+  // If there is no cookie for access_token
+  return "{}";
 }
 
 function makeRequest(tokenText) {
@@ -31,7 +30,7 @@ function makeRequest(tokenText) {
 
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
-        resolve(xhr.status);
+        resolve(xhr.response);
       } else {
         reject({
           status: this.status,
@@ -48,4 +47,5 @@ function makeRequest(tokenText) {
     xhr.send();
   });
 }
-export default CheckLogin;
+
+export default GetMyInfo;

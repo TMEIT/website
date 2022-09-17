@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
 import CheckLogin from "./CheckLogin";
+import GetMyInfo from "./GetMyInfo";
 
 function Login() {
   const [open, setOpen] = useState(false);
@@ -13,6 +15,8 @@ function Login() {
 
   // Set status of logged in or not
   const [logged, setLogged] = useState(CheckLogin());
+
+  let navigate = useNavigate();
 
   function handleLogin(e) {
     e.preventDefault();
@@ -34,7 +38,7 @@ function Login() {
         // handling of JWT
         const access_token = token.response.access_token;
         document.cookie =
-          "access_token = " + access_token + "; SameSite = strict; Secure;";
+          "access_token=" + access_token + ";SameSite=strict;Secure;";
         setOpen(false);
         setLogged(true);
         setError(0);
@@ -50,13 +54,31 @@ function Login() {
     setOpenLogout(false);
   }
 
+  async function gotoProfile() {
+    let result = await GetMyInfo();
+    console.log(result);
+    try {
+      let link = result.short_uuid;
+      console.log(link);
+      navigate("/profile/" + link);
+    } catch (error) {
+      console.log(error);
+      alert("Error, somehow you got no data LMAO");
+    }
+  }
+
   return (
     <div>
       <li>
         {logged ? (
-          <a href={"#"} onClick={() => setOpenLogout(true)}>
-            Logout
-          </a>
+          <div>
+            <a href={"#"} onClick={() => gotoProfile()}>
+              Profile{" "}
+            </a>
+            <a href={"#"} onClick={() => setOpenLogout(true)}>
+              Logout
+            </a>
+          </div>
         ) : (
           <a href={"#"} onClick={() => setOpen(true)}>
             Login
