@@ -2,12 +2,14 @@ from typing import TypeVar, Type
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from .. import models
 from ..models import Member
-from ..schemas.members.schemas import MemberAuthentication, MemberMasterCreate, MemberMasterView
+from ..schemas.members.schemas import MemberAuthentication, MemberMasterCreate, MemberMasterView, MemberMasterPatch, \
+    MemberSelfPatch
 
 S = TypeVar('S', bound=BaseModel)
 
@@ -77,3 +79,25 @@ async def get_members(db: AsyncSession, response_schema: Type[S], skip: int = 0,
     return [response_schema.parse_obj(sql_member) for sql_member in sql_members]
 
 
+async def update_member(db: AsyncSession,
+                        short_uuid: str,
+                        patch_data: MemberSelfPatch | MemberMasterPatch,
+                        response_schema: Type[S]) -> S:
+    result = (await db.execute(
+        update(models.Member)
+        .where(models.Member.short_uuid == short_uuid)
+        .values(**patch_data.dict())
+        .returning('*')
+    )).fetchone()
+
+    if result is None:
+        raise KeyError()
+
+    await db.commit()
+
+    sql_member = result._asdict()
+    sql_member['role_histories'] = []
+    sql_member['workteams'] = []
+    sql_member['workteams_leading'] = []
+
+    return response_schema.parse_obj(sql_member)
