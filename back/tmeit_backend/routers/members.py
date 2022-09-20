@@ -1,13 +1,14 @@
+import traceback
 from typing import Union, Literal
 
 from fastapi import Depends, status, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
-from ._error_responses import NotFoundResponse, ForbiddenResponse
+from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
 from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
     MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch
@@ -81,7 +82,8 @@ async def create_new_member(member_data: MemberMasterCreate,
 
 @router.patch("/{short_uuid}",
               response_model=MemberMasterView | MemberSelfView,
-              responses={401: {"model": NotLoggedInResponse},
+              responses={400: {"model": BadPatchResponse},
+                         401: {"model": NotLoggedInResponse},
                          403: {"model": ForbiddenResponse},
                          404: {"model": NotFoundResponse}})
 async def patch_member(short_uuid: base64url_length_8,
@@ -110,10 +112,10 @@ async def patch_member(short_uuid: base64url_length_8,
     # Ensure user has permission to set that field
     try:
         validated_data = patch_schema.parse_obj(field_data)
-    except Exception as e:
-        traceback.print_exc()
-        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
-                            content={"error": f"You don't have permission to edit this user."})
+    except ValidationError as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"error": f"Invalid fields, or you don't have permission to edit these fields.",
+                                     "details": e.errors()})
 
     try:
         member = await update_member(db=db, short_uuid=short_uuid, patch_data=validated_data, response_schema=response_schema)

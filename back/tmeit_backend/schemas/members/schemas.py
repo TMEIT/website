@@ -2,7 +2,7 @@ import datetime
 from typing import TypedDict, Any, Literal, Union, Optional, NamedTuple
 from uuid import UUID
 
-from pydantic import EmailStr, constr, create_model, Field, BaseModel
+from pydantic import EmailStr, constr, create_model, Field, BaseModel, Extra, BaseConfig
 
 from ..access_levels import APIAccessLevelsEnum
 from .enums import CurrentRoleEnum
@@ -102,23 +102,35 @@ database_fields_schema_dict = {
 }
 
 
-# Create Member models programmatically from our schema dicts
+class PatchSchemaConfig(BaseConfig):
+    """
+    Special config that makes the patch schemas raise an explicit validation error when not used properly.
+
+    When a PATCH endpoint is used with a field that isn't allowed,
+    the model will raise a validation error so that the proposed patch changes aren't silently dropped.
+    """
+    extra = Extra.forbid
+
+
+# Create Member schemas programmatically from our schema dicts
 # https://pydantic-docs.helpmanual.io/usage/models/#dynamic-model-creation
 
-# View models
+# View schemas
 MemberPublicView = create_model('MemberPublicView', **database_fields_schema_dict, **build_member_schema_dict("public", read))
 MemberMemberView = create_model('MemberMemberView', **database_fields_schema_dict, **build_member_schema_dict("member", read))
-MemberSelfView = create_model('MemberSelfView', **database_fields_schema_dict, **build_member_schema_dict("self", read))
+MemberSelfView = create_model('MemberSelfView',     **database_fields_schema_dict, **build_member_schema_dict("self", read))
 MemberMasterView = create_model('MemberMasterView', **database_fields_schema_dict, **build_member_schema_dict("master", read))
 
 
-# Patch models
-MemberSelfPatch = create_model('MemberSelfPatch', **build_member_schema_dict("self", edit, all_fields_optional=True))
-MemberMasterPatch = create_model('MemberMasterPatch', **build_member_schema_dict("master", edit, all_fields_optional=True))
+# Patch schemas
+MemberSelfPatch = create_model('MemberSelfPatch',       __config__=PatchSchemaConfig, **build_member_schema_dict("self", edit, all_fields_optional=True))
+MemberMasterPatch = create_model('MemberMasterPatch',   __config__=PatchSchemaConfig, **build_member_schema_dict("master", edit, all_fields_optional=True))
 
-# Create models
+# Create schemas
 MemberMasterCreate = create_model('MemberMasterCreate', **build_member_schema_dict("master", edit))
 
+
+# Union type for the read schemas
 MemberViewResponse = Union[MemberMasterView, MemberSelfView, MemberMemberView, MemberPublicView]
 
 
