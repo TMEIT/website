@@ -20,7 +20,7 @@ class NotLoggedInResponse(BaseModel):
     detail: Literal["You are not logged in."]
 
 
-@router.get("/", response_model=list[Union[MemberPublicView, MemberMemberView, MemberMasterView]])
+@router.get("/", response_model=list[Union[MemberMasterView, MemberMemberView, MemberPublicView]])
 async def read_members(db: AsyncSession = Depends(get_db),
                        current_user: MemberSelfView = Depends(get_current_user)):
 
@@ -80,7 +80,7 @@ async def create_new_member(member_data: MemberMasterCreate,
 
 
 @router.patch("/{short_uuid}",
-              response_model=MemberSelfView | MemberMasterView,
+              response_model=MemberMasterView | MemberSelfView,
               responses={401: {"model": NotLoggedInResponse},
                          403: {"model": ForbiddenResponse},
                          404: {"model": NotFoundResponse}})

@@ -119,7 +119,7 @@ MemberMasterPatch = create_model('MemberMasterPatch', **build_member_schema_dict
 # Create models
 MemberMasterCreate = create_model('MemberMasterCreate', **build_member_schema_dict("master", edit))
 
-MemberViewResponse = Union[MemberPublicView, MemberMemberView, MemberSelfView, MemberMasterView]
+MemberViewResponse = Union[MemberMasterView, MemberSelfView, MemberMemberView, MemberPublicView]
 
 
 class MemberAuthentication(BaseModel):
