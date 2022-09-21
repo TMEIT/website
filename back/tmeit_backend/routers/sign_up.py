@@ -11,6 +11,8 @@ from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, ConflictResponse
 from ..crud.sign_up import get_sign_up, get_sign_ups
 from ..crud.sign_up import sign_up as sign_up_crud
+from ..crud.sign_up import delete_sign_up as delete_sign_up_crud
+from ..crud.sign_up import approve_sign_up as approve_sign_up_crud
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
     MemberMasterView, MemberMasterCreate, MemberViewResponse
 from ..schemas.sign_up import SignUp, SignUpForm
@@ -57,7 +59,7 @@ async def delete_sign_up(uuid: UUID,
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"error": f"Only masters may delete a pending sign-up."})
     try:
-        await delete_sign_up(db=db, uuid=uuid)
+        await delete_sign_up_crud(db=db, uuid=uuid)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No signup with the {uuid=} was found."})
@@ -73,7 +75,7 @@ async def approve_sign_up(uuid: UUID,
                             content={"error": f"Only masters may approve a pending sign-up."})
 
     try:
-        member = await approve_sign_up(db=db, uuid=uuid)
+        member = await approve_sign_up_crud(db=db, uuid=uuid)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No signup with the {uuid=} was found."})
