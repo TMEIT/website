@@ -34,9 +34,11 @@ async def read_sign_ups(db: AsyncSession = Depends(get_db),
     return await get_sign_ups(db=db)
 
 
-@router.get("/{uuid}", response_model=MemberViewResponse, responses={404: {"model": NotFoundResponse}})
+@router.get("/{uuid}", response_model=SignUp, responses={404: {"model": NotFoundResponse}})
 async def read_sign_up(uuid: UUID,
                        db: AsyncSession = Depends(get_db)):
+
+    # We allow anyone with the signup UUID to view the signup, so that prao can see their signup status page
 
     try:
         member = await get_sign_up(db=db, uuid=uuid)
