@@ -41,7 +41,39 @@ async def read_sign_up(uuid: UUID,
     # We allow anyone with the signup UUID to view the signup, so that prao can see their signup status page
 
     try:
-        member = await get_sign_up(db=db, uuid=uuid)
+        signup = await get_sign_up(db=db, uuid=uuid)
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={"error": f"No signup with the {uuid=} was found."})
+    return signup
+
+
+@router.delete("/{uuid}", status_code=204, responses={403: {"model": SignupsMastersOnlyResponse},
+                                                      404: {"model": NotFoundResponse}})
+async def delete_sign_up(uuid: UUID,
+                         db: AsyncSession = Depends(get_db),
+                         current_user: MemberSelfView = Depends(get_current_user)):
+    if current_user is None or current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters may delete a pending sign-up."})
+    try:
+        await delete_sign_up(db=db, uuid=uuid)
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={"error": f"No signup with the {uuid=} was found."})
+
+
+@router.post("/approve/{uuid}", response_model=MemberMasterView, responses={403: {"model": SignupsMastersOnlyResponse},
+                                                                            404: {"model": NotFoundResponse}})
+async def approve_sign_up(uuid: UUID,
+                          db: AsyncSession = Depends(get_db),
+                          current_user: MemberSelfView = Depends(get_current_user)):
+    if current_user is None or current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters may approve a pending sign-up."})
+
+    try:
+        member = await approve_sign_up(db=db, uuid=uuid)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No signup with the {uuid=} was found."})
