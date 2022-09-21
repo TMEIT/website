@@ -5,13 +5,16 @@ from uuid import UUID, uuid4
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from .members import get_member
 from .. import models
 from ..auth import ph
-from ..schemas.members.schemas import MemberMasterView
+from ..schemas.members.enums import CurrentRoleEnum
+from ..schemas.members.schemas import MemberMasterView, MemberMasterCreate
 from ..schemas.sign_up import SignUp, SignUpForm
 
 
-async def sign_up(db: AsyncSession, data: SignUpForm, ip_address: Union[ipaddress.IPv4Address, ipaddress.IPv6Address]) -> SignUp:
+async def sign_up(db: AsyncSession, data: SignUpForm,
+                  ip_address: Union[ipaddress.IPv4Address, ipaddress.IPv6Address]) -> SignUp:
     uuid = uuid4()
     hashed_password = ph.hash(data.password)
     match ip_address:
@@ -49,3 +52,33 @@ async def get_sign_up(db: AsyncSession, uuid: UUID) -> SignUp:
         raise KeyError()
     sql_signup = dict(result.SignUp.__dict__)
     return SignUp.parse_obj(sql_signup)
+
+
+async def approve_sign_up(db: AsyncSession, uuid: UUID) -> MemberMasterView:
+    stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
+    result = (await db.execute(stmt)).fetchone()
+    if result is None:
+        raise KeyError()
+    sql_signup: models.SignUp = result.SignUp
+    uuid = uuid4()
+    async with db.begin():
+        db.add_all([
+            models.Member(uuid=str(uuid),
+                          login_email=sql_signup.login_email,
+                          current_role=CurrentRoleEnum.prao.value,
+                          hashed_password=sql_signup.hashed_password,
+                          first_name=sql_signup.first_name,
+                          last_name=sql_signup.last_name),
+            # TODO: We should also add a RoleHistory here with the prao signup date
+        ])
+        await db.delete(sql_signup)
+    return await get_member(db=db, uuid=uuid, response_schema=MemberMasterView)
+
+
+async def delete_sign_up(db: AsyncSession, uuid: UUID) -> MemberMasterView:
+    stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
+    result = (await db.execute(stmt)).fetchone()
+    if result is None:
+        raise KeyError()
+    async with db.begin():
+        await db.delete(result.SignUp)
