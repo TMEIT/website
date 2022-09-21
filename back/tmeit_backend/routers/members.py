@@ -1,6 +1,6 @@
-import traceback
 from typing import Union, Literal
 
+from argon2.exceptions import VerificationError
 from fastapi import Depends, status, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
@@ -9,9 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
-from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member
+from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member, change_password
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
-    MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch
+    MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch, ChangePassword
 
 router = APIRouter()
 me_router = APIRouter()
@@ -123,3 +123,29 @@ async def patch_member(short_uuid: base64url_length_8,
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No member with the {short_uuid=} was found."})
     return member
+
+
+# TODO: clear password
+# TODO: reset password
+
+
+class InvalidPasswordResponse(BaseModel):
+    detail: Literal['"Current password" is incorrect.']
+
+
+@router.post("/change_password", status_code=204, responses={400: {"model": InvalidPasswordResponse},
+                                                             401: {"model": NotLoggedInResponse}})
+async def update_password(data: ChangePassword,
+                          db: AsyncSession = Depends(get_db),
+                          current_user: MemberSelfView = Depends(get_current_user)):
+    if current_user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="You are not logged in.",
+                            headers={"WWW-Authenticate": "Bearer"})
+    try:
+        await change_password(db=db, uuid=current_user.uuid, data=data)
+    except VerificationError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"error": '"Current password" is incorrect.'})
+    except KeyError:
+        raise KeyError("User not found even though we're logged in? Probably a race condition.")
