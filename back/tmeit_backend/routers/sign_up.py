@@ -8,9 +8,11 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
-from ._error_responses import NotFoundResponse, ForbiddenResponse
+from ._error_responses import NotFoundResponse, ForbiddenResponse, ConflictResponse
 from ..crud.sign_up import get_sign_up, get_sign_ups
 from ..crud.sign_up import sign_up as sign_up_crud
+from ..crud.sign_up import delete_sign_up as delete_sign_up_crud
+from ..crud.sign_up import approve_sign_up as approve_sign_up_crud
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
     MemberMasterView, MemberMasterCreate, MemberViewResponse
 from ..schemas.sign_up import SignUp, SignUpForm
@@ -34,21 +36,59 @@ async def read_sign_ups(db: AsyncSession = Depends(get_db),
     return await get_sign_ups(db=db)
 
 
-@router.get("/{uuid}", response_model=MemberViewResponse, responses={404: {"model": NotFoundResponse}})
+@router.get("/{uuid}", response_model=SignUp, responses={404: {"model": NotFoundResponse}})
 async def read_sign_up(uuid: UUID,
                        db: AsyncSession = Depends(get_db)):
 
+    # We allow anyone with the signup UUID to view the signup, so that prao can see their signup status page
+
     try:
-        member = await get_sign_up(db=db, uuid=uuid)
+        signup = await get_sign_up(db=db, uuid=uuid)
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={"error": f"No signup with the {uuid=} was found."})
+    return signup
+
+
+@router.delete("/{uuid}", status_code=204, responses={403: {"model": SignupsMastersOnlyResponse},
+                                                      404: {"model": NotFoundResponse}})
+async def delete_sign_up(uuid: UUID,
+                         db: AsyncSession = Depends(get_db),
+                         current_user: MemberSelfView = Depends(get_current_user)):
+    if current_user is None or current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters may delete a pending sign-up."})
+    try:
+        await delete_sign_up_crud(db=db, uuid=uuid)
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={"error": f"No signup with the {uuid=} was found."})
+
+
+@router.post("/approve/{uuid}", response_model=MemberMasterView, responses={403: {"model": SignupsMastersOnlyResponse},
+                                                                            404: {"model": NotFoundResponse}})
+async def approve_sign_up(uuid: UUID,
+                          db: AsyncSession = Depends(get_db),
+                          current_user: MemberSelfView = Depends(get_current_user)):
+    if current_user is None or current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters may approve a pending sign-up."})
+
+    try:
+        member = await approve_sign_up_crud(db=db, uuid=uuid)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No signup with the {uuid=} was found."})
     return member
 
 
-@router.post("/sign_up", response_model=SignUp,)
+@router.post("/sign_up", response_model=SignUp, responses={409: {"model": ConflictResponse}})
 async def sign_up(sign_up_form: SignUpForm,
                   request: Request,
                   db: AsyncSession = Depends(get_db)):
-    signup = await sign_up_crud(db=db, data=sign_up_form, ip_address=ipaddress.ip_address(request.client.host))
+    try:
+        signup = await sign_up_crud(db=db, data=sign_up_form, ip_address=ipaddress.ip_address(request.client.host))
+    except ValueError as e:
+        return JSONResponse(status_code=status.HTTP_409_CONFLICT,  # Similar signup or member already exists
+                            content={"error": str(e)})
     return signup
