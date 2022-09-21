@@ -2,8 +2,9 @@ import datetime
 from typing import TypedDict, Any, Literal, Union, Optional, NamedTuple
 from uuid import UUID
 
-from pydantic import EmailStr, constr, create_model, Field, BaseModel, Extra, BaseConfig
+from pydantic import EmailStr, constr, create_model, Field, BaseModel, Extra, BaseConfig, validator
 
+from .._check_password import is_password_strong
 from ..access_levels import APIAccessLevelsEnum
 from .enums import CurrentRoleEnum
 
@@ -137,3 +138,12 @@ MemberViewResponse = Union[MemberMasterView, MemberSelfView, MemberMemberView, M
 class MemberAuthentication(BaseModel):
     login_email: EmailStr
     hashed_password: str | None
+
+
+class ChangePassword(BaseModel):
+    current_password: str
+    new_password: str
+
+    @validator('new_password')
+    def check_password(cls, v):
+        return is_password_strong(v)
