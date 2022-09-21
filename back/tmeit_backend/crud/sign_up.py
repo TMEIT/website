@@ -70,13 +70,14 @@ async def get_sign_up(db: AsyncSession, uuid: UUID) -> SignUp:
 
 
 async def approve_sign_up(db: AsyncSession, uuid: UUID) -> MemberMasterView:
-    stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
-    result = (await db.execute(stmt)).fetchone()
-    if result is None:
-        raise KeyError()
-    sql_signup: models.SignUp = result.SignUp
-    uuid = uuid4()
     async with db.begin():
+        stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
+        result = (await db.execute(stmt)).fetchone()
+        if result is None:
+            raise KeyError()
+        sql_signup: models.SignUp = result.SignUp
+
+        uuid = uuid4()
         db.add_all([
             models.Member(uuid=str(uuid),
                           login_email=sql_signup.login_email,
@@ -87,13 +88,14 @@ async def approve_sign_up(db: AsyncSession, uuid: UUID) -> MemberMasterView:
             # TODO: We should also add a RoleHistory here with the prao signup date
         ])
         await db.delete(sql_signup)
+
     return await get_member(db=db, uuid=uuid, response_schema=MemberMasterView)
 
 
 async def delete_sign_up(db: AsyncSession, uuid: UUID) -> None:
-    stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
-    result = (await db.execute(stmt)).fetchone()
-    if result is None:
-        raise KeyError()
     async with db.begin():
+        stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
+        result = (await db.execute(stmt)).fetchone()
+        if result is None:
+            raise KeyError()
         await db.delete(result.SignUp)
