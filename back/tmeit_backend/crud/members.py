@@ -83,17 +83,16 @@ async def update_member(db: AsyncSession,
                         short_uuid: str,
                         patch_data: MemberSelfPatch | MemberMasterPatch,
                         response_schema: Type[S]) -> S:
-    result = (await db.execute(
-        update(models.Member)
-        .where(models.Member.short_uuid == short_uuid)
-        .values(**patch_data.dict())
-        .returning('*')
-    )).fetchone()
+    async with db.begin():
+        result = (await db.execute(
+            update(models.Member)
+            .where(models.Member.short_uuid == short_uuid)
+            .values(**patch_data.dict())
+            .returning('*')
+        )).fetchone()
 
-    if result is None:
-        raise KeyError()
-
-    await db.commit()
+        if result is None:
+            raise KeyError()
 
     sql_member = result._asdict()
     sql_member['role_histories'] = []
