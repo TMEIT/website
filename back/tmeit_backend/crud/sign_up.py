@@ -75,7 +75,7 @@ async def approve_sign_up(db: AsyncSession, uuid: UUID) -> MemberMasterView:
     return await get_member(db=db, uuid=uuid, response_schema=MemberMasterView)
 
 
-async def delete_sign_up(db: AsyncSession, uuid: UUID) -> MemberMasterView:
+async def delete_sign_up(db: AsyncSession, uuid: UUID) -> None:
     stmt = select(models.SignUp).where(models.SignUp.uuid == str(uuid))
     result = (await db.execute(stmt)).fetchone()
     if result is None:
