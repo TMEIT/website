@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
-from ._error_responses import NotFoundResponse, ForbiddenResponse
+from ._error_responses import NotFoundResponse, ForbiddenResponse, ConflictResponse
 from ..crud.sign_up import get_sign_up, get_sign_ups
 from ..crud.sign_up import sign_up as sign_up_crud
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
@@ -80,9 +80,13 @@ async def approve_sign_up(uuid: UUID,
     return member
 
 
-@router.post("/sign_up", response_model=SignUp,)
+@router.post("/sign_up", response_model=SignUp, responses={409: {"model": ConflictResponse}})
 async def sign_up(sign_up_form: SignUpForm,
                   request: Request,
                   db: AsyncSession = Depends(get_db)):
-    signup = await sign_up_crud(db=db, data=sign_up_form, ip_address=ipaddress.ip_address(request.client.host))
+    try:
+        signup = await sign_up_crud(db=db, data=sign_up_form, ip_address=ipaddress.ip_address(request.client.host))
+    except ValueError as e:
+        return JSONResponse(status_code=status.HTTP_409_CONFLICT,  # Similar signup or member already exists
+                            content={"error": str(e)})
     return signup
