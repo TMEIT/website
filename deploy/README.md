@@ -1,11 +1,14 @@
 # deploy/
-This folder contains the kubernetes manifests used to run the app and related services, like databases.
 
-The manifests in `base/` are common to both dev environments and prod.
+This folder contains the deployment configurations for the website. 
+Almost everything related to running the website is configured using "Infrastructure as code", 
+in order to make the configuration more reliable, trackable, and easier to understand in the future.
 
-The manifests in `dev/` and `prod/` extend the base manifests to adapt them to the specifics of each environment
+## How the configuration works
+The app runs using Kubernetes for both production and development environments. The production server is configured with Terraform.
 
-The `kustomization.yaml` files decide which manifests are loaded, and how they are patched.
+## Subfolders
+The `kubernetes/` folder contains the Kubernetes manifests for the application service and related services, like databases.
 
-See [this blog](https://www.densify.com/kubernetes-tools/kustomize) for a crash course on how Kustomize works, 
-and see the [documentation here](https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/) for reference.
+The `terraform/` folder contains the Terraform configuration to bootstrap the production server on Hetzner Cloud, 
+and related services like S3-based storage on Backblaze B2, and DNS and proxy configuration on Cloudflare. 
