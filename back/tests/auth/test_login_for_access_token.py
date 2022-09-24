@@ -16,7 +16,7 @@ BAD_PASSWORD = "uruselt"
 
 
 @pytest.fixture(scope="module")
-def test_client_with_fake_db():
+def client_with_fake_db():
     os.environ['POSTGRES_PASSWORD'] = ''
     os.environ['JWT_KEY'] = ''
     from tmeit_backend import app_api
@@ -51,8 +51,8 @@ def test_client_with_fake_db():
     return client
 
 
-def test_login_for_access_token(test_client_with_fake_db):
-    response = test_client_with_fake_db.post(url="/token",
+def test_login_for_access_token(client_with_fake_db):
+    response = client_with_fake_db.post(url="/token",
                                              data={"username": GOOD_EMAIL,
                                                    "password": GOOD_PASSWORD})
     assert response.status_code == 200
@@ -60,22 +60,22 @@ def test_login_for_access_token(test_client_with_fake_db):
     assert claims['sub'] == "email:" + GOOD_EMAIL
 
 
-def test_login_for_access_token_wrong_username(test_client_with_fake_db):
-    response = test_client_with_fake_db.post(url="/token",
+def test_login_for_access_token_wrong_username(client_with_fake_db):
+    response = client_with_fake_db.post(url="/token",
                                              data={"username": BAD_EMAIL,
                                                    "password": GOOD_PASSWORD})
     assert response.status_code == 401
 
 
-def test_login_for_access_token_wrong_password(test_client_with_fake_db):
-    response = test_client_with_fake_db.post(url="/token",
+def test_login_for_access_token_wrong_password(client_with_fake_db):
+    response = client_with_fake_db.post(url="/token",
                                              data={"username": GOOD_EMAIL,
                                                    "password": BAD_PASSWORD})
     assert response.status_code == 401
 
 
-def test_login_for_access_token_no_hash_in_db(test_client_with_fake_db):
-    response = test_client_with_fake_db.post(url="/token",
+def test_login_for_access_token_no_hash_in_db(client_with_fake_db):
+    response = client_with_fake_db.post(url="/token",
                                              data={"username": USER_NO_PASSWORD,
                                                    "password": GOOD_PASSWORD})
     assert response.status_code == 401
