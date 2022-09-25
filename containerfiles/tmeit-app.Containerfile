@@ -26,6 +26,7 @@ RUN poetry config virtualenvs.in-project true \
 # Minimal container that contains both the frontend and backend, and gets uploaded to Kubernetes
 FROM docker.io/library/python:3.10-slim as app
 WORKDIR /code
+COPY back/pyproject.toml back/poetry.lock /code/
 COPY --from=back-build /code/.venv /code/.venv
 COPY --from=front-build /code/www/ /code/static/front
 COPY /back/tmeit_backend /code/tmeit_backend
