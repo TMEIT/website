@@ -52,6 +52,7 @@ function Login() {
     document.cookie = "access_token = ;";
     setLogged(false);
     setOpenLogout(false);
+    navigate(0);
   }
 
   async function gotoProfile() {
