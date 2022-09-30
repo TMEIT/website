@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import CheckLogin from "./CheckLogin";
-import GetMyInfo from "./GetMyInfo";
+import Dropdown from "./Dropdown";
 
 function Login() {
+  // Modular windows
   const [open, setOpen] = useState(false);
-  const [openLogout, setOpenLogout] = useState(false);
+  // login credentials
   const [email, setEmail] = useState("");
   const [pswrd, setPswrd] = useState("");
 
@@ -49,37 +50,12 @@ function Login() {
     };
   }
 
-  function handleLogout() {
-    document.cookie = "access_token=; expires = Thu, 01 Jan 1970 00:00:00 UTC;";
-    setLogged(false);
-    setOpenLogout(false);
-    navigate(0);
-  }
-
-  async function gotoProfile() {
-    let result = await GetMyInfo();
-    console.log(result);
-    try {
-      let link = result.short_uuid;
-      console.log(link);
-      navigate("/profile/" + link);
-    } catch (error) {
-      console.log(error);
-      alert("Error, somehow you got no data LMAO");
-    }
-  }
-
   return (
     <div>
       <li>
         {logged ? (
           <div>
-            <a href={"#"} onClick={() => gotoProfile()}>
-              Profile{" "}
-            </a>
-            <a href={"#"} onClick={() => setOpenLogout(true)}>
-              Logout
-            </a>
+            <Dropdown/>
           </div>
         ) : (
           <a href={"#"} onClick={() => setOpen(true)}>
@@ -134,29 +110,6 @@ function Login() {
                       }
                     })()}
                   </div>
-                </main>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-      <div id="logoutModal">
-        {openLogout && (
-          <>
-            <div className="overlay">
-              <div className="modal">
-                <header className="modalHeader">
-                  <h2>Logout</h2>
-                  <button
-                    onClick={() => setOpenLogout(false)}
-                    className="closeButton"
-                  >
-                    &times;
-                  </button>
-                </header>
-                <main className="modalMain">
-                  <h4>Are you sure you want to log out?</h4>
-                  <button onClick={() => handleLogout()}>Yes, I am</button>
                 </main>
               </div>
             </div>
