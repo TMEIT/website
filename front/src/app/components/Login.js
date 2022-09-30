@@ -42,6 +42,7 @@ function Login() {
         setOpen(false);
         setLogged(true);
         setError(0);
+        navigate(0);
       } else {
         alert(`Error ${token.status}: ${token.statusText}`);
       }
@@ -49,7 +50,7 @@ function Login() {
   }
 
   function handleLogout() {
-    document.cookie = "access_token = ;";
+    document.cookie = "access_token=; expires = Thu, 01 Jan 1970 00:00:00 UTC;";
     setLogged(false);
     setOpenLogout(false);
     navigate(0);

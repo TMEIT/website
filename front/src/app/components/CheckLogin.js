@@ -1,4 +1,4 @@
-async function CheckLogin() {
+function CheckLogin() {
   var name = "access_token";
   var cookieArr = document.cookie.split(";");
 
@@ -11,9 +11,7 @@ async function CheckLogin() {
         // If value for access_token is empty, return false
         return false;
       } else {
-        const tokenText = "Bearer " + decodeURIComponent(cookiePair[1]);
-        let result = await makeRequest(tokenText);
-        if (result === 200) return true;
+        return true;
       }
     }
   }

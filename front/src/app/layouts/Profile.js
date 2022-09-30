@@ -7,10 +7,8 @@ import { useFetch } from "../FetchHooks.js";
 import Loading from "../components/Loading";
 import { currentRolesEN, capitalizeFirstLetter } from "../tmeitStringFn.js";
 import { WorkteamItem } from "../components/Listables";
-import CheckLogin from "../components/CheckLogin";
 
 function Profile() {
-  const loggedIn = CheckLogin();
 
   let { shortUuid, _ } = useParams();
 
@@ -27,7 +25,6 @@ function Profile() {
   if (loading) {
     return <Loading />;
   }
-
   const nickname = data.nickname;
   const fullName = data.first_name + " " + data.last_name;
   // const currentWorkteam = data.workteams[0].name; // TODO: Change this to choose all the workteams that are active
@@ -35,8 +32,6 @@ function Profile() {
     const string = currentRolesEN.get(current_role).toString();
     return capitalizeFirstLetter(string);
   })(data.current_role);
-
-  console.log(data);
 
   return (
     <>
@@ -47,14 +42,12 @@ function Profile() {
       <h1>{nickname}</h1>
       <h2>{fullName}</h2>
       <h3>{role}</h3>
-      <DetailsBox data={data} loggedIn={loggedIn} />
+      <DetailsBox data={data}/>
     </>
   );
 }
 
 function DetailsBox(props) {
-  if (props.loggedIn == false) return null;
-
   return (
     <Tabs>
       <TabList>
@@ -84,18 +77,22 @@ function DetailsBox(props) {
 }
 
 const InfoList = React.memo(function InfoList(props) {
-  const email = "Email: " + props.login_email; // Current API lacks email
-  const phone = "Phone number: " + props.phone; // Current API lacks phone number
+    var email;
+    if(props.data.login_email != null)
+        email = <li>Email: {props.data.login_email}</li>; 
+    var phone;
+    if(props.data.phone != null)
+        phone = <li>Phone number: {props.data.phone}</li>; 
 
-  //fest and stad may be null, so we handle that here
+  //fest and stad may be null, so we handle that here. Removed if Email and Phone number is not present
   const fest =
-    props.fest == null ? null : (
+    (
       <li>
-        {(props.fest ? "Completed" : "Has not completed") + " FEST training."}
+        {(props.data.fest ? "Completed" : "Has not completed") + " FEST training."}
       </li>
     );
   const stad =
-    props.stad == null ? null : (
+    (
       <li>
         {(props.data.stad ? "Completed" : "Has not completed") +
           " STAD training."}
@@ -103,7 +100,7 @@ const InfoList = React.memo(function InfoList(props) {
     );
   const liquor = (
     <li>
-      {(props.liquor_permit ? "Is" : "Is not") +
+      {(props.data.liquor_permit ? "Is" : "Is not") +
         " on Kistan 2.0's liquor license."}
     </li>
   );
@@ -112,8 +109,8 @@ const InfoList = React.memo(function InfoList(props) {
     <div>
       <h4>More Information</h4>
       <ul>
-        <li>{email}</li>
-        <li>{phone}</li>
+        {email}
+        {phone}
         <li>Permits:</li>
         <ul>
           {fest}
@@ -126,16 +123,15 @@ const InfoList = React.memo(function InfoList(props) {
 });
 
 const HistoryList = React.memo(function HistoryList(props) {
+  if(props.histories == null) return;
   return (
     <div>
       <h4>Titles</h4>
-      [PLACEHOLDER]
+      [Properly loads your titles now]
       <ul>
-        <li>Became Prao on 2010-01-01.</li>
-        <li>Became Marshal on 2012-01-01.</li>
-        <li>Was WebbMarshal from 2013-01-01 to 2014-01-01.</li>
-        <li>Given the METAL title on 2013-04-20. \m/</li>
-        <li>Became Vraq on 2015-01-01.</li>
+        {props["histories"].map((element, i) => {
+          return <li>{element}</li>
+        })}
       </ul>
     </div>
   );
