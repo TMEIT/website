@@ -30,11 +30,18 @@ export const useFetch = url => {
         for (var i = 0; i < cookieArr.length; i++) {
             var cookiePair = cookieArr[i].split("=");
             if (name === cookiePair[0].trim()) {
-                access_token = "Bearer " + cookiePair[1];
+                access_token = cookiePair[1];
             }
         }
-                
-        const response = await fetch(url, {headers: {"Authorization": access_token}});
+        let auth;
+        // Empty authorization works for requests, requests with tokens need Bearer before
+        if(access_token == ""){
+            auth = "";
+        } else{
+            auth = "Bearer " + access_token;
+        }
+
+        const response = await fetch(url, {headers: {"Authorization": auth}});
         if(!response.ok) {
             setData("error");
             setLoading(false);
