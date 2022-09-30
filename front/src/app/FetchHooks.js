@@ -21,7 +21,20 @@ export const useFetch = url => {
     const [loading, setLoading] = useState(true);
 
     async function fetchData() {
-        const response = await fetch(url);
+        // get access_token cookie
+        var name = "access_token";
+        var cookieArr = document.cookie.split(";");
+        var access_token = "";
+        
+        //Loop through array until token is found
+        for (var i = 0; i < cookieArr.length; i++) {
+            var cookiePair = cookieArr[i].split("=");
+            if (name === cookiePair[0].trim()) {
+                access_token = "Bearer " + cookiePair[1];
+            }
+        }
+                
+        const response = await fetch(url, {headers: {"Authorization": access_token}});
         if(!response.ok) {
             setData("error");
             setLoading(false);
