@@ -1,20 +1,6 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source = "cloudflare/cloudflare"
-      version = "~> 3.0"
-    }
-  }
-}
-
-provider "cloudflare" {
-  # token pulled from $CLOUDFLARE_API_TOKEN environment variable
-}
-
 variable "zone_id" {
   default = "6a806c0199e15cdf23bb3017a90bf149"
 }
-
 variable "domain" {
   default = "tmeit.se"
 }
