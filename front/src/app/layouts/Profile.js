@@ -7,10 +7,10 @@ import { useFetch } from "../FetchHooks.js";
 import Loading from "../components/Loading";
 import { currentRolesEN, capitalizeFirstLetter } from "../tmeitStringFn.js";
 import { WorkteamItem } from "../components/Listables";
-import CheckLogin from "../components/CheckLogin";
+import GetMyInfo from "../components/GetMyInfo";
 
 function Profile() {
-  const loggedIn = CheckLogin();
+  const myInfo = GetMyInfo();
 
   let { shortUuid, _ } = useParams();
 
@@ -47,13 +47,13 @@ function Profile() {
       <h1>{nickname}</h1>
       <h2>{fullName}</h2>
       <h3>{role}</h3>
-      <DetailsBox data={data} loggedIn={loggedIn} />
+      <DetailsBox data={data} myInfo={myInfo} />
     </>
   );
 }
 
 function DetailsBox(props) {
-  if (props.loggedIn == false) return null;
+  if (props.myInfo == "{}") return null;
 
   return (
     <Tabs>
@@ -140,5 +140,9 @@ const HistoryList = React.memo(function HistoryList(props) {
     </div>
   );
 });
+
+const MasterAccess = () => {
+  return;
+};
 
 export default Profile;
