@@ -1,5 +1,22 @@
 terraform {
   required_version = ">= 1.0.0"
+
+  // Store Terraform state in Backblaze
+  backend "s3" {
+    // Reddit thread about using Backblaze B2 as Terraform state
+    // https://www.reddit.com/r/backblaze/comments/v0uiwe/can_backblaze_b2_be_used_as_a_terraform_backend/
+
+    bucket = "tmeit-terraform-state"
+    key    = "terraform.tfstate"
+    region = "eu-central"
+    endpoint = "s3.eu-central-003.backblazeb2.com"
+
+    // Options needed to use Backblaze B2
+    skip_credentials_validation = true
+    skip_region_validation = true
+    skip_metadata_api_check = true
+  }
+
   required_providers {
     cloudflare = {
       source = "cloudflare/cloudflare"
