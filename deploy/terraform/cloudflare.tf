@@ -5,9 +5,6 @@ variable "domain" {
   default = "tmeit.se"
 }
 
-resource "cloudflare_zone_dnssec" "tmeit-se-dnssec" {
-    zone_id = var.zone_id
-}
 resource "cloudflare_zone_settings_override" "tmeit-se-settings" {
   zone_id = var.zone_id
 
@@ -32,13 +29,10 @@ resource "cloudflare_zone_settings_override" "tmeit-se-settings" {
     server_side_exclude      = "off"
     universal_ssl            = "on"
     waf                      = "off"
-    webp                     = "off"
     websockets               = "on"
 
     cache_level              = "aggressive"  // https://developers.cloudflare.com/cache/how-to/set-caching-levels
-    image_resizing           = "off"
     min_tls_version          = "1.2"
-    polish                   = "off"
     pseudo_ipv4              = "off"
     security_level           = "essentially_off"
     tls_1_3                  = "on"
