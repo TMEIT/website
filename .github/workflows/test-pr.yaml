@@ -71,6 +71,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
+      - id: fmt
+        run: terraform fmt -check
       - id: init
         run: terraform init
         working-directory: deploy/terraform
