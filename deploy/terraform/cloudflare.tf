@@ -5,6 +5,50 @@ variable "domain" {
   default = "tmeit.se"
 }
 
+resource "cloudflare_zone_dnssec" "tmeit-se-dnssec" {
+    zone_id = var.zone_id
+}
+resource "cloudflare_zone_settings_override" "tmeit-se-settings" {
+  zone_id = var.zone_id
+
+  settings {
+    always_online            = "on"
+    always_use_https         = "on"
+    brotli                   = "on"
+    browser_check            = "on"
+    development_mode         = "off"
+    early_hints              = "on"
+    email_obfuscation        = "on"
+    hotlink_protection       = "off"
+    http2                    = "on"
+    http3                    = "on"
+    ip_geolocation           = "on"
+    ipv6                     = "on"
+    mirage                   = "off"
+    opportunistic_onion      = "on"
+    prefetch_preload         = "on"
+    privacy_pass             = "on"
+    rocket_loader            = "off"
+    server_side_exclude      = "off"
+    universal_ssl            = "on"
+    waf                      = "off"
+    webp                     = "off"
+    websockets               = "on"
+
+    cache_level              = "aggressive"  // https://developers.cloudflare.com/cache/how-to/set-caching-levels
+    image_resizing           = "off"
+    min_tls_version          = "1.2"
+    polish                   = "off"
+    pseudo_ipv4              = "off"
+    security_level           = "essentially_off"
+    tls_1_3                  = "on"
+    ssl                      = "strict"
+
+    browser_cache_ttl = 14400  // This is a minimum cache time, Cloudflare will respect longer cache times sent in headers. We should be invalidating caches with versioned filenames anyways.
+    challenge_ttl = 14400
+  }
+}
+
 // tmeit.se
 resource "cloudflare_record" "root-a" {
   zone_id = var.zone_id
