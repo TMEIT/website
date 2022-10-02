@@ -59,6 +59,60 @@ jobs:
     steps:
       - uses: actions/checkout@v2.2.0
       - uses: reviewdog/action-actionlint@v1
+  plan-terraform: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
+    name: Run Terraform Validate and Plan
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
+      B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_MASTER_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - id: init
+        run: terraform init
+        working-directory: deploy/terraform
+      - id: validate
+        run: terraform validate -no-color
+        working-directory: deploy/terraform
+      - id: plan
+        run: terraform plan -no-color -input=false
+        working-directory: deploy/terraform
+        continue-on-error: true
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
   test-containerfile: # Build containers to test that they build properly
     name: Build app containers
     runs-on: ubuntu-latest
