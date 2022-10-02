@@ -25,7 +25,6 @@ resource "cloudflare_zone_settings_override" "tmeit-se-settings" {
     rocket_loader            = "off"
     server_side_exclude      = "off"
     universal_ssl            = "on"
-    waf                      = "off"
     websockets               = "on"
 
     cache_level              = "aggressive"  // https://developers.cloudflare.com/cache/how-to/set-caching-levels
