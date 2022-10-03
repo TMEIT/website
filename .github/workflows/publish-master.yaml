@@ -83,8 +83,8 @@ jobs:
           curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl delete -f deploy/tmeit-jlh-name/run-migrations/job.yaml
-          kubectl apply -k deploy/tmeit-jlh-name/
+          kubectl delete -f deploy/kubernetes/tmeit-jlh-name/run-migrations/job.yaml
+          kubectl apply -k deploy/kubernetes/tmeit-jlh-name/
 # kubectl 1.24.0 has kustomize 4.5.4 built in
 
   publish-tag:
@@ -107,7 +107,7 @@ jobs:
         with:
           kustomize: '4.5.4'
           command: |-
-            kustomize build deploy/tmeit-jlh-name -o k8s-manifests.yaml
+            kustomize build deploy/kubernetes/tmeit-jlh-name -o k8s-manifests.yaml
       - name: Receive tmeit-app image from build-push job # https://stackoverflow:com/a/57877438
         uses: actions/download-artifact@v3
         with:

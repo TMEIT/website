@@ -2,12 +2,15 @@ from typing import TypeVar, Type
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from .. import models
+from ..auth import ph, verify_password
 from ..models import Member
-from ..schemas.members.schemas import MemberAuthentication, MemberMasterCreate, MemberMasterView
+from ..schemas.members.schemas import MemberAuthentication, MemberMasterCreate, MemberMasterView, MemberMasterPatch, \
+    MemberSelfPatch, ChangePassword
 
 S = TypeVar('S', bound=BaseModel)
 
@@ -66,6 +69,17 @@ async def get_password_hash(db: AsyncSession, login_email: str) -> MemberAuthent
                                 hashed_password=result.Member.hashed_password)
 
 
+async def change_password(db: AsyncSession, uuid: UUID, data: ChangePassword) -> None:
+    async with db.begin():
+        stmt = select(models.Member).where(models.Member.uuid == str(uuid))  # Using the UUID to prevent collisions for security
+        result = (await db.execute(stmt)).fetchone()
+        if result is None:
+            raise KeyError()
+        member = result.Member
+        verify_password(pw=data.current_password, pw_hash=member.hashed_password)
+        member.hashed_password = ph.hash(data.new_password)
+
+
 async def get_members(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 100) -> list[S]:
     stmt = select(models.Member).offset(skip).limit(limit)
     result = await db.execute(stmt)
@@ -77,3 +91,24 @@ async def get_members(db: AsyncSession, response_schema: Type[S], skip: int = 0,
     return [response_schema.parse_obj(sql_member) for sql_member in sql_members]
 
 
+async def update_member(db: AsyncSession,
+                        short_uuid: str,
+                        patch_data: MemberSelfPatch | MemberMasterPatch,
+                        response_schema: Type[S]) -> S:
+    async with db.begin():
+        result = (await db.execute(
+            update(models.Member)
+            .where(models.Member.short_uuid == short_uuid)
+            .values(**patch_data.dict())
+            .returning('*')
+        )).fetchone()
+
+        if result is None:
+            raise KeyError()
+
+    sql_member = result._asdict()
+    sql_member['role_histories'] = []
+    sql_member['workteams'] = []
+    sql_member['workteams_leading'] = []
+
+    return response_schema.parse_obj(sql_member)

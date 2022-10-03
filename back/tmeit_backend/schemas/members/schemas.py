@@ -1,9 +1,10 @@
 import datetime
-from typing import TypedDict, Any, Literal, Union, Optional
+from typing import TypedDict, Any, Literal, Union, Optional, NamedTuple
 from uuid import UUID
 
-from pydantic import EmailStr, constr, create_model, Field, BaseModel
+from pydantic import EmailStr, constr, create_model, Field, BaseModel, Extra, BaseConfig, validator
 
+from .._check_password import is_password_strong
 from ..access_levels import APIAccessLevelsEnum
 from .enums import CurrentRoleEnum
 
@@ -13,12 +14,14 @@ from .enums import CurrentRoleEnum
 # (e.g. don't return email in api if user is unauthenticated)
 
 
+# permission level aliases
 edit = APIAccessLevelsEnum.edit
 read = APIAccessLevelsEnum.read
 denied = APIAccessLevelsEnum.denied
 
 
 class FieldDescription(TypedDict):
+    """Type that we use to define a field and its different permissions"""
 
     # API permission levels
     master: APIAccessLevelsEnum     # API user is a Master/admin
@@ -30,7 +33,15 @@ class FieldDescription(TypedDict):
     type: Any
 
 
-member_fields = {
+FieldDict = dict[str, FieldDescription]
+
+
+class FieldTuple(NamedTuple):
+    field_type: Any
+    default_value: Optional[Any]
+
+
+member_fields: FieldDict = {
 
     # Publicly visible fields
     "first_name":       FieldDescription(master=edit,   self=read,  member=read,    public=read,    type=str),
@@ -62,40 +73,77 @@ base64url_length_8 = constr(min_length=8, max_length=8, regex=r'[A-Za-z0-9\-_]{8
 
 def build_member_schema_dict(
         permission_role: Literal["master"] | Literal["self"] | Literal["member"] | Literal["public"],
-        api_access_level: APIAccessLevelsEnum) -> dict[str, tuple]:
+        api_access_level: APIAccessLevelsEnum,
+        all_fields_optional: bool = False) -> dict[str, FieldTuple]:
 
-    schema_dict: dict[str, tuple] = {}
+    schema_dict: dict[str, FieldTuple] = {}
 
-    for field, fd in member_fields.items():
-        if fd[permission_role] >= api_access_level:
-            schema_dict[field] = (fd['type'], Field(...))
+    for field_name, fd in member_fields.items():
+        field_name: str
+        fd: FieldDescription
+
+        if fd[permission_role] >= api_access_level:  # Check permission level
+
+            # Make all fields optional for patch schemas, since our PATCH endpoints only take 1 field
+            if all_fields_optional is True:
+                type = Optional[fd['type']]
+            else:
+                type = fd['type']
+
+            # Add field to schema dict
+            schema_dict[field_name] = FieldTuple(type, None)
 
     return schema_dict
 
 
 # Always include uuid and short uuid in api requests/responses
-database_fields = {
+database_fields_schema_dict = {
     "uuid": (UUID, Field(...)),
     "short_uuid": (base64url_length_8, Field(...)),
 }
 
-# View models
-MemberPublicView = create_model('MemberPublicView', **database_fields, **build_member_schema_dict("public", read))
-MemberMemberView = create_model('MemberMemberView', **database_fields, **build_member_schema_dict("member", read))
-MemberSelfView = create_model('MemberSelfView', **database_fields, **build_member_schema_dict("self", read))
-MemberMasterView = create_model('MemberMasterView', **database_fields, **build_member_schema_dict("master", read))
+
+class PatchSchemaConfig(BaseConfig):
+    """
+    Special config that makes the patch schemas raise an explicit validation error when not used properly.
+
+    When a PATCH endpoint is used with a field that isn't allowed,
+    the model will raise a validation error so that the proposed patch changes aren't silently dropped.
+    """
+    extra = Extra.forbid
 
 
-# Edit models
-MemberSelfPatch = create_model('MemberSelfPatch', **database_fields, **build_member_schema_dict("self", edit))
-MemberMasterPatch = create_model('MemberMasterPatch', **database_fields, **build_member_schema_dict("master", edit))
+# Create Member schemas programmatically from our schema dicts
+# https://pydantic-docs.helpmanual.io/usage/models/#dynamic-model-creation
 
-# Create models
+# View schemas
+MemberPublicView = create_model('MemberPublicView', **database_fields_schema_dict, **build_member_schema_dict("public", read))
+MemberMemberView = create_model('MemberMemberView', **database_fields_schema_dict, **build_member_schema_dict("member", read))
+MemberSelfView = create_model('MemberSelfView',     **database_fields_schema_dict, **build_member_schema_dict("self", read))
+MemberMasterView = create_model('MemberMasterView', **database_fields_schema_dict, **build_member_schema_dict("master", read))
+
+
+# Patch schemas
+MemberSelfPatch = create_model('MemberSelfPatch',       __config__=PatchSchemaConfig, **build_member_schema_dict("self", edit, all_fields_optional=True))
+MemberMasterPatch = create_model('MemberMasterPatch',   __config__=PatchSchemaConfig, **build_member_schema_dict("master", edit, all_fields_optional=True))
+
+# Create schemas
 MemberMasterCreate = create_model('MemberMasterCreate', **build_member_schema_dict("master", edit))
 
-MemberViewResponse = Union[MemberPublicView, MemberMemberView, MemberSelfView, MemberMasterView]
+
+# Union type for the read schemas
+MemberViewResponse = Union[MemberMasterView, MemberSelfView, MemberMemberView, MemberPublicView]
 
 
 class MemberAuthentication(BaseModel):
     login_email: EmailStr
     hashed_password: str | None
+
+
+class ChangePassword(BaseModel):
+    current_password: str
+    new_password: str
+
+    @validator('new_password')
+    def check_password(cls, v):
+        return is_password_strong(v)
