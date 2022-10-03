@@ -135,3 +135,22 @@ jobs:
             tmeit-app-docker-container.tar
             tmeit-run-migrations-docker-container.tar
             k8s-manifests.yaml
+
+  terraform-apply: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
+    name: Apply Terraform configuration to cloud resources
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
+      B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_MASTER_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - name: Terraform Init
+        run: terraform init
+        working-directory: deploy/terraform
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
+        working-directory: deploy/terraform
