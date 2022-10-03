@@ -135,8 +135,4 @@ const HistoryList = React.memo(function HistoryList(props) {
   );
 });
 
-const MasterAccess = () => {
-  return;
-};
-
 export default Profile;

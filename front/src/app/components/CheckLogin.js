@@ -20,30 +20,4 @@ function CheckLogin() {
   return false;
 }
 
-function makeRequest(tokenText) {
-  return new Promise(function (resolve, reject) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/v1/me");
-    xhr.setRequestHeader("Authorization", tokenText);
-    xhr.responseType = "json";
-
-    xhr.onload = function () {
-      if (this.status >= 200 && this.status < 300) {
-        resolve(xhr.status);
-      } else {
-        reject({
-          status: this.status,
-          statusText: xhr.statusText,
-        });
-      }
-    };
-    xhr.onerror = function () {
-      reject({
-        status: this.status,
-        statusText: xhr.statusText,
-      });
-    };
-    xhr.send();
-  });
-}
 export default CheckLogin;

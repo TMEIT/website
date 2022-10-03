@@ -15,10 +15,7 @@ function Login() {
   const [errorMessage, setError] = useState(0);
 
   // Set status of logged in or not
-  const [logged, setLogged] = useState(false);
-  useEffect(() => {
-    CheckLogin();
-  }, []);
+  const [logged, setLogged] = useState(CheckLogin());
 
   let navigate = useNavigate();
 
