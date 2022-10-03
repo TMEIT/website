@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import CheckLogin from "./CheckLogin";
@@ -15,7 +15,10 @@ function Login() {
   const [errorMessage, setError] = useState(0);
 
   // Set status of logged in or not
-  const [logged, setLogged] = useState(CheckLogin());
+  const [logged, setLogged] = useState(false);
+  useEffect(() => {
+    CheckLogin();
+  }, []);
 
   let navigate = useNavigate();
 
@@ -38,8 +41,7 @@ function Login() {
       } else if (token.status === 200) {
         // handling of JWT
         const access_token = token.response.access_token;
-        document.cookie =
-          "access_token=" + access_token + ";SameSite=strict;Secure;";
+        document.cookie = "access_token=" + access_token + ";SameSite=Strict;";
         setOpen(false);
         setLogged(true);
         setError(0);
@@ -55,7 +57,7 @@ function Login() {
       <li>
         {logged ? (
           <div>
-            <Dropdown/>
+            <Dropdown />
           </div>
         ) : (
           <a href={"#"} onClick={() => setOpen(true)}>

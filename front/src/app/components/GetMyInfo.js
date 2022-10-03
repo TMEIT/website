@@ -30,7 +30,7 @@ function makeRequest(tokenText) {
 
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
-        resolve(xhr.response);
+        resolve({ status: this.status, body: xhr.response });
       } else {
         reject({
           status: this.status,
