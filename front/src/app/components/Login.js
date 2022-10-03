@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
+import CheckLogin from "./CheckLogin";
+import Dropdown from "./Dropdown";
 
 function Login() {
+  // Modular windows
   const [open, setOpen] = useState(false);
-  const [openLogout, setOpenLogout] = useState(false);
+  // login credentials
   const [email, setEmail] = useState("");
   const [pswrd, setPswrd] = useState("");
 
@@ -11,30 +15,9 @@ function Login() {
   const [errorMessage, setError] = useState(0);
 
   // Set status of logged in or not
-  const [logged, setLogged] = useState(checkLogin());
+  const [logged, setLogged] = useState(CheckLogin());
 
-  function checkLogin() {
-    var name = "access_token";
-    var cookieArr = document.cookie.split(";");
-
-    //Loop through array until token is found
-    for (var i = 0; i < cookieArr.length; i++) {
-      var cookiePair = cookieArr[i].split("=");
-
-      if (name === cookiePair[0].trim()) {
-        if (decodeURIComponent(cookiePair[1]) === "") {
-          // If value for access_token is empty, return false
-          return false;
-        } else {
-          // If there is an access token, return true
-          return true;
-        }
-      }
-    }
-
-    // If there is no cookie for access_token, return false
-    return false;
-  }
+  let navigate = useNavigate();
 
   function handleLogin(e) {
     e.preventDefault();
@@ -56,29 +39,24 @@ function Login() {
         // handling of JWT
         const access_token = token.response.access_token;
         document.cookie =
-          "access_token = " + access_token + "; SameSite = strict; Secure;";
+          "access_token=" + access_token + ";SameSite=strict;Secure;";
         setOpen(false);
         setLogged(true);
         setError(0);
+        navigate(0);
       } else {
         alert(`Error ${token.status}: ${token.statusText}`);
       }
     };
   }
 
-  function handleLogout() {
-    document.cookie = "access_token = ;";
-    setLogged(false);
-    setOpenLogout(false);
-  }
-
   return (
     <div>
       <li>
         {logged ? (
-          <a href={"#"} onClick={() => setOpenLogout(true)}>
-            Logout
-          </a>
+          <div>
+            <Dropdown/>
+          </div>
         ) : (
           <a href={"#"} onClick={() => setOpen(true)}>
             Login
@@ -132,29 +110,6 @@ function Login() {
                       }
                     })()}
                   </div>
-                </main>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-      <div id="logoutModal">
-        {openLogout && (
-          <>
-            <div className="overlay">
-              <div className="modal">
-                <header className="modalHeader">
-                  <h2>Logout</h2>
-                  <button
-                    onClick={() => setOpenLogout(false)}
-                    className="closeButton"
-                  >
-                    &times;
-                  </button>
-                </header>
-                <main className="modalMain">
-                  <h4>Are you sure you want to log out?</h4>
-                  <button onClick={() => handleLogout()}>Yes, I am</button>
                 </main>
               </div>
             </div>

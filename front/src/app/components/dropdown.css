@@ -1,0 +1,24 @@
+  .link {
+    width: 100px;
+    border-right: 1px solid gray;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .menu {
+    opacity: 0;
+    position: absolute;
+    top: 40px; 
+    left: 0;
+    background: #ededed;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: center;
+    transition: all 1000ms ease;
+  }
+  
+  .menu.open {
+    opacity: 1;
+  }
