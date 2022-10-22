@@ -9,9 +9,33 @@ env:
   TMEIT_JLH_NAME_CA_BASE64: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkekNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTXpneU1UUTNNakV3SGhjTk1qRXhNVEk1TVRrek9EUXhXaGNOTXpFeE1USTNNVGt6T0RReApXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTXpneU1UUTNNakV3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFUMVBkZGhUUHZSSVdTWWw1T2tDZEpESThDMWlzc3VmT1BYZCtCWFgwNTMKU1VzWCtRVjc3eEZDbjFwdUpSK0k3NmpYcWpyaGd3b044T2g0dVFiTkNtcUdvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVVBQbUZkUU5paHZiUWZuVUJVRDJWCm9PN1BsbUl3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUlnU1JDd2dQdmRpQ2k4MjNPV2dIdTQ1cVdMUlFhR2prY2sKT21WWjlHU0IzbzBDSVFEMVRaTVRvakJJRGxicm01QmxSbDR0Z2tCM3lsNVQweWRQM01aYUtqQ0xCZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
 
 jobs:
+
+
+  terraform-apply: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
+    name: Apply Terraform configuration to cloud resources
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      HCLOUD_TOKEN: ${{ secrets.HETZNER_API_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
+      B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_MASTER_KEY }}
+      TF_VAR_pw_hash: ${{ secrets.NODE_ROOT_USER_PW_HASH }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - name: Terraform Init
+        run: terraform init
+        working-directory: deploy/terraform
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
+        working-directory: deploy/terraform
+
   build-push:
     name: Build and push app
     runs-on: ubuntu-latest
+    needs: terraform-apply  # Wait for all the node maintenance stuff to finish before deploying
     steps:
       - uses: actions/checkout@v2
         with:
@@ -135,23 +159,3 @@ jobs:
             tmeit-app-docker-container.tar
             tmeit-run-migrations-docker-container.tar
             k8s-manifests.yaml
-
-  terraform-apply: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
-    name: Apply Terraform configuration to cloud resources
-    runs-on: ubuntu-latest
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      HCLOUD_TOKEN: ${{ secrets.HETZNER_API_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
-      B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
-      B2_APPLICATION_KEY: ${{ secrets.B2_MASTER_KEY }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-      - name: Terraform Init
-        run: terraform init
-        working-directory: deploy/terraform
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
-        working-directory: deploy/terraform

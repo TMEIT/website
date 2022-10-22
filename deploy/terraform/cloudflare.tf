@@ -155,3 +155,12 @@ resource "cloudflare_record" "_autodiscover_tcp" {
     target   = "autodiscover.loopia.com.tmeit.se"
   }
 }
+
+
+resource "cloudflare_record" "node1" {
+  zone_id = var.zone_id
+  name    = "node1"
+  type    = "AAAA"
+  value   = hcloud_primary_ip.node1_ipv6.ip_address
+  proxied = true
+}
