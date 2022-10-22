@@ -53,15 +53,7 @@ resource "hcloud_server" "test_node" {
   public_net {
     ipv4_enabled = true
     ipv6_enabled = true
-    ipv6 = hcloud_primary_ip.node1_ipv6.id
   }
-}
-
-resource "hcloud_primary_ip" "node1_ipv6" {
-  name = "node1_ipv6"
-  type = "ipv6"
-  auto_delete = false
-  assignee_type = "server"
 }
 
 # first boot steps

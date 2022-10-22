@@ -161,6 +161,6 @@ resource "cloudflare_record" "node1" {
   zone_id = var.zone_id
   name    = "node1"
   type    = "AAAA"
-  value   = hcloud_primary_ip.node1_ipv6.ip_address
+  value   = hcloud_server.test_node.ipv6_address
   proxied = true
 }
