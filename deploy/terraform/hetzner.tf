@@ -8,5 +8,10 @@ resource "hcloud_server" "node1" {
   public_net {
     ipv4_enabled = true
     ipv6_enabled = true
+    ipv6 = hcloud_primary_ip.node1_ipv6.id
   }
+}
+
+resource "hcloud_primary_ip" "node1_ipv6" {
+  id = "14854958"
 }
