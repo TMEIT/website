@@ -58,7 +58,7 @@ resource "hcloud_server" "test_node" {
 }
 
 resource "hcloud_primary_ip" "node1_ipv6" {
-  id = 14854958
+  name = "node1_ipv6"
   type = "ipv6"
   auto_delete = false
   assignee_type = "server"
