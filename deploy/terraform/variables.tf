@@ -14,3 +14,9 @@ variable "admin_github_usernames" {  # Usernames for webb admins to install thei
 variable "k3s_version" {
   default = "v1.25.2+k3s1"
 }
+
+# Password hash for the root user on the server.
+# Stored as a Github actions secret and passed to terraform with the environment variable TF_VAR_pw_hash
+# This hash lets set a password for the root user so that we can log into the server via the Hetzner console if we have a disaster and we can't SSH.
+# Lex has the unhashed password.
+variable "pw_hash" {}
