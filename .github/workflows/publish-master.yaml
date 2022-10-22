@@ -141,6 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      HCLOUD_TOKEN: ${{ secrets.HETZNER_API_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
       B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
