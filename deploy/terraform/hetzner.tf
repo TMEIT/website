@@ -58,7 +58,10 @@ resource "hcloud_server" "test_node" {
 }
 
 resource "hcloud_primary_ip" "node1_ipv6" {
-  id = "14854958"
+  id = 14854958
+  type = "ipv6"
+  auto_delete = false
+  assignee_type = "server"
 }
 
 # first boot steps
