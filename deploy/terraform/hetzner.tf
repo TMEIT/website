@@ -5,6 +5,13 @@ locals {
   # https://cloudinit.readthedocs.io/en/latest/topics/format.html
   # https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 
+  # IMPORTANT
+  # DO NOT CHANGE THE CLOUD INIT FILE
+  # It will delete and recreate the server, which will require manual database recovery.
+  # Also, it takes a few minutes for the server to recreate,
+  # and the first github action pipeline after a server recreation will fail.
+  # You must rerun the Github Actions pipline after a few minutes after recreating the server.
+
   cloud_init = <<-EOT
     #cloud-config
 
@@ -17,7 +24,7 @@ locals {
 
     users:
       - name: root
-        passwd: ${var.pw_hash} # Set a password for root So that SSH doesnt lock up. This password can only be used on the Hetzner console, not SSH.
+        passwd: '${var.pw_hash}' # Set a password for root So that SSH doesnt lock up. This password can only be used on the Hetzner console, not SSH.
         ssh_authorized_keys:  # Install Terraform's SSH key that it will use on the server
           - "${tls_private_key.terraform_access.public_key_openssh}"
 
