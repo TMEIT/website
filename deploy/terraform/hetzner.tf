@@ -10,6 +10,9 @@ locals {
 
     package_update: true
     package_upgrade: true
+    packages:
+      - ssh-import-id  # fix ssh key import
+      - apparmor  # fix containerd on debian 11
 
     users:
       - name: root
