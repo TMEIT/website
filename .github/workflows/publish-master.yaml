@@ -31,6 +31,42 @@ jobs:
         run: terraform apply -auto-approve -input=false
         working-directory: deploy/terraform
 
+      # How to fetch Terraform variables from CLI
+      # https://learn.hashicorp.com/tutorials/terraform/outputs
+      - id: tf_ip_addr
+        run: terraform output -raw ipv4_address
+        working-directory: deploy/terraform
+      - id: tf_k3s_channel
+        run: terraform output -raw k3s_channel
+        working-directory: deploy/terraform
+      - name: Get SSH key
+        run: terraform output -raw ssh_key > id_ed25519
+        working-directory: deploy/terraform
+      - name: Update k3s
+        run: |
+          ssh \
+          -o "StrictHostKeyChecking=no" \
+          -i id_ed25519\
+          root@${{ steps.tf_ip_addr.outputs.stdout }} \
+          "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${{ steps.tf_k3s_channel.outputs.stdout }} sh -"
+      - name: Download kubeconfig file
+        run: |
+          scp \
+          -o "StrictHostKeyChecking=no" \
+          -i id_ed25519\
+          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml .
+      - name: Set kubeconfig server URL and store kubeconfig in step output
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i ".clusters[0].cluster.server = https://${{ steps.tf_ip_addr.outputs.stdout }}:6443" 'k3s.yaml'
+        env:
+          K8S_URL: '"${{ steps.tf_ip_addr.outputs.stdout }}"'
+      - name: Send kubeconfig to build-push job # https://stackoverflow.com/a/57877438
+          uses: actions/upload-artifact@v3
+          with:
+            name: "kubeconfig"
+            path: "k3s.yaml"
+
   build-push:
     name: Build and push app
     runs-on: ubuntu-latest
@@ -90,6 +126,7 @@ jobs:
         run:  |
           podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
+
       - name: Setup KUBECONFIG
         uses: vbem/kubeconfig4sa@v1
         with: # Super useful action with good docs on k8s SAs https://github.com/vbem/kubeconfig4sa
@@ -99,6 +136,11 @@ jobs:
           namespace: tmeit
           # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
           # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
+
+#      - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
+#          uses: actions/download-artifact@v3
+#          with:
+#            name: "kubeconfig"
 
       - name: 'Push manifests to prod' # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with a ttl
         run: |

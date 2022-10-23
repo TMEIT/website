@@ -157,6 +157,10 @@ resource "cloudflare_record" "_autodiscover_tcp" {
 }
 
 
+# Bit of an activist choice to only use IPv6 between Cloudflare and our server. All data traffic should be IPv6!
+# Github actions should tell you our IPv4 address if you need to SSH into the server.
+# Github actions only supports IPv4 sadly,
+# so we have to pay 5 kr/month for an IPv4 address so that github actions can SSH and use kubectl :'(
 resource "cloudflare_record" "node1" {
   zone_id = var.zone_id
   name    = "node1"

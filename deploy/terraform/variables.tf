@@ -10,7 +10,10 @@ variable "admin_github_usernames" {  # Usernames for webb admins to install thei
   ]
 }
 
-# k3s version to install/update to
-variable "k3s_version" {
-  default = "v1.25.2+k3s1"
+# k3s release channel to install/update with
+# Must be a channel listed here: https://update.k3s.io/v1-release/channels
+# We let k3s update itself with point updates, (e.g v1.25.1 -> v1.25.2)
+# but major updates like v1.25->v1.26 can require kubernetes migrations, so these must be done manually.
+variable "k3s_channel" {
+  default = "v1.25"
 }
