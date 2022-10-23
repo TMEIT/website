@@ -17,6 +17,7 @@ locals {
 
     users:
       - name: root
+        passwd: ${var.pw_hash} # Set a password for root So that SSH doesnt lock up. This password can only be used on the Hetzner console, not SSH.
         ssh_authorized_keys:  # Install Terraform's SSH key that it will use on the server
           - "${tls_private_key.terraform_access.public_key_openssh}"
 

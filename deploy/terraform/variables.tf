@@ -17,3 +17,15 @@ variable "admin_github_usernames" {  # Usernames for webb admins to install thei
 variable "k3s_channel" {
   default = "v1.25"
 }
+
+# Password for root account on node (Not used for SSH)
+resource "random_string" "node_pw" {
+  length           = 20
+  special          = true
+}
+
+# Password hash for the root user on the server.
+# Stored as a Github actions secret and passed to terraform with the environment variable TF_VAR_pw_hash
+# This hash sets a password for the root user so that logging into SSH doesn't force us to "set a password".
+# This password cannot be used for SSH.
+variable "pw_hash" {}
