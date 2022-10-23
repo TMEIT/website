@@ -80,6 +80,50 @@ resource "hcloud_server" "testnode" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
+  firewall_ids = [hcloud_firewall.myfirewall.id]
+}
+
+resource "hcloud_firewall" "myfirewall" {
+  name = "my-firewall"
+
+  rule {  # ping
+    direction = "in"
+    protocol  = "icmp"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {  # SSH
+    direction = "in"
+    protocol  = "tcp"
+    port      = "22"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {  # HTTPS
+    direction = "in"
+    protocol  = "tcp"
+    port      = "443"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {  # Kubernetes API / kubectl
+    direction = "in"
+    protocol  = "tcp"
+    port      = "6443"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
 }
 
 # first boot steps
