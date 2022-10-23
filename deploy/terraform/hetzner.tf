@@ -18,14 +18,18 @@ locals {
       - name: root
         ssh_authorized_keys:  # Install Terraform's SSH key that it will use on the server
           - "${tls_private_key.terraform_access.public_key_openssh}"
-        ssh_import_id:  # pulls admins' SSH keys from github
-          %{ for user in var.admin_github_usernames }
-          - "gh:${user}"
-          %{ endfor }
-    runcmd:  # Enable auto updates for debian and install k3s
+
+    runcmd:
+      # pulls and installs admins' SSH keys from github
+      %{ for user in var.admin_github_usernames }
+      - "ssh-import-id 'gh:${user}'"
+      %{ endfor }
+      # Enable auto updates for debian
       - "apt install unattended-upgrades"
       - "systemctl enable --now unattended-upgrades"
+      # Install and run k3s
       - "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${var.k3s_version} sh -"
+
     write_files:
       # unattended-upgrades configuration found here
       # https://www.linode.com/docs/guides/how-to-configure-automated-security-updates-debian/
@@ -42,6 +46,26 @@ locals {
           APT::Periodic::Update-Package-Lists "1";
           APT::Periodic::Unattended-Upgrade "1";
           APT::Periodic::AutocleanInterval "7";
+      # Configure SSH
+      - path: "/etc/ssh/sshd_config.d/90_disable_pw_auth.conf"
+        content: "PasswordAuthentication no"
+      - path: "/etc/ssh/sshd_config.d/80_banner.conf"
+        content: "Banner /etc/ssh/sshd_config.d/banner"
+      - path: "/etc/ssh/sshd_config.d/banner"
+        content: |-
+          --------------------------------------------------------------------------------
+          You are SSHing into the TMEIT website server. This should only be done in order to update Debian or to recover the server from an emergency.
+
+          If anything bad happens to this server, MEMBER DATA COULD BE LOST!
+
+          You may be able to make your changes using Terraform or Kubernetes by committing to the Github repo at https://github.com/TMEIT/website .
+
+          If that doesn't work, your problem may be able to be solved with the Kubernetes API. Try using the "kubectl" command from the server's SSH console.
+
+          Good luck!
+          - Lex
+          --------------------------------------------------------------------------------
+
     EOT
 }
 
