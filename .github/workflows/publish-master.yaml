@@ -60,10 +60,10 @@ jobs:
         with:
           cmd: yq -i '.clusters[0].cluster.server = "${{ steps.tf_ip_addr.outputs.stdout }}"' 'k3s.yaml'
       - name: Send kubeconfig to build-push job # https://stackoverflow.com/a/57877438
-          uses: actions/upload-artifact@v3
-          with:
-            name: "kubeconfig"
-            path: "k3s.yaml"
+        uses: actions/upload-artifact@v3
+        with:
+          name: "kubeconfig"
+          path: "k3s.yaml"
 
   build-push:
     name: Build and push app
