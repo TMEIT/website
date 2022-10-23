@@ -28,7 +28,7 @@ locals {
       # Enable auto updates for debian
       - "systemctl enable --now unattended-upgrades"
       # Install and run k3s
-      - "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_version} sh -"
+      - "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_channel} sh -"
 
     write_files:
       # unattended-upgrades configuration found here
