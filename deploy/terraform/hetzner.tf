@@ -43,8 +43,8 @@ locals {
     EOT
 }
 
-resource "hcloud_server" "test_node" {
-  name        = "test_node"
+resource "hcloud_server" "testnode" {
+  name        = "testnode"
   server_type = "cx11"
   image       = "debian-11"
   location = "hel1"  # Helsinki
