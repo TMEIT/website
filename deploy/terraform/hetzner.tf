@@ -14,20 +14,19 @@ locals {
     users:
       - name: root
         ssh_authorized_keys:  # Install Terraform's SSH key that it will use on the server
-          - ${tls_private_key.terraform_access.public_key_openssh}
+          - "${tls_private_key.terraform_access.public_key_openssh}"
         ssh_import_id:  # pulls admins' SSH keys from github
           %{ for user in var.admin_github_usernames }
-          - gh:${user}
+          - "gh:${user}"
           %{ endfor }
-        passwd: ${var.pw_hash}  # Set a password for root to use with the Hetzner console in emergencies. Lex has the pw.
     runcmd:  # Enable auto updates for debian and install k3s
-      - apt install unattended-upgrades
-      - systemctl enable --now unattended-upgrades
-      - curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${var.k3s_version} sh -
+      - "apt install unattended-upgrades"
+      - "systemctl enable --now unattended-upgrades"
+      - "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${var.k3s_version} sh -"
     write_files:
       # unattended-upgrades configuration found here
       # https://www.linode.com/docs/guides/how-to-configure-automated-security-updates-debian/
-      - path: /etc/apt/apt.conf.d/50unattended-upgrades
+      - path: "/etc/apt/apt.conf.d/50unattended-upgrades"
         content: |
           "o=Debian,a=stable";
           "o=Debian,a=stable-updates";
@@ -35,7 +34,7 @@ locals {
           Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
           Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
           Unattended-Upgrade::Remove-Unused-Dependencies "true";
-      - path: /etc/apt/apt.conf.d/20auto-upgrades
+      - path: "/etc/apt/apt.conf.d/20auto-upgrades"
         content: |
           APT::Periodic::Update-Package-Lists "1";
           APT::Periodic::Unattended-Upgrade "1";
