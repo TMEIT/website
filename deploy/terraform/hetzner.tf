@@ -52,7 +52,7 @@ locals {
       - path: "/etc/ssh/sshd_config.d/80_banner.conf"
         content: "Banner /etc/ssh/sshd_config.d/banner"
       - path: "/etc/ssh/sshd_config.d/banner"
-        content: |-
+        content: |
           --------------------------------------------------------------------------------
           You are SSHing into the TMEIT website server. This should only be done in order to update Debian or to recover the server from an emergency.
 
@@ -65,7 +65,6 @@ locals {
           Good luck!
           - Lex
           --------------------------------------------------------------------------------
-
     EOT
 }
 
