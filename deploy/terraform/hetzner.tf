@@ -17,6 +17,7 @@ locals {
 
     users:
       - name: root
+        passwd: ${var.pw_hash} # Set a password for root So that SSH doesnt lock up. This password can only be used on the Hetzner console, not SSH.
         ssh_authorized_keys:  # Install Terraform's SSH key that it will use on the server
           - "${tls_private_key.terraform_access.public_key_openssh}"
 
@@ -52,7 +53,7 @@ locals {
       - path: "/etc/ssh/sshd_config.d/80_banner.conf"
         content: "Banner /etc/ssh/sshd_config.d/banner"
       - path: "/etc/ssh/sshd_config.d/banner"
-        content: |-
+        content: |
           --------------------------------------------------------------------------------
           You are SSHing into the TMEIT website server. This should only be done in order to update Debian or to recover the server from an emergency.
 
@@ -65,7 +66,6 @@ locals {
           Good luck!
           - Lex
           --------------------------------------------------------------------------------
-
     EOT
 }
 
