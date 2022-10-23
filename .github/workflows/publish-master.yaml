@@ -45,6 +45,8 @@ jobs:
       - name: Get SSH key
         run: terraform output -raw ssh_key > "$HOME/id_ed25519"
         working-directory: deploy/terraform
+      - name: chmod SSH key
+        run: chmod 700 "$HOME/id_ed25519"
       - name: Update k3s
         run: |
           ssh \
