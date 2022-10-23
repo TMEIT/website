@@ -58,9 +58,9 @@ jobs:
       - name: Set kubeconfig server URL and store kubeconfig in step output
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i ".clusters[0].cluster.server = https://${{ steps.tf_ip_addr.outputs.stdout }}:6443" 'k3s.yaml'
-        env:
-          K8S_URL: '"${{ steps.tf_ip_addr.outputs.stdout }}"'
+          cmd: |
+            K8S_URL= '"${{ steps.tf_ip_addr.outputs.stdout }}"' \
+            yq -i ".clusters[0].cluster.server = https://${{ steps.tf_ip_addr.outputs.stdout }}:6443" 'k3s.yaml'
       - name: Send kubeconfig to build-push job # https://stackoverflow.com/a/57877438
           uses: actions/upload-artifact@v3
           with:
