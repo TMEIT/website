@@ -11,7 +11,7 @@ locals {
     package_update: true
     package_upgrade: true
     packages:
-      - unattended-upgrades  # Auto-update debian point releases (i.e. 11.1 -> 11.2)
+      - unattended-upgrades  # Auto-update debian point releases (e.g. 11.1 -> 11.2)
       - ssh-import-id  # fix ssh key import
       - apparmor  # fix containerd on debian 11
 
@@ -28,7 +28,7 @@ locals {
       # Enable auto updates for debian
       - "systemctl enable --now unattended-upgrades"
       # Install and run k3s
-      - "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${var.k3s_version} sh -"
+      - "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_version} sh -"
 
     write_files:
       # unattended-upgrades configuration found here
