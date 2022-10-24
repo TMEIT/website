@@ -144,15 +144,17 @@ jobs:
 #          with:
 #            name: "kubeconfig"
 
-      - name: 'Push manifests to prod' # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with a ttl
+      - name: 'Push manifests to prod'
+        # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with an old job
+        # NOTE: latest version of kubectl can be found here https://dl.k8s.io/release/stable.txt
         run: |
-          curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
-          curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
+          curl -LO "https://dl.k8s.io/release/v1.25.3/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/v1.25.3/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
           kubectl delete -f deploy/kubernetes/tmeit-jlh-name/run-migrations/job.yaml
           kubectl apply -k deploy/kubernetes/tmeit-jlh-name/
-# kubectl 1.24.0 has kustomize 4.5.4 built in
+# kubectl 1.25.3 has kustomize 4.5.7 built-in, according to "kubectl version"
 
   publish-tag:
     name: Publish GH release
