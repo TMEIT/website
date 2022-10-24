@@ -84,7 +84,6 @@ resource "cloudflare_api_token" "dns_validation_token" {
 
   policy {
     permission_groups = [
-      data.cloudflare_api_token_permission_groups.all.permissions["DNS Read"],
       data.cloudflare_api_token_permission_groups.all.permissions["DNS Write"],
     ]
     resources = {
