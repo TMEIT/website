@@ -1,8 +1,0 @@
-- op: add
-  path: /spec/template/spec/initContainers
-  value:
-    - name: wait-for-migrations
-      image: ghcr.io/groundnuty/k8s-wait-for:v1.6
-      args:
-        - "job"
-        - "run-migrations"
