@@ -11,7 +11,7 @@ replicas:
 resources:
 - tmeit-app/service.yaml
 - tmeit-app/sealedsecret.yaml
-- tmeit-app/sealedsecret.yaml
+- tmeit-app/ingress.yaml
 - postgres/sealedsecret.yaml
 - run-migrations/job.yaml
 - operators
