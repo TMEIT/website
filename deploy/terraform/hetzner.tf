@@ -157,8 +157,9 @@ resource "tls_private_key" "terraform_access" {  # Generate an SSH key for terra
 
 # Password hash for the root user on the server.
 # Stored as a Github actions secret and passed to terraform with the environment variable TF_VAR_pw_hash
-# This hash sets a password for the root user so that logging into SSH doesn't force us to "set a password".
-# This password cannot be used for SSH.
+# IMPORTANT: This actually doesn't work. Hetzner does something weird with cloud-init and we can't set a password ourselves.
+# When the server is created and you SSH in for the first time, the server forces you to reset your password, but it's impossible.
+# The only way to get access to a freshly-created server is to just reset the password from the Hetzner console.
 variable "pw_hash" {}
 
 # if node is destroyed, database must be restored from backup, restore steps:
