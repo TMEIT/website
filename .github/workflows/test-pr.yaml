@@ -22,37 +22,6 @@ jobs:
       - name: Check versions
         run: python release_utils/check-tag-incremented.py
         shell: sh
-  lint-kustomization:
-    name: Lint Kustomize/Kubernetes
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2.2.0
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-      - name: 'Build tmeit.jlh.name manifests'
-        uses: stefanprodan/kube-tools@v1
-        with:
-          kustomize: '4.5.4'
-          command: |-
-            kustomize build deploy/kubernetes/tmeit-jlh-name -o jlh-rendered-with-jobs.yaml
-      - name: Remove Job manifests from test # Jobs are immutable and if we do kubectl apply with one without deleting it on the cluster, the api will throw an error
-        run: python release_utils/remove-job-manifests.py
-        shell: sh
-      - name: Setup KUBECONFIG
-        uses: vbem/kubeconfig4sa@v1
-        with:
-          server: ${{ secrets.JLH_CLUSTER_URL}}
-          ca-base64: ${{ env.TMEIT_JLH_NAME_CA_BASE64 }}
-          token: ${{ secrets.TMEIT_JLH_NAME_SA_TOKEN}}
-          namespace: tmeit
-      - name: 'lint prod manifests'
-        run: |
-          curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
-          curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
-          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
-          chmod +x kubectl
-          kubectl apply --dry-run=server -f jlh-rendered.yaml
   lint-gh-actions:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
@@ -118,6 +87,67 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+      # Fetch kubeconfig for lint-kustomization job:
+      # How to fetch Terraform variables from CLI
+      # https://learn.hashicorp.com/tutorials/terraform/outputs
+      - name: Get node IPv4 address  # GITHUB DOESNT SUPPORT IPV6 FFS
+        id: tf_ip_addr
+        run: terraform output -raw ipv4_address
+        working-directory: deploy/terraform
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+      - name: Get SSH key
+        run: terraform output -raw ssh_key > "$HOME/id_ed25519"
+        working-directory: deploy/terraform
+      - name: chmod SSH key
+        run: chmod 700 "$HOME/id_ed25519"
+      - name: Download kubeconfig file
+        run: |
+          scp \
+          -qo "StrictHostKeyChecking=no" \
+          -i "$HOME/id_ed25519" \
+          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml .
+      - name: Set kubeconfig server URL and store kubeconfig in step output
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.clusters[0].cluster.server = "${{ steps.tf_ip_addr.outputs.stdout }}"' 'k3s.yaml'
+      - name: Send kubeconfig to lint-kustomization job # https://stackoverflow.com/a/57877438
+        uses: actions/upload-artifact@v3
+        with:
+          name: "kubeconfig"
+          path: "k3s.yaml"
+  lint-kustomization:
+    name: Lint Kustomize/Kubernetes
+    runs-on: ubuntu-latest
+    needs: plan-terraform  # Needs kubeconfig from terraform
+    steps:
+      - uses: actions/checkout@v2.2.0
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: 'Build tmeit.jlh.name manifests'
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kustomize: '4.5.4'
+          command: |-
+            kustomize build deploy/kubernetes/tmeit-jlh-name -o jlh-rendered-with-jobs.yaml
+      - name: Remove Job manifests from test # Jobs are immutable and if we do kubectl apply with one without deleting it on the cluster, the api will throw an error
+        run: python release_utils/remove-job-manifests.py
+        shell: sh
+      - name: Receive kubeconfig from plan-terraform job # https://stackoverflow:com/a/57877438
+          uses: actions/download-artifact@v3
+          with:
+            name: "kubeconfig"
+      - name: Copy kubeconfig to correct location
+        run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
+      - name: 'lint prod manifests'
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          chmod +x kubectl
+          kubectl apply --dry-run=server -f jlh-rendered.yaml
   test-containerfile: # Build containers to test that they build properly
     name: Build app containers
     runs-on: ubuntu-latest
