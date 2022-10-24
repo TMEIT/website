@@ -29,14 +29,13 @@ locals {
           - "${tls_private_key.terraform_access.public_key_openssh}"
 
     runcmd:
-      # pulls and installs admins' SSH keys from github
-      %{ for user in var.admin_github_usernames }
-      - "ssh-import-id 'gh:${user}'"
-      %{ endfor }
+      # pulls and installs Lex's SSH keys from github.
+      # If other admins want to have their SSH keys added, just run "ssh-import-id gh:JustinLex" from the SSH terminal.
+      - "ssh-import-id gh:JustinLex"
       # Enable auto updates for debian
       - "systemctl enable --now unattended-upgrades"
       # Install and run k3s
-      - "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_channel} sh -"
+      - "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=v1.25 sh -"
 
     write_files:
       # unattended-upgrades configuration found here
@@ -66,9 +65,11 @@ locals {
 
           If anything bad happens to this server, MEMBER DATA COULD BE LOST!
 
-          You may be able to make your changes using Terraform or Kubernetes by committing to the Github repo at https://github.com/TMEIT/website .
+          You may be able to make your changes instead using Terraform or Kubernetes by committing to the Github repo at https://github.com/TMEIT/website .
 
-          If that doesn't work, your problem may be able to be solved with the Kubernetes API. Try using the "kubectl" command from the server's SSH console.
+          If that doesn't work, your problem is probably solvable with the Kubernetes API. Try using the "kubectl" command from the server's SSH console.
+
+          Note that someone who already has access to the SSH console must add your SSH keys with the command "ssh-import-id gh:USERNAME" before you can log in.
 
           Good luck!
           - Lex
@@ -76,8 +77,8 @@ locals {
     EOT
 }
 
-resource "hcloud_server" "testnode" {
-  name        = "testnode"
+resource "hcloud_server" "node1" {
+  name        = "node1"
   server_type = "cx11"
   image       = "debian-11"
   location = "hel1"  # Helsinki
@@ -133,19 +134,27 @@ resource "hcloud_firewall" "myfirewall" {
   }
 }
 
-# first boot steps
-# Add user with ssh keys and pw
-# enable auto updates
-# Install and enable k3s
-# kubeconfig???
+# Have Hetzner set up Reverse DNS records for the server so that its less likely that emails coming from it are marked as spam
+resource "hcloud_rdns" "node1_ipv4" {
+  server_id = hcloud_server.node1.id
+  ip_address = hcloud_server.node1.ipv4_address
+  dns_ptr = "tmeit.se"
+}
+resource "hcloud_rdns" "node1_ipv6" {
+  server_id  = hcloud_server.node1.id
+  ip_address = hcloud_server.node1.ipv6_address
+  dns_ptr    = "tmeit.se"
+}
 
-# if node is destroyed, database must be restored from backup:
+# SSH keys
+resource "tls_private_key" "terraform_access" {  # Generate an SSH key for terraform to use to SSH into the node
+  algorithm = "ED25519"
+}
+
+# if node is destroyed, database must be restored from backup, restore steps:
 # Download latest backup from backblaze
 # Port-forward postgres service
 # Get database password from kubernetes with the command
 # Connect to database and restore from backup
-
-# How to update k3s without destroying node?
-# Will need to use SSH
 
 # Debian will have to be updated manually with SSH

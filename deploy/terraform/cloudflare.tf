@@ -39,35 +39,26 @@ resource "cloudflare_zone_settings_override" "tmeit-se-settings" {
   }
 }
 
-// tmeit.se
-resource "cloudflare_record" "root-a" {
-  zone_id = var.zone_id
-  name    = "@"
-  type    = "A"
-  value   = "93.188.2.54"
-  proxied = true
-}
+# tmeit.se
+
+# Bit of an activist choice to only use IPv6 between Cloudflare and our server. All data traffic should be IPv6!
+# Github actions should tell you our IPv4 address if you need to SSH into the server.
+# Github actions only supports IPv4 sadly,
+# so we have to pay 5 kr/month for an IPv4 address so that github actions can SSH and use kubectl :'(
 resource "cloudflare_record" "root-aaaa" {
   zone_id = var.zone_id
   name    = "@"
   type    = "AAAA"
-  value   = "2a02:250:0:8::52"
+  value   = hcloud_server.node1.ipv6_address
   proxied = true
 }
 
 // www.tmeit.se
-resource "cloudflare_record" "www-a" {
-  zone_id = var.zone_id
-  name    = "www"
-  type    = "A"
-  value   = "93.188.2.54"
-  proxied = true
-}
 resource "cloudflare_record" "www-aaaa" {
   zone_id = var.zone_id
   name    = "www"
   type    = "AAAA"
-  value   = "2a02:250:0:8::52"
+  value   = hcloud_server.node1.ipv6_address
   proxied = true
 }
 
@@ -85,86 +76,4 @@ resource "cloudflare_record" "mx-2" {
   type     = "MX"
   value    = "mail2.loopia.se."
   priority = 20
-}
-
-// Loopia CNAMEs
-
-resource "cloudflare_record" "autoconfig" {
-  zone_id = var.zone_id
-  name    = "autoconfig"
-  type    = "CNAME"
-  value   = "autoconfig.loopia.com."
-}
-resource "cloudflare_record" "imap" {
-  zone_id = var.zone_id
-  name    = "imap"
-  type    = "CNAME"
-  value   = "mailcluster.loopia.se."
-}
-resource "cloudflare_record" "mail" {
-  zone_id = var.zone_id
-  name    = "mail"
-  type    = "CNAME"
-  value   = "mailcluster.loopia.se."
-}
-resource "cloudflare_record" "mail2" {
-  zone_id = var.zone_id
-  name    = "mail2"
-  type    = "CNAME"
-  value   = "mail2.loopia.se."
-}
-resource "cloudflare_record" "pop3" {
-  zone_id = var.zone_id
-  name    = "pop3"
-  type    = "CNAME"
-  value   = "mailcluster.loopia.se."
-}
-resource "cloudflare_record" "smtp" {
-  zone_id = var.zone_id
-  name    = "smtp"
-  type    = "CNAME"
-  value   = "mailcluster.loopia.se."
-}
-resource "cloudflare_record" "webbmail" {
-  zone_id = var.zone_id
-  name    = "webbmail"
-  type    = "CNAME"
-  value   = "webmail.loopia.se."
-}
-resource "cloudflare_record" "webmail" {
-  zone_id = var.zone_id
-  name    = "webmail"
-  type    = "CNAME"
-  value   = "webmail.loopia.se."
-}
-
-//Loopia SRV
-
-resource "cloudflare_record" "_autodiscover_tcp" {
-  zone_id = var.zone_id
-  name    = "_autodiscover._tcp"
-  type    = "SRV"
-  ttl     = 3600
-  data {
-    service  = "_autodiscover"
-    proto    = "_tcp"
-    name     = "tmeit.se"
-    priority = 100
-    weight   = 1
-    port     = 443
-    target   = "autodiscover.loopia.com.tmeit.se"
-  }
-}
-
-
-# Bit of an activist choice to only use IPv6 between Cloudflare and our server. All data traffic should be IPv6!
-# Github actions should tell you our IPv4 address if you need to SSH into the server.
-# Github actions only supports IPv4 sadly,
-# so we have to pay 5 kr/month for an IPv4 address so that github actions can SSH and use kubectl :'(
-resource "cloudflare_record" "node1" {
-  zone_id = var.zone_id
-  name    = "node1"
-  type    = "AAAA"
-  value   = hcloud_server.testnode.ipv6_address
-  proxied = true
 }
