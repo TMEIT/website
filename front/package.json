@@ -1,6 +1,6 @@
 {
   "name": "tmeit-frontend",
-  "version": "0.6.13",
+  "version": "0.6.14",
   "description": "Front-end for the TMEIT website.",
   "main": "index.js",
   "scripts": {
