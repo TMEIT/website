@@ -89,6 +89,10 @@ resource "hcloud_server" "node1" {
     ipv6_enabled = true
   }
   firewall_ids = [hcloud_firewall.myfirewall.id]
+
+  # Try to prevent Terraform from deleting the server (I don't think it works)
+  delete_protection = true
+  rebuild_protection = true
 }
 
 resource "hcloud_firewall" "myfirewall" {
