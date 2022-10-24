@@ -111,7 +111,7 @@ jobs:
       - name: Set kubeconfig server URL and store kubeconfig in step output
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.clusters[0].cluster.server = "${{ steps.tf_ip_addr.outputs.stdout }}"' 'k3s.yaml'
+          cmd: yq -i '.clusters[0].cluster.server = "https://${{ steps.tf_ip_addr.outputs.stdout }}:8443"' 'k3s.yaml'
       - name: Send kubeconfig to lint-kustomization job # https://stackoverflow.com/a/57877438
         uses: actions/upload-artifact@v3
         with:
