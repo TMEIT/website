@@ -99,3 +99,5 @@ resource "cloudflare_api_token" "dns_validation_token" {
     }
   }
 }
+
+data "cloudflare_api_token_permission_groups" "all" {}  # Needed for cloudflare_api_tokens https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/api_token
