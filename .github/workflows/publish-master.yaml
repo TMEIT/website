@@ -141,6 +141,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "kubeconfig"
+      - name: Copy kubeconfig to correct location
+        run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
 
       - name: 'Push manifests to prod'
         # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with an old job
