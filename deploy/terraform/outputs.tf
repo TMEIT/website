@@ -2,7 +2,7 @@
 
 output "ipv4_address" {
   description = "IPv4 address connecting to our server node"
-  value = hcloud_server.testnode.ipv4_address
+  value = hcloud_server.node1.ipv4_address
 }
 
 output "ssh_key" {
