@@ -133,7 +133,9 @@ jobs:
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
 
       - name: Write Cloudflare token for Let's Encrypt to file for Kustomize to send to Kubernetes
-        run: echo ${{needs.terraform-apply.outputs.cf-le-token}} > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
+        run: echo $CF_TOKEN > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
+        env:
+          CF_TOKEN: ${{needs.terraform-apply.outputs.cf-le-token}}
 
       - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
         uses: actions/download-artifact@v3
