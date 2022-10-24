@@ -132,22 +132,13 @@ jobs:
           podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
 
-      - name: Setup KUBECONFIG
-        uses: vbem/kubeconfig4sa@v1
-        with: # Super useful action with good docs on k8s SAs https://github.com/vbem/kubeconfig4sa
-          server: ${{ secrets.JLH_CLUSTER_URL}}
-          ca-base64: ${{ env.TMEIT_JLH_NAME_CA_BASE64 }}
-          token: ${{ secrets.TMEIT_JLH_NAME_SA_TOKEN}}
-          namespace: tmeit
-          # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
-          # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
-
       - name: Write Cloudflare token for Let's Encrypt to file for Kustomize to send to Kubernetes
         run: echo ${{needs.terraform-apply.outputs.cf-le-token}} > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
-#      - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
-#          uses: actions/download-artifact@v3
-#          with:
-#            name: "kubeconfig"
+
+      - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
+        uses: actions/download-artifact@v3
+        with:
+          name: "kubeconfig"
 
       - name: 'Push manifests to prod'
         # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with an old job
@@ -157,8 +148,8 @@ jobs:
           curl -LO "https://dl.k8s.io/v1.25.3/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl delete -f deploy/kubernetes/tmeit-jlh-name/run-migrations/job.yaml
-          kubectl apply -k deploy/kubernetes/tmeit-jlh-name/
+          kubectl delete -f deploy/kubernetes/tmeit-se/run-migrations/job.yaml
+          kubectl apply -k deploy/kubernetes/tmeit-se/
 # kubectl 1.25.3 has kustomize 4.5.7 built-in, according to "kubectl version"
 
   publish-tag:
@@ -181,7 +172,7 @@ jobs:
         with:
           kustomize: '4.5.4'
           command: |-
-            kustomize build deploy/kubernetes/tmeit-jlh-name -o k8s-manifests.yaml
+            kustomize build deploy/kubernetes/tmeit-se -o k8s-manifests.yaml
       - name: Receive tmeit-app image from build-push job # https://stackoverflow:com/a/57877438
         uses: actions/download-artifact@v3
         with:

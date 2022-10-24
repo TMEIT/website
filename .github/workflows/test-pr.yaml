@@ -123,12 +123,12 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: '3.10'
-      - name: 'Build tmeit.jlh.name manifests'
+      - name: 'Build tmeit.se manifests'
         uses: stefanprodan/kube-tools@v1
         with:
-          kustomize: '4.5.4'
+          kustomize: '4.5.7'
           command: |-
-            kustomize build deploy/kubernetes/tmeit-jlh-name -o jlh-rendered-with-jobs.yaml
+            kustomize build deploy/kubernetes/tmeit-se -o tmeit-rendered-with-jobs.yaml
       - name: Remove Job manifests from test # Jobs are immutable and if we do kubectl apply with one without deleting it on the cluster, the api will throw an error
         run: python release_utils/remove-job-manifests.py
         shell: sh
@@ -144,7 +144,7 @@ jobs:
           curl -LO "https://dl.k8s.io/v1.25.3/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl apply --dry-run=server -f jlh-rendered.yaml
+          kubectl apply --dry-run=server -f tmeit-rendered.yaml
   test-containerfile: # Build containers to test that they build properly
     name: Build app containers
     runs-on: ubuntu-latest
