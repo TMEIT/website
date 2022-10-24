@@ -136,9 +136,9 @@ jobs:
         run: python release_utils/remove-job-manifests.py
         shell: sh
       - name: Receive kubeconfig from plan-terraform job # https://stackoverflow:com/a/57877438
-          uses: actions/download-artifact@v3
-          with:
-            name: "kubeconfig"
+        uses: actions/download-artifact@v3
+        with:
+          name: "kubeconfig"
       - name: Copy kubeconfig to correct location
         run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
       - name: 'lint prod manifests'
