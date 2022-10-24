@@ -13,6 +13,7 @@ resources:
 - tmeit-app/sealedsecret.yaml
 - postgres/sealedsecret.yaml
 - run-migrations/job.yaml
+- operators
 
 patchesJson6902:
   - target:
