@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tmeit-app
+spec:
+  tls:
+  - hosts:
+      - tmeit.se
+    secretName: tmeit-se-tls
+  rules:
+  - host: tmeit.se
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tmeit-app
+            port:
+              number: 80
