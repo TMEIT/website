@@ -38,10 +38,6 @@ jobs:
         id: tf_ip_addr
         run: terraform output -raw ipv4_address
         working-directory: deploy/terraform
-      - name: Get k3s channel version
-        id: tf_k3s_channel
-        run: terraform output -raw k3s_channel
-        working-directory: deploy/terraform
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
