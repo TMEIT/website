@@ -56,7 +56,7 @@ jobs:
           -qo "StrictHostKeyChecking=no" \
           -i "$HOME/id_ed25519" \
           root@${{ steps.tf_ip_addr.outputs.stdout }} \
-          "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${{ steps.tf_k3s_channel.outputs.stdout }} sh -"
+          "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="$(< deploy/k3s_channel_version/channel)" sh -"
       - name: Download kubeconfig file
         run: |
           scp \

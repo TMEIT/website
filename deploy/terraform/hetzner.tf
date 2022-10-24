@@ -151,6 +151,12 @@ resource "tls_private_key" "terraform_access" {  # Generate an SSH key for terra
   algorithm = "ED25519"
 }
 
+# Password hash for the root user on the server.
+# Stored as a Github actions secret and passed to terraform with the environment variable TF_VAR_pw_hash
+# This hash sets a password for the root user so that logging into SSH doesn't force us to "set a password".
+# This password cannot be used for SSH.
+variable "pw_hash" {}
+
 # if node is destroyed, database must be restored from backup, restore steps:
 # Download latest backup from backblaze
 # Port-forward postgres service
