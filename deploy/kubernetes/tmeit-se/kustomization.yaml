@@ -14,6 +14,7 @@ resources:
 - postgres/sealedsecret.yaml
 - run-migrations/job.yaml
 - operators
+- certificate
 
 patchesJson6902:
   - target:
