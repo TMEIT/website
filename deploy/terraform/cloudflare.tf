@@ -94,7 +94,10 @@ resource "cloudflare_api_token" "dns_validation_token" {
   # Token is IP whitelisted so it can only be used from Kubernetes
   condition {
     request_ip {
-      in     = [hcloud_server.node1.ipv4_address, hcloud_server.node1.ipv6_address]
+      in     = [
+        "${hcloud_server.node1.ipv4_address}/32",
+        "${hcloud_server.node1.ipv6_address}/64",
+      ]
     }
   }
 }
