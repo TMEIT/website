@@ -77,3 +77,25 @@ resource "cloudflare_record" "mx-2" {
   value    = "mail2.loopia.se."
   priority = 20
 }
+
+# cert-manager + Let's Encrypt token for DNS-01 validation
+resource "cloudflare_api_token" "dns_validation_token" {
+  name = "dns_validation_token"
+
+  policy {
+    permission_groups = [
+      data.cloudflare_api_token_permission_groups.all.permissions["DNS Read"],
+      data.cloudflare_api_token_permission_groups.all.permissions["DNS Write"],
+    ]
+    resources = {
+      "com.cloudflare.api.account.zone.${var.zone_id}" = "*"
+    }
+  }
+
+  # Token is IP whitelisted so it can only be used from Kubernetes
+  condition {
+    request_ip {
+      in     = [hcloud_server.node1.ipv4_address, hcloud_server.node1.ipv6_address]
+    }
+  }
+}

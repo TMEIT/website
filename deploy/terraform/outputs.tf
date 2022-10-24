@@ -10,3 +10,9 @@ output "ssh_key" {
   value = tls_private_key.terraform_access.private_key_openssh
   sensitive = true
 }
+
+output "cloudflare-le-token" {
+  description = "Cloudflare token for Kubernetes to use for DNS-01 validation on Let's Encrypt"
+  value = cloudflare_api_token.dns_validation_token.value
+  sensitive = true
+}

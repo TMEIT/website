@@ -35,6 +35,10 @@ jobs:
         id: tf_ip_addr
         run: terraform output -raw ipv4_address
         working-directory: deploy/terraform
+      - name: Get Cloudflare token for Let's Encrypt
+        id: tf_cf_le_token
+        run: terraform output -raw cloudflare-le-token
+        working-directory: deploy/terraform
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
@@ -65,11 +69,13 @@ jobs:
         with:
           name: "kubeconfig"
           path: "k3s.yaml"
+    outputs:
+      cf-le-token: ${{ steps.tf_cf_le_token.outputs.stdout }}
 
   build-push:
     name: Build and push app
     runs-on: ubuntu-latest
-    needs: terraform-apply  # Wait for all the node maintenance stuff to finish before deploying
+    needs: terraform-apply  # Wait for all the node maintenance stuff to finish before deploying. Also, we use data from Terraform as part of the Kubernetes deploy
     steps:
       - uses: actions/checkout@v2
         with:
@@ -136,6 +142,8 @@ jobs:
           # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
           # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
 
+      - name: Write Cloudflare token for Let's Encrypt to file for Kustomize to send to Kubernetes
+        run: echo ${{needs.terraform-apply.outputs.cf-le-token}} > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
 #      - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
 #          uses: actions/download-artifact@v3
 #          with:
