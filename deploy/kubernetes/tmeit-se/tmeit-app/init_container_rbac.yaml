@@ -1,0 +1,26 @@
+# RBAC so that the wait-for-migrations initcontainer can see the Job
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: wait-for-migrations
+rules:
+- apiGroups: ["batch"]
+  resources: [ "jobs" ]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: wait-for-migrations
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tmeit
+roleRef:
+  kind: Role
+  name: wait-for-migrations
+  apiGroup: rbac.authorization.k8s.io
+
+# Note: you can test the rbac with the following command:
+# kubectl auth can-i -n tmeit --list --as system:serviceaccount:tmeit:default
