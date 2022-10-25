@@ -67,7 +67,7 @@ jobs:
           -qo "StrictHostKeyChecking=no" \
           -i "$HOME/id_ed25519" \
           root@${{ steps.tf_ip_addr.outputs.stdout }} \
-          "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="$(< deploy/k3s_channel_version/channel)" sh -"
+          'curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="$(< deploy/k3s_channel_version/channel)" sh -'
       - name: Download kubeconfig file
         run: |
           scp \
@@ -159,7 +159,7 @@ jobs:
   publish-tag:
     name: Publish GH release
     runs-on: ubuntu-latest
-    needs: build-push # Run after push so that we can get the docker image for publishing
+    needs: deploy # Run after deploy so that we can get the docker image for publishing
     steps:
       - uses: actions/checkout@v2
         with:
