@@ -79,7 +79,7 @@ resource "cloudflare_record" "mx-2" {
 }
 
 # cert-manager + Let's Encrypt token for DNS-01 validation
-resource "cloudflare_api_token" "dns_validation_token2" {
+resource "cloudflare_api_token" "dns_validation_token" {
   name = "dns_validation_token2"
 
   policy {
