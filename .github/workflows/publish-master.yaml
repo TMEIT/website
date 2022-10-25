@@ -39,6 +39,18 @@ jobs:
         id: tf_cf_le_token
         run: terraform output -raw cloudflare-le-token
         working-directory: deploy/terraform
+      - name: Get name for the B2 database backup bucket
+        id: tf_b2_db_bucket
+        run: terraform output -raw b2-db-backup-bucket
+        working-directory: deploy/terraform
+      - name: Get B2 appkey id for DB backups
+        id: tf_b2_db_id
+        run: terraform output -raw b2-db-key-id
+        working-directory: deploy/terraform
+      - name: Get B2 appkey secret for DB backups
+        id: tf_b2_db_secret
+        run: terraform output -raw b2-db-key-secret
+        working-directory: deploy/terraform
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
@@ -71,6 +83,9 @@ jobs:
           path: "k3s.yaml"
     outputs:
       cf-le-token: ${{ steps.tf_cf_le_token.outputs.stdout }}
+      b2-db-bucket: ${{ steps.tf_b2_db_bucket.outputs.stdout }}
+      b2-db-key-id: ${{ steps.tf_b2_db_id.outputs.stdout }}
+      b2-db-key-secret: ${{ steps.tf_b2_db_secret.outputs.stdout }}
 
   build-push:
     name: Build and push app
@@ -146,10 +161,17 @@ jobs:
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/db-backup-agent:${{ steps.release_version.outputs.version }}
 
-      - name: Write Cloudflare token for Let's Encrypt to file for Kustomize to send to Kubernetes
-        run: echo "$CF_TOKEN" > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
+      - name: Write API tokens to files for Kustomize to send to Kubernetes
+        run: |
+          echo "$CF_TOKEN" > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
+          echo "B2_DB_BUCKET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-bucket
+          echo "B2_DB_ID" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-id
+          echo "B2_DB_SECRET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-key
         env:
           CF_TOKEN: ${{needs.terraform-apply.outputs.cf-le-token}}
+          B2_DB_BUCKET: ${{needs.terraform-apply.outputs.b2-db-bucket}}
+          B2_DB_ID: ${{needs.terraform-apply.outputs.b2-db-key-id}}
+          B2_DB_SECRET: ${{needs.terraform-apply.outputs.b2-db-key-secret}}
 
       - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
         uses: actions/download-artifact@v3

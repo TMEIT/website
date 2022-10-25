@@ -16,3 +16,20 @@ output "cloudflare-le-token" {
   value = cloudflare_api_token.dns_validation_token2.value
   sensitive = true
 }
+
+
+output "b2-db-backup-bucket" {
+  description = "Name of the B2 DB-backup bucket"
+  value = b2_bucket.db-backups.bucket_name
+}
+
+output "b2-db-key-id" {
+  description = "ID for the application key for accessing the database backup bucket on Backblaze B2"
+  value = b2_application_key.database-backup.application_key_id
+}
+
+output "b2-db-key-secret" {
+  description = "Secret application key for accessing the database backup bucket on Backblaze B2"
+  value = b2_application_key.database-backup.application_key
+  sensitive = true
+}

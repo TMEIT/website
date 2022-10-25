@@ -13,8 +13,8 @@ resources:
 - tmeit-app/sealedsecret.yaml
 - tmeit-app/ingress.yaml
 - tmeit-app/init_container_rbac.yaml
-- postgres/sealedsecret.yaml
 - run-migrations/job.yaml
+- postgres
 - operators
 - certificate
 
