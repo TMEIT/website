@@ -8,8 +8,8 @@ on:
 jobs:
 
 
-  terraform-apply: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
-    name: Apply Terraform configuration to cloud resources
+  deploy:
+    name: Apply Terraform configuration, build containers, and deploy to Kubernetes
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -21,6 +21,8 @@ jobs:
       TF_VAR_pw_hash: ${{ secrets.NODE_ROOT_USER_PW_HASH }}
     steps:
       - uses: actions/checkout@v3
+
+      # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
       - uses: hashicorp/setup-terraform@v2
       - name: Terraform Init
         run: terraform init
@@ -35,25 +37,25 @@ jobs:
         id: tf_ip_addr
         run: terraform output -raw ipv4_address
         working-directory: deploy/terraform
+      - uses: hashicorp/setup-terraform@v2  # Remove wrapper so that we can output directly to files
+        with:
+          terraform_wrapper: false
       - name: Get Cloudflare token for Let's Encrypt
         id: tf_cf_le_token
-        run: terraform output -raw cloudflare-le-token > /dev/null
+        run: terraform output -raw cloudflare-le-token > ../kubernetes/tmeit-se/certificate/cloudflare-api-token
         working-directory: deploy/terraform
       - name: Get name for the B2 database backup bucket
         id: tf_b2_db_bucket
-        run: terraform output -raw b2-db-backup-bucket > /dev/null
+        run: terraform output -raw b2-db-backup-bucket > ../kubernetes/tmeit-se/postgres/b2-db-backup-bucket
         working-directory: deploy/terraform
       - name: Get B2 appkey id for DB backups
         id: tf_b2_db_id
-        run: terraform output -raw b2-db-key-id > /dev/null
+        run: terraform output -raw b2-db-key-id > ../kubernetes/tmeit-se/postgres/b2-db-backup-id
         working-directory: deploy/terraform
       - name: Get B2 appkey secret for DB backups
         id: tf_b2_db_secret
-        run: terraform output -raw b2-db-key-secret > /dev/null
+        run: terraform output -raw b2-db-key-secret > ../kubernetes/tmeit-se/postgres/b2-db-backup-key
         working-directory: deploy/terraform
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
       - name: Get SSH key
         run: terraform output -raw ssh_key > "$HOME/id_ed25519"
         working-directory: deploy/terraform
@@ -71,30 +73,12 @@ jobs:
           scp \
           -qo "StrictHostKeyChecking=no" \
           -i "$HOME/id_ed25519" \
-          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml .
-      - name: Set kubeconfig server URL and store kubeconfig in step output
+          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml "$HOME/.kube/config"
+      - name: Set kubeconfig server URL
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.clusters[0].cluster.server = "https://${{ steps.tf_ip_addr.outputs.stdout }}:6443"' 'k3s.yaml'
-      - name: Send kubeconfig to build-push job # https://stackoverflow.com/a/57877438
-        uses: actions/upload-artifact@v3
-        with:
-          name: "kubeconfig"
-          path: "k3s.yaml"
-    outputs:
-      cf-le-token: ${{ steps.tf_cf_le_token.outputs.stdout }}
-      b2-db-bucket: ${{ steps.tf_b2_db_bucket.outputs.stdout }}
-      b2-db-key-id: ${{ steps.tf_b2_db_id.outputs.stdout }}
-      b2-db-key-secret: ${{ steps.tf_b2_db_secret.outputs.stdout }}
+          cmd: yq -i '.clusters[0].cluster.server = "https://${{ steps.tf_ip_addr.outputs.stdout }}:6443"' "$HOME/.kube/config"
 
-  build-push:
-    name: Build and push app
-    runs-on: ubuntu-latest
-    needs: terraform-apply  # Wait for all the node maintenance stuff to finish before deploying. Also, we use data from Terraform as part of the Kubernetes deploy
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: '0'
       - uses: actions/setup-python@v3
         with:
           python-version: '3.10'
@@ -160,26 +144,6 @@ jobs:
           podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/db-backup-agent:${{ steps.release_version.outputs.version }}
-
-      - name: Write API tokens to files for Kustomize to send to Kubernetes
-        run: |
-          echo -n "$CF_TOKEN" > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
-          echo -n "$B2_DB_BUCKET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-bucket
-          echo -n "$B2_DB_ID" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-id
-          echo -n "$B2_DB_SECRET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-key
-        env:
-          CF_TOKEN: ${{needs.terraform-apply.outputs.cf-le-token}}
-          B2_DB_BUCKET: ${{needs.terraform-apply.outputs.b2-db-bucket}}
-          B2_DB_ID: ${{needs.terraform-apply.outputs.b2-db-key-id}}
-          B2_DB_SECRET: ${{needs.terraform-apply.outputs.b2-db-key-secret}}
-
-      - name: Receive kubeconfig from terraform-apply job # https://stackoverflow:com/a/57877438
-        uses: actions/download-artifact@v3
-        with:
-          name: "kubeconfig"
-      - name: Copy kubeconfig to correct location
-        run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
-
       - name: 'Push manifests to prod'
         # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with an old job
         # NOTE: latest version of kubectl can be found here https://dl.k8s.io/release/stable.txt
