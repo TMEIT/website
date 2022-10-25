@@ -22,16 +22,16 @@ patchesJson6902:
       version: v1
       kind: CronJob
       name: backup-tmeit-db-hourly
-    path: /set_image_tag.json
+    path: set_image_tag.json
   - target:
       group: batch
       version: v1
       kind: CronJob
       name: backup-tmeit-db-daily
-    path: /set_image_tag.json
+    path: set_image_tag.json
   - target:
       group: batch
       version: v1
       kind: CronJob
       name: backup-tmeit-db-monthly
-    path: /set_image_tag.json
+    path: set_image_tag.json
