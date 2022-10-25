@@ -48,3 +48,10 @@ resource "b2_application_key" "database-backup" {
   capabilities = ["listBuckets", "listFiles", "readFiles", "writeFiles"]
   bucket_id = b2_bucket.db-backups.id
 }
+
+// Bucket used for Github Actions to store terraform state
+resource "b2_bucket" "tmeit-se-2011-dump" {
+  bucket_name = "tmeit-se-2011-dump"
+  bucket_type = "allPrivate"
+}
+
