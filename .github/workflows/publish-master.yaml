@@ -68,6 +68,8 @@ jobs:
           -i "$HOME/id_ed25519" \
           root@${{ steps.tf_ip_addr.outputs.stdout }} \
           'curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="$(< deploy/k3s_channel_version/channel)" sh -'
+      - name: Create ~/.kube dir
+        run: mkdir "$HOME/.kube/"
       - name: Download kubeconfig file
         run: |
           scp \
