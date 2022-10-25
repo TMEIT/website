@@ -13,7 +13,7 @@ output "ssh_key" {
 
 output "cloudflare-le-token" {
   description = "Cloudflare token for Kubernetes to use for DNS-01 validation on Let's Encrypt"
-  value = cloudflare_api_token.dns_validation_token2.value
+  value = cloudflare_api_token.dns_validation_token.value
   sensitive = true
 }
 
