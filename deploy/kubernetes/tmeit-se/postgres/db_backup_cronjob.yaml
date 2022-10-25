@@ -29,7 +29,7 @@ data:
     ./b2 authorize-account $B2_APP_KEY_ID $B2_APP_KEY
     
     echo "$dt - Uploading the dump to bucket $B2_BUCKET_NAME on Backblaze B2";
-    ./b2 upload-file --noProgress $B2_BUCKET_NAME $backUpFilePath $backUpFilePath
+    ./b2 upload-file --noProgress $B2_BUCKET_NAME $backUpFilePath $backUpFileName
     
     if [ $? -ne 0 ]; then
     rm $backUpFilePath
