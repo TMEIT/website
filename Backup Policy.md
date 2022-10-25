@@ -11,6 +11,9 @@ Database dumps are kept for every hour for up to 2 weeks.
 After that, a database dump is kept for every day for an entire year.
 After that, a database dump from every month is kept indefinitely.
 
+These backup schedules are all defined in our kubernetes configuration at `deploy/kubernetes/tmeit-se/postgres/db_backup_cronjob.yaml`  
+Old backup pruning is done with Backblaze lifecycle rules defined at the bucket level in our terraform configuration at `deploy/terraform/backblaze.tf`
+
 For security reasons, we use Backblaze's SSE-B2 encryption to keep the database dumps encrypted at rest. 
 
 We also use Object Locking to prevent any database dumps from being deleted for the first two weeks after they have been uploaded. 
