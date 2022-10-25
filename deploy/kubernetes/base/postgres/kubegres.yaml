@@ -4,7 +4,7 @@ metadata:
   name: tmeit-db
 spec:
    replicas: 3
-   image: postgres:15beta1
+   image: postgres:15
    database:
       size: 200Mi
    customConfig: kubegres-conf
@@ -33,4 +33,3 @@ spec:
        memory: "200Mi"
        cpu: "50m"
        ephemeral-storage: 1Gi
-
