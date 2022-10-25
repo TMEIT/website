@@ -10,11 +10,15 @@ if __name__ == '__main__':
     k8s_image_tag: SemVer = K8sDeploymentImageTag("deploy/kubernetes/tmeit-se/tmeit-app/set_image_tag.json").version
     k8s_m_job_image_tag: SemVer = \
         K8sDeploymentImageTag("deploy/kubernetes/tmeit-se/run-migrations/set_image_tag.json").version
+    k8s_db_backup_job_image_tag: SemVer = \
+        K8sDeploymentImageTag("deploy/kubernetes/tmeit-se/postgres/set_image_tag.json").version
 
     # Check if all versions are the same
-    if k8s_image_tag != front_ver or k8s_image_tag != back_ver or k8s_image_tag != k8s_m_job_image_tag:
+    if k8s_image_tag != front_ver or k8s_image_tag != back_ver or k8s_image_tag != k8s_m_job_image_tag \
+            or k8s_image_tag != k8s_db_backup_job_image_tag:
         raise RuntimeError(
-            f"Versions do not match! ({front_ver=}, {back_ver=}, {k8s_image_tag=}, {k8s_m_job_image_tag=})"
+            f"Versions do not match! ({front_ver=}, {back_ver=}, {k8s_image_tag=}, {k8s_m_job_image_tag=},"
+            f" {k8s_db_backup_job_image_tag=})"
         )
     else:
         print("Versions match.")
