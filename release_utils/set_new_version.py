@@ -10,4 +10,5 @@ if __name__ == '__main__':
     BackVersion("back/pyproject.toml").version = new_semver
     K8sDeploymentImageTag("deploy/kubernetes/tmeit-se/tmeit-app/set_image_tag.json").version = new_semver
     K8sDeploymentImageTag("deploy/kubernetes/tmeit-se/run-migrations/set_image_tag.json").version = new_semver
+    K8sDeploymentImageTag("deploy/kubernetes/tmeit-se/postgres/set_image_tag.json").version = new_semver
     print(f'Release version set to "{str(new_semver)}" for front-end, back-end, and image tags.')
