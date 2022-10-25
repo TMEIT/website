@@ -37,19 +37,19 @@ jobs:
         working-directory: deploy/terraform
       - name: Get Cloudflare token for Let's Encrypt
         id: tf_cf_le_token
-        run: terraform output -raw cloudflare-le-token
+        run: terraform output -raw cloudflare-le-token > /dev/null
         working-directory: deploy/terraform
       - name: Get name for the B2 database backup bucket
         id: tf_b2_db_bucket
-        run: terraform output -raw b2-db-backup-bucket
+        run: terraform output -raw b2-db-backup-bucket > /dev/null
         working-directory: deploy/terraform
       - name: Get B2 appkey id for DB backups
         id: tf_b2_db_id
-        run: terraform output -raw b2-db-key-id
+        run: terraform output -raw b2-db-key-id > /dev/null
         working-directory: deploy/terraform
       - name: Get B2 appkey secret for DB backups
         id: tf_b2_db_secret
-        run: terraform output -raw b2-db-key-secret
+        run: terraform output -raw b2-db-key-secret > /dev/null
         working-directory: deploy/terraform
       - uses: hashicorp/setup-terraform@v2
         with:
