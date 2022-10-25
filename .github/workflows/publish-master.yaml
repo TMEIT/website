@@ -68,18 +68,18 @@ jobs:
           -i "$HOME/id_ed25519" \
           root@${{ steps.tf_ip_addr.outputs.stdout }} \
           'curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="$(< deploy/k3s_channel_version/channel)" sh -'
-      - name: Create ~/.kube dir
-        run: mkdir "$HOME/.kube/"
       - name: Download kubeconfig file
         run: |
           scp \
           -qo "StrictHostKeyChecking=no" \
           -i "$HOME/id_ed25519" \
-          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml "$HOME/.kube/config"
+          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml .
       - name: Set kubeconfig server URL
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.clusters[0].cluster.server = "https://${{ steps.tf_ip_addr.outputs.stdout }}:6443"' "$HOME/.kube/config"
+          cmd: yq -i '.clusters[0].cluster.server = "https://${{ steps.tf_ip_addr.outputs.stdout }}:6443"' "k3s.yaml"
+      - name: Move kubeconfig to ~/.kube/config
+        run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
 
       - uses: actions/setup-python@v3
         with:
