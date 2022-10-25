@@ -45,6 +45,6 @@ resource "b2_bucket" "db-backups" {
 # Backblaze key for database backups
 resource "b2_application_key" "database-backup" {
   key_name     = "database-backup"
-  capabilities = ["listFiles", "readFiles", "writeFiles"]
+  capabilities = ["listBuckets", "listFiles", "readFiles", "writeFiles"]
   bucket_id = b2_bucket.db-backups.id
 }
