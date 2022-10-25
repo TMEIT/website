@@ -163,10 +163,10 @@ jobs:
 
       - name: Write API tokens to files for Kustomize to send to Kubernetes
         run: |
-          echo "$CF_TOKEN" > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
-          echo "$B2_DB_BUCKET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-bucket
-          echo "$B2_DB_ID" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-id
-          echo "$B2_DB_SECRET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-key
+          echo -n "$CF_TOKEN" > deploy/kubernetes/tmeit-se/certificate/cloudflare-api-token
+          echo -n "$B2_DB_BUCKET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-bucket
+          echo -n "$B2_DB_ID" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-id
+          echo -n "$B2_DB_SECRET" > deploy/kubernetes/tmeit-se/postgres/b2-db-backup-key
         env:
           CF_TOKEN: ${{needs.terraform-apply.outputs.cf-le-token}}
           B2_DB_BUCKET: ${{needs.terraform-apply.outputs.b2-db-bucket}}
