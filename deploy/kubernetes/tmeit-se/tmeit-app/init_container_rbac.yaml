@@ -16,7 +16,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: tmeit
+  namespace: default
 roleRef:
   kind: Role
   name: wait-for-migrations
