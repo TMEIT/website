@@ -28,7 +28,7 @@ data:
     echo "$dt - Authenticating with Backblaze B2"
     ./b2 authorize-account $B2_APP_KEY_ID $B2_APP_KEY
     
-    echo "$dt - Uploading the dump to bucket \42B2_BUCKET_NAME\42 on Backblaze B2";
+    echo "$dt - Uploading the dump to bucket $B2_BUCKET_NAME on Backblaze B2";
     ./b2 upload-file --noProgress $B2_BUCKET_NAME $backUpFilePath $backUpFilePath
     
     if [ $? -ne 0 ]; then
@@ -64,6 +64,7 @@ spec:
             volumeMounts:
             - mountPath: /tmp/backup_database.sh
               name: db-backup-script
+              subPath: backup_database.sh
             env:
             - name: BACKUP_INTERVAL
               value: hourly
@@ -131,6 +132,7 @@ spec:
             volumeMounts:
             - mountPath: /tmp/backup_database.sh
               name: db-backup-script
+              subPath: backup_database.sh
             env:
             - name: BACKUP_INTERVAL
               value: daily
@@ -199,6 +201,7 @@ spec:
             volumeMounts:
             - mountPath: /tmp/backup_database.sh
               name: db-backup-script
+              subPath: backup_database.sh
             env:
             - name: BACKUP_INTERVAL
               value: monthly
