@@ -158,6 +158,7 @@ jobs:
           containerfiles: |-
             containerfiles/tmeit-app.Containerfile
             containerfiles/tmeit-run-migrations.Containerfile
+            containerfiles/db-backup-agent.Containerfile
   test-app: # Run app tests
     name: Test app
     runs-on: ubuntu-latest
