@@ -19,9 +19,9 @@ resource "hcloud_server" "node1" {
   }
   firewall_ids = [hcloud_firewall.myfirewall.id]
 
-  # Try to prevent Terraform from deleting the server (I don't think it works)
-  delete_protection = true
-  rebuild_protection = true
+  # Prevent Terraform from deleting the server by accident
+  delete_protection = false
+  rebuild_protection = false
 
   # SSH into server to configure it
   connection {
