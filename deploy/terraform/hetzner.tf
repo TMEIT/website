@@ -1,6 +1,7 @@
 
 # IF NODE IS ACCIDENTALLY REGENERATED:
 # * SSH will be broken initially and parts of the pipeline will fail, you must go to the node in the Hetzner Cloud console and hit Rescue > Reset Root Password
+# * The Kubernetes operators will be missing, which will make kubernetes deploys fail until they have been reinstalled.
 # * The database will be gone, you must restore the database from the backup:
 #   1. Download latest backup from backblaze
 #   2. Use Kubernetes to port-forward postgres service to your local machine
