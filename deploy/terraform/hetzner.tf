@@ -42,7 +42,7 @@ resource "hcloud_server" "node1" {
       "apt install -y unattended-upgrades ssh-import-id apparmor",
 
       # list of ssh-import-id commands that imports all of the admins' SSH keys, as found on Github
-      import_admin_keys,
+      local.import_admin_keys,
 
       # Configure SSH server
       "echo '${var.ssh_password_config}' > /etc/ssh/sshd_config.d/90_disable_pw_auth.conf",
@@ -58,7 +58,7 @@ resource "hcloud_server" "node1" {
 
       # Configure k3s to enable IPv6
       "mkdir -p /etc/rancher/k3s",
-      "echo '${k3s_config}' > /etc/rancher/k3s/config.yaml",
+      "echo '${local.k3s_config}' > /etc/rancher/k3s/config.yaml",
 
       # Install/Update k3s
       "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL='${var.k3s_release_channel}' sh -",
