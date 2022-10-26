@@ -20,8 +20,9 @@ resource "hcloud_server" "node1" {
   firewall_ids = [hcloud_firewall.myfirewall.id]
 
   # Prevent Terraform from deleting the server by accident
-  delete_protection = false
-  rebuild_protection = false
+  # (You must disable node protection from the Hetzner cloud console to let Terraform delete the node)
+  delete_protection = true
+  rebuild_protection = true
 
   # SSH into server to configure it
   connection {
