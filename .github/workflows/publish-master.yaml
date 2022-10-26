@@ -1,4 +1,4 @@
-name: Push and publish app
+name: Build and deploy website
 
 on:
   push:
@@ -6,8 +6,6 @@ on:
       - master
 
 jobs:
-
-
   deploy:
     name: Apply Terraform configuration, build containers, and deploy to Kubernetes
     runs-on: ubuntu-latest
@@ -61,13 +59,6 @@ jobs:
         working-directory: deploy/terraform
       - name: chmod SSH key
         run: chmod 700 "$HOME/id_ed25519"
-      - name: Update k3s
-        run: |
-          ssh \
-          -qo "StrictHostKeyChecking=no" \
-          -i "$HOME/id_ed25519" \
-          root@${{ steps.tf_ip_addr.outputs.stdout }} \
-          'curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="$(< deploy/k3s_channel_version/channel)" sh -'
       - name: Download kubeconfig file
         run: |
           scp \
