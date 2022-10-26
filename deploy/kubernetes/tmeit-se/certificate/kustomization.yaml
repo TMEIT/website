@@ -8,6 +8,7 @@ resources:
 # Inject cloudflare-api-token into a Kubernetes secret
 secretGenerator:
 - name: cloudflare-api-token-secret
+  namespace: cert-manager
   files:
     - cloudflare-api-token
 
