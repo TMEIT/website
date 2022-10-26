@@ -15,12 +15,12 @@ resource "null_resource" "run-ssh-install" {
       # flatten unpacks any lists that are embedded
 
       # Update system
-      "apt update",
-      "apt upgrade",
+      "apt update -q",
+      "apt upgrade -qy",
 
       # Install unattended-upgrades (for auto-updating packages), ssh-import-id (to make SSH key management simpler),
       # and apparmor (to fix containerd on debian 11)
-      "apt install -y unattended-upgrades ssh-import-id apparmor",
+      "apt install -qy unattended-upgrades ssh-import-id apparmor",
 
       # list of ssh-import-id commands that imports all of the admins' SSH keys, as found on Github
       local.import_admin_keys,
@@ -40,6 +40,7 @@ resource "null_resource" "run-ssh-install" {
       # Configure k3s to enable IPv6
       # https://docs.k3s.io/installation/configuration#configuration-file
       # https://docs.k3s.io/installation/network-options#dual-stack-installation
+      "mkdir -p /etc/rancher/k3s",
       format("echo '%s' > /etc/rancher/k3s/config.yaml", yamlencode({
         node-ip = join(",", [
           hcloud_server.node1.ipv4_address,
@@ -59,5 +60,5 @@ resource "null_resource" "run-ssh-install" {
 
 locals {
   # List of ssh-import-id commands that imports all of the admins' SSH keys, keys are copied from their Github profile
-  import_admin_keys = [for u in var.admins_github_names : "ssh-import-id ${u}"]
+  import_admin_keys = [for u in var.admins_github_names : "ssh-import-id gh:${u}"]
 }
