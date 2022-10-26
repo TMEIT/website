@@ -70,7 +70,7 @@ and that it is extremely accessible to university students just starting their c
 * All of the website components run on Kubernetes for portability, self-healing, and automated certificate renewal.
 * The backend API uses the powerful FastAPI library and is backed by a self-managed PostgreSQL cluster.
 * The frontend is a ReactJS single-page-app that uses a well-defined api to get its data from the backend. The frontend is intentionally kept simple, avoiding complexity like create-react-app and Redux.
-* The API uses FastAPI self-documenting 
+* The API takes advantage of FastAPI's automatic OpenAPI documentation, and every API endpoint can be tried out from the [site's OpenAPI documentation page](https://tmeit.se/api/v1/docs). 
 * All code is linted and tested automatically before it is merged to master to ensure code quality and give developers feedback about their code.
 * New releases are built and deployed automatically, with no knowledge needed from the developers. 
 
@@ -94,7 +94,7 @@ Monthly costs are under €5 / month.
 We also store personal data about our members, so it's important that we follow GDPR principles when storing our data. 
 
 Our server is firewalled from the outside world and can only be accessed over encrypted channels using mTLS authentication.
-~~Even the website itself can only be accessed by Cloudflare with an Authenticated Origin Pull.~~ (Not implemented yet...)
+~~Even the website itself can only be accessed through Cloudflare with an Authenticated Origin Pull.~~ (Not implemented yet...)
 
 The attack surface on the server is very small, and requires either using major zero-day exploits across multiple layers of security, 
 or theft of API keys from Github. 
