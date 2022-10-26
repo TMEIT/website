@@ -83,7 +83,7 @@ except when it's time for major updates like new versions of Kubernetes, Debian,
 which only happen once a year or less.
 
 New versions of the website are built as containers and deployed automatically with a CI/CD pipeline. 
-Software runtimes are packaged with with the website code and don't have to be updated on the server.
+Software runtimes are packaged with the website code and don't have to be updated on the server.
 
 The PostgreSQL database is backed up every hour to object storage to ensure user data is safe even if the server crashes and burns.
 
