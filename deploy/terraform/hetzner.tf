@@ -1,6 +1,7 @@
 
 # IF NODE IS ACCIDENTALLY REGENERATED:
-# * SSH will be broken initially, you must go to the node in the Hetzner Cloud console and hit Rescue > Reset Root Password
+# * SSH will be broken initially and parts of the pipeline will fail, you must go to the node in the Hetzner Cloud console and hit Rescue > Reset Root Password
+# * The Kubernetes operators will be missing, which will make kubernetes deploys fail until they have been reinstalled.
 # * The database will be gone, you must restore the database from the backup:
 #   1. Download latest backup from backblaze
 #   2. Use Kubernetes to port-forward postgres service to your local machine
@@ -17,61 +18,13 @@ resource "hcloud_server" "node1" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
-  firewall_ids = [hcloud_firewall.myfirewall.id]
 
   # Prevent Terraform from deleting the server by accident
-  delete_protection = false
-  rebuild_protection = false
+  # (You must disable node protection from the Hetzner cloud console to let Terraform delete the node)
+  delete_protection = true
+  rebuild_protection = true
 
-  # SSH into server to configure it
-  connection {
-    type     = "ssh"
-    user     = "root"
-    private_key = tls_private_key.terraform_access.private_key_openssh
-    host     = self.ipv4_address
-  }
-  provisioner "remote-exec" {
-    inline = flatten([ # flatten unpacks any lists that are embedded
-
-      # Update system
-      "apt update",
-      "apt upgrade",
-
-      # Install unattended-upgrades (for auto-updating packages), ssh-import-id (to make SSH key management simpler),
-      # and apparmor (to fix containerd on debian 11)
-      "apt install -y unattended-upgrades ssh-import-id apparmor",
-
-      # list of ssh-import-id commands that imports all of the admins' SSH keys, as found on Github
-      local.import_admin_keys,
-
-      # Configure SSH server
-      "echo '${var.ssh_password_config}' > /etc/ssh/sshd_config.d/90_disable_pw_auth.conf",
-      "echo '${var.banner_config}' > /etc/ssh/sshd_config.d/80_banner.conf",
-      "echo '${var.server_banner}' > /etc/ssh/sshd_config.d/banner",
-
-      # enable unattended upgrade
-      # unattended-upgrades configuration found here
-      # https://www.linode.com/docs/guides/how-to-configure-automated-security-updates-debian/
-      "echo '${var.apt-unattended-upgrades}' > /etc/apt/apt.conf.d/50unattended-upgrades",
-      "echo '${var.apt-auto-upgrades}' > /etc/apt/apt.conf.d/20auto-upgrades",
-      "systemctl enable --now unattended-upgrades",
-
-      # Configure k3s to enable IPv6
-      # https://docs.k3s.io/installation/configuration#configuration-file
-      # https://docs.k3s.io/installation/network-options#dual-stack-installation
-      format("echo '%s' > /etc/rancher/k3s/config.yaml", yamlencode({
-        node-ip = join(",", [self.ipv4_address, self.ipv6_address]),
-        kubelet-arg = "--node-ip=::",
-
-        # The IPv6 subnets used are "Unique Local Address" subnets (and have 2^48 more addresses than the IPv4 subnets)
-        cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/64"
-        service-cidr = "10.43.0.0/16,fd58:266e:9853:0043::/64"
-      })),
-
-      # Install/Update k3s
-      "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL='${var.k3s_release_channel}' sh -",
-    ])
-  }
+  firewall_ids = [hcloud_firewall.myfirewall.id]
 }
 
 resource "hcloud_firewall" "myfirewall" {
@@ -130,14 +83,8 @@ resource "hcloud_rdns" "node1_ipv6" {
 }
 
 locals {
-    # List of ssh-import-id commands that imports all of the admins' SSH keys, as found on Github
-  import_admin_keys = [for u in var.admins_github_names : "ssh-import-id ${u}"]
-
   # This is a cloud-init file to install an SSH key on first boot.
-  # NOTE THAT REGENERATING THE SSH KEY REGENERATES THE SERVER!
-  # Regenerating the server deletes the active database and requires a manual database recovery from backup.
-  # Also, it takes a few minutes for the server to recreate, and the first github action pipeline after a server recreation will fail.
-  # You must rerun the Github Actions pipline after a few minutes after recreating the server.
+  # NOTE THAT CHANGING THIS OR REGENERATING THE SSH KEY REGENERATES THE SERVER!
   # cloud-init documentation:
   # https://cloudinit.readthedocs.io/en/latest/topics/format.html
   # https://cloudinit.readthedocs.io/en/latest/topics/examples.html
