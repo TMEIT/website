@@ -1,51 +1,38 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 function Home() {
     return (
         <>
-            <h1>TMEIT</h1>
-            <h2>Welcome to the next version of tmeit.se!</h2>
-            <p>This is a project to rewrite tmeit.se completely from scratch with ReactJS
-                and a simple Python backend.
-                The project was stalled for a while during 2019-2021,
-                but development has started again and all the existing code has been updated to the latest 2022 standards.
-                You can follow the development on
-                <a href={"https://github.com/TMEIT/website"}> TMEIT's Github page</a>.
+            <h1>Welcome!</h1>
+            <p>
+                TraditionsMEsterIT (TMEIT) is a klubbmästeri within the Section for Information- and Nanotechnology,
+                which is based at KTH in Kista.
             </p>
             <p>
-                We are currently working adding new features to the backend to build a social media site on-par with the
-                old TMEIT website.
-                Real users, a login page, and a sign-up page will be added shortly.
-                Support for pictures of TMEIT members, as well as sleek styling will be added before the 1.0 release.
-                Right now the website is running on Lex's home server to demo the pre-release of the website,
-                but the website will be moved to Linode or Google Cloud for the 1.0 release.
-            </p>
-            <p><strong>
-                If you're interested in web development and want to learn more about how this website works,
-                feel free to reach out to Justin Lex-Hammarskjöld (aka "Lex")
-                and join the discussion with the TMEIT webbmarskalkar.
-            </strong></p>
-            <p>
-                This website uses a wide variety of technologies,
-                so there's probably some systems that you will find interesting.
+                As a klubbmästeri, we arrange many of the chapter's pubs and parties,
+                but also other social events at the university for the chapter's members.
             </p>
             <p>
-                Some facts about the technology stack:
-            </p>
-            <ul>
-                <li>The website runs on Kubernetes with technologies like "Docker" containers and a reverse proxy.</li>
-                <li>The frontend is written in Javascript and CSS using Webpack and the React web framework.</li>
-                <li>The backend providing the json API and the SQL database is written in Python using the FastAPI framework and the SQLalchemy database library.</li>
-                <li>The website is optimized for speed, with the website downloading in less than 100kb, and a high-speed backend capable of handling thousands of requests per second on a single core.</li>
-                <li>The website testing and deployment is fully automated, and if the website stops responding, Kubernetes will automatically restart it.</li>
-                <li>More information can be found in the devloper guide <a href={"https://github.com/TMEIT/website/blob/master/howto-dev.md"}>here</a>.</li>
-            </ul>
-            <p>
-                Feel free to send us suggestions about the future of tmeit.se!
+                Every Friday (or sometimes Tuesdays) during the university termin, we arrange a pub in Kistan 2.0 that is open to everyone.
+                By tradition, we hold the Tentagasque, a party held at the end of every exam period,
+                before the exam pub crawl begins at Campus Valhallavägen.
+                We are a part of Klubbmästarrådet (KMR), and we even arrange KMR gasques.
             </p>
             <p>
-                Let us know if you're interesting in trying out some web/api development,
-                and we can help you set up a developer copy of the site on your computer for testing.
+                If you are interested in joining TMEIT, helping out behind the bar at TMEIT's events,
+                and getting to hang out at tons of fun events and parties, you can sign up <Link to="/join_tmeit">here</Link>!
+            </p>
+            <br/>
+            <p>
+                So yeah, this is the new website!
+            </p>
+            <p>
+                It's still missing a lot of features from the old website, such as member photos, workteams, events, and any trace of the Swedish Language.
+            </p>
+            <p>
+                If you're interested in learning Python or ReactJS programming, come check out our <a href="https://github.com/TMEIT/website">Github</a>,
+                or join the discussion in the #webbweeb channel on the TMEIT discord!
             </p>
         </>
     );
