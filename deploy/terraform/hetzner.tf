@@ -57,8 +57,16 @@ resource "hcloud_server" "node1" {
       "systemctl enable --now unattended-upgrades",
 
       # Configure k3s to enable IPv6
-      "mkdir -p /etc/rancher/k3s",
-      "echo '${local.k3s_config}' > /etc/rancher/k3s/config.yaml",
+      # https://docs.k3s.io/installation/configuration#configuration-file
+      # https://docs.k3s.io/installation/network-options#dual-stack-installation
+      format("echo '%s' > /etc/rancher/k3s/config.yaml", yamlencode({
+        node-ip = join(",", [self.ipv4_address, self.ipv6_address]),
+        kubelet-arg = "--node-ip=::",
+
+        # The IPv6 subnets used are "Unique Local Address" subnets (and have 2^48 more addresses than the IPv4 subnets)
+        cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/64"
+        service-cidr = "10.43.0.0/16,fd58:266e:9853:0043::/64"
+      })),
 
       # Install/Update k3s
       "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL='${var.k3s_release_channel}' sh -",
@@ -124,18 +132,6 @@ resource "hcloud_rdns" "node1_ipv6" {
 locals {
     # List of ssh-import-id commands that imports all of the admins' SSH keys, as found on Github
   import_admin_keys = [for u in var.admins_github_names : "ssh-import-id ${u}"]
-
-  # Configure k3s to enable IPv6
-  # https://docs.k3s.io/installation/configuration#configuration-file
-  # https://docs.k3s.io/installation/network-options#dual-stack-installation
-  k3s_config = yamlencode({
-    node-ip = join(",", [hcloud_server.node1.ipv4_address, hcloud_server.node1.ipv6_address]),
-    kubelet-arg = "--node-ip=::",
-
-    # The IPv6 subnets used are "Unique Local Address" subnets (and have 2^48 more addresses than the IPv4 subnets)
-    cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/64"
-    service-cidr = "10.43.0.0/16,fd58:266e:9853:0043::/64"
-  })
 
   # This is a cloud-init file to install an SSH key on first boot.
   # NOTE THAT REGENERATING THE SSH KEY REGENERATES THE SERVER!
