@@ -5,6 +5,9 @@ metadata:
   labels:
     app: tmeit-app
 spec:
+  ipFamilies:
+  - IPv6
+  ipFamilyPolicy: SingleStack
   ports:
   - port: 80
     targetPort: 8080

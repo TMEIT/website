@@ -1,0 +1,245 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-backup-script
+  namespace: default
+
+data:
+  # Script based on the default backup_database.sh included with kubegres
+  # Some env like $$BACKUP_INTERVAL, $B2_APP_KEY_ID, etc are defined by the container.
+  backup_database.sh: |
+    #!/bin/bash
+    set -e
+    
+    dt=$(date '+%Y-%m-%d %H:%M:%S');
+    backUpFileName="tmeit-db-backup-$BACKUP_INTERVAL.xz"
+    backUpFilePath="/tmp/$backUpFileName"
+    
+    echo "$dt - Starting DB backup of tmeit-db into file: $backUpFilePath";
+    echo "$dt - Running: pg_dumpall -h tmeit-db-replica -U postgres -c | xz > $backUpFilePath"
+    pg_dumpall -h tmeit-db-replica -U postgres -c | xz > $backUpFilePath
+    
+    if [ $? -ne 0 ]; then
+    rm $backUpFilePath
+    echo "Unable to execute a BackUp. Please check DB connection settings"
+    exit 1
+    fi
+    
+    echo "$dt - Authenticating with Backblaze B2"
+    ./b2 authorize-account $B2_APP_KEY_ID $B2_APP_KEY
+    
+    echo "$dt - Uploading the dump to bucket $B2_BUCKET_NAME on Backblaze B2";
+    ./b2 upload-file --noProgress $B2_BUCKET_NAME $backUpFilePath $backUpFileName
+    
+    if [ $? -ne 0 ]; then
+    rm $backUpFilePath
+    echo "Unable to upload the database dump to B2."
+    exit 1
+    fi
+    
+    echo "$dt - DB backup completed for tmeit-db and uploaded to Backblaze B2.";
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-tmeit-db-hourly
+spec:
+  schedule: 0 * * * *
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-postgres
+            image: ghcr.io/tmeit/db-backup-agent
+            imagePullPolicy: IfNotPresent
+            args:
+              - sh
+              - -c
+              - /tmp/backup_database.sh
+            volumeMounts:
+            - mountPath: /tmp/backup_database.sh
+              name: db-backup-script
+              subPath: backup_database.sh
+            env:
+            - name: BACKUP_INTERVAL
+              value: hourly
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kubegres-passwords
+                  key: superUserPassword
+            - name: B2_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-bucket
+            - name: B2_APP_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-id
+            - name: B2_APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-key
+            resources:
+              requests:
+                cpu: 20m
+                memory: 200Mi
+              limits:
+                cpu: 100m  # Don't cripple the server while doing a backup, limit to 10% CPU
+                memory: 200Mi
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - name: db-backup-script
+              configMap:
+                defaultMode: 511
+                name: db-backup-script
+          dnsConfig: # Fix DNS resolution in Alpine 3.11 https://github.com/kubernetes/kubernetes/issues/64924 https://github.com/gliderlabs/docker-alpine/issues/539
+            options:
+              - name: ndots
+                value: "1"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-tmeit-db-daily
+spec:
+  schedule: 15 3 * * *
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-postgres
+            image: ghcr.io/tmeit/db-backup-agent
+            imagePullPolicy: IfNotPresent
+            args:
+              - sh
+              - -c
+              - /tmp/backup_database.sh
+            volumeMounts:
+            - mountPath: /tmp/backup_database.sh
+              name: db-backup-script
+              subPath: backup_database.sh
+            env:
+            - name: BACKUP_INTERVAL
+              value: daily
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kubegres-passwords
+                  key: superUserPassword
+            - name: B2_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-bucket
+            - name: B2_APP_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-id
+            - name: B2_APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-key
+            resources:
+              requests:
+                cpu: 20m
+                memory: 200Mi
+              limits:
+                cpu: 100m  # Don't cripple the server while doing a backup, limit to 10% CPU
+                memory: 200Mi
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - name: db-backup-script
+              configMap:
+                defaultMode: 511
+                name: db-backup-script
+          dnsConfig: # Fix DNS resolution in Alpine 3.11 https://github.com/kubernetes/kubernetes/issues/64924 https://github.com/gliderlabs/docker-alpine/issues/539
+            options:
+              - name: ndots
+                value: "1"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-tmeit-db-monthly
+spec:
+  schedule: 30 4 1 * *
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-postgres
+            image: ghcr.io/tmeit/db-backup-agent
+            imagePullPolicy: IfNotPresent
+            args:
+              - sh
+              - -c
+              - /tmp/backup_database.sh
+            volumeMounts:
+            - mountPath: /tmp/backup_database.sh
+              name: db-backup-script
+              subPath: backup_database.sh
+            env:
+            - name: BACKUP_INTERVAL
+              value: monthly
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kubegres-passwords
+                  key: superUserPassword
+            - name: B2_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-bucket
+            - name: B2_APP_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-id
+            - name: B2_APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: b2-db-backup-appkey
+                  key: b2-db-backup-key
+            resources:
+              requests:
+                cpu: 20m
+                memory: 200Mi
+              limits:
+                cpu: 100m  # Don't cripple the server while doing a backup, limit to 10% CPU
+                memory: 200Mi
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - name: db-backup-script
+              configMap:
+                defaultMode: 511
+                name: db-backup-script
+          dnsConfig: # Fix DNS resolution in Alpine 3.11 https://github.com/kubernetes/kubernetes/issues/64924 https://github.com/gliderlabs/docker-alpine/issues/539
+            options:
+              - name: ndots
+                value: "1"

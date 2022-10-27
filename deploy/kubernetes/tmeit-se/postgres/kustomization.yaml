@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- sealedsecret.yaml
+- db_backup_cronjob.yaml
+
+# Inject Backblaze B2 bucket name and credentials into a Kubernetes secret
+secretGenerator:
+- name: b2-db-backup-appkey
+  files:
+    - b2-db-backup-bucket
+    - b2-db-backup-id
+    - b2-db-backup-key
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+patchesJson6902:
+  - target:
+      group: batch
+      version: v1
+      kind: CronJob
+      name: backup-tmeit-db-hourly
+    path: set_image_tag.json
+  - target:
+      group: batch
+      version: v1
+      kind: CronJob
+      name: backup-tmeit-db-daily
+    path: set_image_tag.json
+  - target:
+      group: batch
+      version: v1
+      kind: CronJob
+      name: backup-tmeit-db-monthly
+    path: set_image_tag.json

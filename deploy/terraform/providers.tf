@@ -27,6 +27,10 @@ terraform {
     b2 = {
       source = "Backblaze/b2"
     }
+    hcloud = {
+      source = "hetznercloud/hcloud"
+      version = "1.35.2"
+    }
   }
 }
 
@@ -36,4 +40,8 @@ provider "cloudflare" {
 
 provider "b2" {
   // Application key is pulled from $B2_APPLICATION_KEY_ID and $B2_APPLICATION_KEY environment variables
+}
+
+provider "hcloud" {
+  // Token is pulled from HCLOUD_TOKEN environment variable
 }

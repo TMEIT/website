@@ -4,7 +4,7 @@ metadata:
   name: tmeit-db
 spec:
    replicas: 3
-   image: postgres:15beta1
+   image: postgres:15
    database:
       size: 200Mi
    customConfig: kubegres-conf
@@ -26,11 +26,15 @@ spec:
               key: tmeitBackendUserPassword
    resources:
      limits:
-       memory: "500Mi"
-       cpu: "1"
+       memory: "250Mi"
+       cpu: "500m"
        ephemeral-storage: 1Gi
      requests:
-       memory: "200Mi"
+       memory: "100Mi"
        cpu: "50m"
        ephemeral-storage: 1Gi
-
+  # Note: DB backups are not done with kubegres' built in backup system,
+  # and are instead done with custom cronjobs found in deploy/kubernetes/tmeit-se/postgres/
+  # This is done so that we can backup to Backblaze B2 storage,
+  # and also so that we can have custom backup retention patterns,
+  # i.e. hourly backups kept for 2 weeks, daily backups kept for a year, etc.

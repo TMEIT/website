@@ -1,21 +1,77 @@
-name: Push and publish app
+name: Build and deploy website
 
 on:
   push:
     branches:
       - master
 
-env:
-  TMEIT_JLH_NAME_CA_BASE64: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkekNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTXpneU1UUTNNakV3SGhjTk1qRXhNVEk1TVRrek9EUXhXaGNOTXpFeE1USTNNVGt6T0RReApXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTXpneU1UUTNNakV3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFUMVBkZGhUUHZSSVdTWWw1T2tDZEpESThDMWlzc3VmT1BYZCtCWFgwNTMKU1VzWCtRVjc3eEZDbjFwdUpSK0k3NmpYcWpyaGd3b044T2g0dVFiTkNtcUdvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVVBQbUZkUU5paHZiUWZuVUJVRDJWCm9PN1BsbUl3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUlnU1JDd2dQdmRpQ2k4MjNPV2dIdTQ1cVdMUlFhR2prY2sKT21WWjlHU0IzbzBDSVFEMVRaTVRvakJJRGxicm01QmxSbDR0Z2tCM3lsNVQweWRQM01aYUtqQ0xCZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
-
 jobs:
-  build-push:
-    name: Build and push app
+  deploy:
+    name: Apply Terraform configuration, build containers, and deploy to Kubernetes
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      HCLOUD_TOKEN: ${{ secrets.HETZNER_API_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
+      B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_MASTER_KEY }}
+      TF_VAR_pw_hash: ${{ secrets.NODE_ROOT_USER_PW_HASH }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
+      - uses: hashicorp/setup-terraform@v2
+      - name: Terraform Init
+        run: terraform init
+        working-directory: deploy/terraform
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
+        working-directory: deploy/terraform
+
+      # How to fetch Terraform variables from CLI
+      # https://learn.hashicorp.com/tutorials/terraform/outputs
+      - name: Get node IPv4 address  # GITHUB DOESNT SUPPORT IPV6 FFS
+        id: tf_ip_addr
+        run: terraform output -raw ipv4_address
+        working-directory: deploy/terraform
+      - uses: hashicorp/setup-terraform@v2  # Remove wrapper so that we can output directly to files
         with:
-          fetch-depth: '0'
+          terraform_wrapper: false
+      - name: Get Cloudflare token for Let's Encrypt
+        id: tf_cf_le_token
+        run: terraform output -raw cloudflare-le-token > ../kubernetes/tmeit-se/certificate/cloudflare-api-token
+        working-directory: deploy/terraform
+      - name: Get name for the B2 database backup bucket
+        id: tf_b2_db_bucket
+        run: terraform output -raw b2-db-backup-bucket > ../kubernetes/tmeit-se/postgres/b2-db-backup-bucket
+        working-directory: deploy/terraform
+      - name: Get B2 appkey id for DB backups
+        id: tf_b2_db_id
+        run: terraform output -raw b2-db-key-id > ../kubernetes/tmeit-se/postgres/b2-db-backup-id
+        working-directory: deploy/terraform
+      - name: Get B2 appkey secret for DB backups
+        id: tf_b2_db_secret
+        run: terraform output -raw b2-db-key-secret > ../kubernetes/tmeit-se/postgres/b2-db-backup-key
+        working-directory: deploy/terraform
+      - name: Get SSH key
+        run: terraform output -raw ssh_key > "$HOME/id_ed25519"
+        working-directory: deploy/terraform
+      - name: chmod SSH key
+        run: chmod 700 "$HOME/id_ed25519"
+      - name: Download kubeconfig file
+        run: |
+          scp \
+          -qo "StrictHostKeyChecking=no" \
+          -i "$HOME/id_ed25519" \
+          root@${{ steps.tf_ip_addr.outputs.stdout }}:/etc/rancher/k3s/k3s.yaml .
+      - name: Set kubeconfig server URL
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.clusters[0].cluster.server = "https://${{ steps.tf_ip_addr.outputs.stdout }}:6443"' "k3s.yaml"
+      - name: Move kubeconfig to ~/.kube/config
+        run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
+
       - uses: actions/setup-python@v3
         with:
           python-version: '3.10'
@@ -32,7 +88,6 @@ jobs:
           context: '.'
           containerfiles: |-
             containerfiles/tmeit-app.Containerfile
-
       - name: Build OCI image for tmeit-run-migrations
         uses: redhat-actions/buildah-build@v2
         with:
@@ -41,11 +96,20 @@ jobs:
           context: '.'
           containerfiles: |-
             containerfiles/tmeit-run-migrations.Containerfile
+      - name: Build OCI image for db-backup-agent
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ghcr.io/tmeit/db-backup-agent
+          tags: "${{ steps.release_version.outputs.version }}"
+          context: '.'
+          containerfiles: |-
+            containerfiles/db-backup-agent.Containerfile
 
       - name: Export OCI images
         run: |
           podman save  --format docker-archive -o tmeit-app-docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman save  --format docker-archive -o tmeit-run-migrations-docker-container.tar ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
+          podman save  --format docker-archive -o db-backup-agent-docker-container.tar ghcr.io/tmeit/db-backup-agent:${{ steps.release_version.outputs.version }}
       - name: Send tmeit-app image to publish-tag job # https://stackoverflow.com/a/57877438
         uses: actions/upload-artifact@v3
         with:
@@ -56,6 +120,11 @@ jobs:
         with:
           name: "tmeit-run-migrations-image"
           path: "tmeit-run-migrations-docker-container.tar"
+      - name: Send db-backup-agent image to publish-tag job
+        uses: actions/upload-artifact@v3
+        with:
+          name: "db-backup-agent-image"
+          path: "db-backup-agent-docker-container.tar"
 
       - name: Log in to gh registry
         uses: redhat-actions/podman-login@v1
@@ -67,30 +136,23 @@ jobs:
         run:  |
           podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
-      - name: Setup KUBECONFIG
-        uses: vbem/kubeconfig4sa@v1
-        with: # Super useful action with good docs on k8s SAs https://github.com/vbem/kubeconfig4sa
-          server: ${{ secrets.JLH_CLUSTER_URL}}
-          ca-base64: ${{ env.TMEIT_JLH_NAME_CA_BASE64 }}
-          token: ${{ secrets.TMEIT_JLH_NAME_SA_TOKEN}}
-          namespace: tmeit
-          # Note: this account on the JLH cluster has limited permissions. See the RBAC configuration in the jlh-h5b repo.
-          # https://github.com/JustinLex/jlh-h5b/blob/main/applications/tmeit/rbac.yaml
-
-      - name: 'Push manifests to prod' # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with a ttl
+          podman push ghcr.io/tmeit/db-backup-agent:${{ steps.release_version.outputs.version }}
+      - name: 'Push manifests to prod'
+        # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with an old job
+        # NOTE: latest version of kubectl can be found here https://dl.k8s.io/release/stable.txt
         run: |
-          curl -LO "https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl"
-          curl -LO "https://dl.k8s.io/v1.24.0/bin/linux/amd64/kubectl.sha256"
+          curl -LO "https://dl.k8s.io/release/v1.25.3/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/v1.25.3/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl delete -f deploy/kubernetes/tmeit-jlh-name/run-migrations/job.yaml
-          kubectl apply -k deploy/kubernetes/tmeit-jlh-name/
-# kubectl 1.24.0 has kustomize 4.5.4 built in
+          kubectl delete -f deploy/kubernetes/tmeit-se/run-migrations/job.yaml
+          kubectl apply -k deploy/kubernetes/tmeit-se/
+# kubectl 1.25.3 has kustomize 4.5.7 built-in, according to "kubectl version"
 
   publish-tag:
     name: Publish GH release
     runs-on: ubuntu-latest
-    needs: build-push # Run after push so that we can get the docker image for publishing
+    needs: deploy # Run after deploy so that we can get the docker image for publishing
     steps:
       - uses: actions/checkout@v2
         with:
@@ -107,7 +169,7 @@ jobs:
         with:
           kustomize: '4.5.4'
           command: |-
-            kustomize build deploy/kubernetes/tmeit-jlh-name -o k8s-manifests.yaml
+            kustomize build deploy/kubernetes/tmeit-se -o k8s-manifests.yaml
       - name: Receive tmeit-app image from build-push job # https://stackoverflow:com/a/57877438
         uses: actions/download-artifact@v3
         with:
@@ -116,6 +178,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "tmeit-run-migrations-image"
+      - name: Receive db-backup-agent image from build-push job
+        uses: actions/download-artifact@v3
+        with:
+          name: "db-backup-agent-image"
       - name: Create git tag
         uses: anothrNick/github-tag-action@1.36.0
         env:
@@ -134,23 +200,5 @@ jobs:
           files: |
             tmeit-app-docker-container.tar
             tmeit-run-migrations-docker-container.tar
+            db-backup-agent-docker-container.tar
             k8s-manifests.yaml
-
-  terraform-apply: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
-    name: Apply Terraform configuration to cloud resources
-    runs-on: ubuntu-latest
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.TF_STATE_BUCKET_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_STATE_BUCKET_KEY }}
-      B2_APPLICATION_KEY_ID: ${{ secrets.B2_MASTER_KEY_ID }}
-      B2_APPLICATION_KEY: ${{ secrets.B2_MASTER_KEY }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-      - name: Terraform Init
-        run: terraform init
-        working-directory: deploy/terraform
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
-        working-directory: deploy/terraform

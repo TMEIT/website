@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import auth
-from ..models import Member
+from ..models import Member, SignUp
 
 from ..schemas.members.enums import CurrentRoleEnum
 
@@ -45,6 +45,24 @@ def create_member(hashed_password, email_number) -> Member:
     )
 
 
+def create_signup(hashed_password, email_number) -> SignUp:
+    first_name = random.choice(first_names)
+    last_name = random.choice(last_names)
+
+    # Randomly pick an IPv4 or an IPv6 address
+    ip_address = random.choice(["::ffff:8efa:4aae", "2a00:1450:400f:805::200e"])
+
+    return SignUp(
+        uuid=str(uuid4()),
+        ip_address=ip_address,
+        login_email=f"prao{email_number}@kth.se",
+        hashed_password=hashed_password,
+        first_name=first_name,
+        last_name=last_name,
+        phone=random.choice([None, f"0{random.randint(100000000, 999999999)}"]),
+    )
+
+
 async def create_members(number: int, db: AsyncSession) -> None:
     hashed_password = auth.ph.hash('yeet')
 
@@ -52,4 +70,14 @@ async def create_members(number: int, db: AsyncSession) -> None:
 
     async with db.begin():
         db.add_all(members)
+    await db.commit()
+
+
+async def create_signups(number: int, db: AsyncSession) -> None:
+    hashed_password = auth.ph.hash('yeet')
+
+    signups: list[SignUp] = [create_signup(hashed_password, i) for i in range(number)]
+
+    async with db.begin():
+        db.add_all(signups)
     await db.commit()

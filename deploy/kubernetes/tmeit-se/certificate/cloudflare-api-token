@@ -1,0 +1,1 @@
+This file will be automatically overwritten by our github actions pipeline with an Cloudflare API key that kubernetes cert-manager can use to create Let's Encrypt certificates

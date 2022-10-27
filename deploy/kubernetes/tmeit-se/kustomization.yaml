@@ -6,13 +6,17 @@ bases:
 
 replicas:
 - name: tmeit-app
-  count: 3
+  count: 1
 
 resources:
 - tmeit-app/service.yaml
 - tmeit-app/sealedsecret.yaml
-- postgres/sealedsecret.yaml
+- tmeit-app/ingress.yaml
+- tmeit-app/init_container_rbac.yaml
 - run-migrations/job.yaml
+- postgres
+- operators
+- certificate
 
 patchesJson6902:
   - target:
