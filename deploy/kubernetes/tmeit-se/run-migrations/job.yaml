@@ -12,6 +12,10 @@ spec:
       labels:
         job: tmeit-db
     spec:
+      dnsConfig: # Fix DNS resolution in Alpine 3.11 https://github.com/kubernetes/kubernetes/issues/64924 https://github.com/gliderlabs/docker-alpine/issues/539
+        options:
+          - name: ndots
+            value: "1"
       containers:
       - name: script
         image: tmeit-run-migrations:0.4.0
