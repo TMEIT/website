@@ -47,9 +47,9 @@ resource "null_resource" "run-ssh-install" {
           hcloud_server.node1.ipv6_address]),
         kubelet-arg = "'--node-ip=::'",
 
-        # The IPv6 subnets used are "Unique Local Address" subnets (and have 2^48 more addresses than the IPv4 subnets)
-        cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/64"
-        service-cidr = "10.43.0.0/16,fd58:266e:9853:0043::/64"
+        # The IPv6 subnets used are "Unique Local Address" subnets. K3s limits us to /108 IPv6 subnets :/
+        cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/112"
+        service-cidr = "10.43.0.0/16,fd58:266e:9853:0043::/112"
       })),
 
       # Install/Update k3s
