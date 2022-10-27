@@ -10,3 +10,4 @@ spec:
     targetPort: 8080
   selector:
     app: tmeit-app
+  ipFamilyPolicy: PreferDualStack
