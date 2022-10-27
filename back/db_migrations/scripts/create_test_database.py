@@ -15,16 +15,22 @@ async def drop_all():
         await conn.exec_driver_sql("CREATE SCHEMA public;")
 
 
-async def create_members():
-    db_url = get_production_url()
-    engine = get_async_engine(db_url, echo=True)
+async def create_members(engine):
     async with get_async_session(engine)() as db:
         await populate_db.create_members(1000, db)
 
 
+async def create_signups(engine):
+    async with get_async_session(engine)() as db:
+        await populate_db.create_members(20, db)
+
+
 def build_db(config: AlembicConfig):
     alembic_command.upgrade(config, "head")
-    asyncio.run(create_members())
+    db_url = get_production_url()
+    engine = get_async_engine(db_url, echo=True)
+    asyncio.run(create_members(engine))
+    asyncio.run(create_signups(engine))
 
 
 if __name__ == '__main__':
