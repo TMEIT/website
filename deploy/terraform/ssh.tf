@@ -45,7 +45,10 @@ resource "null_resource" "run-ssh-install" {
         node-ip = join(",", [
           hcloud_server.node1.ipv4_address,
           hcloud_server.node1.ipv6_address]),
-        kubelet-arg = "'--node-ip=::'",
+        kubelet-arg = "node-ip=::",
+
+        # Kubernetes IPv6 is JANK. /64 is the default mask size, but /112 is the max subnet!!
+        kube-controller-manager-arg = ["node-cidr-mask-size-ipv4=16", "node-cidr-mask-size-ipv6=112"],
 
         # The IPv6 subnets used are "Unique Local Address" subnets. K3s limits us to /108 IPv6 subnets :/
         cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/112"
