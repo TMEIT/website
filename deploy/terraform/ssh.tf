@@ -45,7 +45,7 @@ resource "null_resource" "run-ssh-install" {
         node-ip = join(",", [
           hcloud_server.node1.ipv4_address,
           hcloud_server.node1.ipv6_address]),
-        kubelet-arg = "--node-ip=::",
+        kubelet-arg = "'--node-ip=::'",
 
         # The IPv6 subnets used are "Unique Local Address" subnets (and have 2^48 more addresses than the IPv4 subnets)
         cluster-cidr = "10.42.0.0/16,fd58:266e:9853:0042::/64"
