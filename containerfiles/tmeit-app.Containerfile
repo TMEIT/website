@@ -30,4 +30,4 @@ COPY back/pyproject.toml back/poetry.lock /code/
 COPY --from=back-build /code/.venv /code/.venv
 COPY --from=front-build /code/www/ /code/static/front
 COPY /back/tmeit_backend /code/tmeit_backend
-CMD ["/code/.venv/bin/uvicorn", "tmeit_backend.app_root:app", "--host", "0.0.0.0", "--port", "8080", "--forwarded-allow-ips='*'"]
+CMD ["/code/.venv/bin/uvicorn", "tmeit_backend.app_root:app", "--host", "0.0.0.0", "--host", "::", "--port", "8080", "--forwarded-allow-ips='fd58:266e:9853:0042::/112'"]
