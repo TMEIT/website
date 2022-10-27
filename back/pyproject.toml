@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tmeit_backend"
-version = "0.7.13"
+version = "0.7.14"
 description = "Python backend for the TMEIT website"
 authors = ["TraditionsMEsterIT"]
 license = "AGPL-3.0"
