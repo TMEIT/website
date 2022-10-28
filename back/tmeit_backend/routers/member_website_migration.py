@@ -1,3 +1,4 @@
+import traceback
 from uuid import UUID
 
 from fastapi import Depends, status, APIRouter
@@ -30,7 +31,7 @@ async def read_migration(uuid: UUID,
     return migration
 
 
-@router.get("/members/{uuid}", response_model=MasterMigrationView, responses={403: {"model": ForbiddenResponse},
+@router.get("/members/{uuid}/admin", response_model=MasterMigrationView, responses={403: {"model": ForbiddenResponse},
                                                                               404: {"model": NotFoundResponse}})
 async def read_migration_as_master(uuid: UUID,
                                    db: AsyncSession = Depends(get_db),
@@ -69,6 +70,7 @@ async def perform_member_migration(migrate_form_data: MigrateForm,
     try:
         member = await migrate_member(db=db, data=migrate_form_data)
     except KeyError:
+        traceback.print_exc()  # Help with debugging if issues happen in production
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No member_website_migration with the uuid={migrate_form_data.uuid} was found."})
     return member

@@ -12,17 +12,17 @@ class Migration(BaseModel):
     """What a user sees when viewing a pending migration"""
     uuid: UUID
     time_created: datetime.datetime
-    email_sent: datetime.datetime
+    email_sent: Optional[datetime.datetime]
     login_email: EmailStr
     current_role: CurrentRoleEnum
     first_name: str
-    nickname: str
+    nickname: Optional[str]
     last_name: str
-    phone: str
-    drivers_license: bool
-    stad: datetime.datetime
-    fest: datetime.datetime
-    liquor_permit: datetime.datetime
+    phone: Optional[str]
+    drivers_license: Optional[bool]
+    stad: Optional[datetime.date]
+    fest: Optional[datetime.date]
+    liquor_permit: Optional[datetime.date]
 
 
 class MasterMigrationView(Migration):
