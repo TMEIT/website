@@ -5,4 +5,5 @@ from ..database import Base
 
 
 from .members.members import Member
+from .members.website_migration import MemberWebsiteMigration
 from .sign_up import SignUp
