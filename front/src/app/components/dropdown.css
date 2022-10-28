@@ -1,6 +1,5 @@
   .link {
-    width: 100px;
-    border-right: 1px solid gray;
+    width: 9rem;
     padding: 10px;
     text-align: center;
     position: relative;
@@ -10,15 +9,16 @@
   .menu {
     opacity: 0;
     position: absolute;
-    top: 40px; 
+    top: 60px; 
     left: 0;
     background: #ededed;
     border: 1px solid gray;
     padding: 10px;
     text-align: center;
-    transition: all 1000ms ease;
+    font-size: 1rem; 
+    transition: all 250ms ease;
   }
   
   .menu.open {
     opacity: 1;
-  }
+  }   

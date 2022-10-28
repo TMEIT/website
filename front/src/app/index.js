@@ -19,6 +19,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Profile from "./layouts/Profile";
 import Joined from "./components/Joined";
+import MasterMenu from "./layouts/MasterMenu";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/profile/:shortUuid" element={<Profile />} />
             <Route path="/profile/:shortUuid/:name" element={<Profile />} />
             <Route path="/join_completed" element={<Joined />} />
+            <Route path="/master" element={<MasterMenu />} />
           </Routes>
         </main>
 

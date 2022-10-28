@@ -7,6 +7,7 @@ import GetMyInfo from "./GetMyInfo";
 function Dropdown() {
   const [profile, setProfile] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
+  const [master, setMaster] = useState(false);
 
   let navigate = useNavigate();
 
@@ -14,7 +15,6 @@ function Dropdown() {
     let result = await GetMyInfo();
     try {
       let link = result.body.short_uuid;
-      console.log(link);
       navigate("/profile/" + link);
     } catch (error) {
       console.log(error);
@@ -22,7 +22,20 @@ function Dropdown() {
     }
   }
 
+  async function handleProfile() {
+    if (!profile) {
+      let result = await GetMyInfo();
+      try {
+        setMaster(result.body.current_role == "master");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    setProfile(!profile);
+  }
+
   function handleLogout() {
+    // Sets the cookie to instantly expire and deletes it.
     document.cookie = "access_token=; expires = Thu, 01 Jan 1970 00:00:00 UTC;";
     setOpenLogout(false);
     navigate(0);
@@ -31,18 +44,19 @@ function Dropdown() {
   return (
     <>
       <div className="link">
-        <a href={"#"} onClick={() => setProfile(!profile)}>
+        <a href={"#"} onClick={() => handleProfile()}>
           Settings{" "}
         </a>
         <div className={`menu ${profile ? "open" : ""}`}>
-          <ul>
-            <a href={"#"} onClick={() => goToProfile()}>
-              My profile
-            </a>
-            <a href={"#"} onClick={() => setOpenLogout(true)}>
-              Log out
-            </a>
-          </ul>
+          <button onClick={() => goToProfile()}>My profile</button>
+          <button onClick={() => setOpenLogout(true)}>Log out</button>
+          {master ? (
+            <button onClick={() => navigate("master")}>
+              Go to Master menu
+            </button>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div id="logoutModal">
