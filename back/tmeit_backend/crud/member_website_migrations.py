@@ -13,7 +13,7 @@ from ..schemas.members.schemas import MemberSelfView
 
 async def get_migrating_member_with_token(db: AsyncSession, uuid: UUID, security_token: str) -> Migration:
     stmt = select(models.MemberWebsiteMigration)\
-        .where(models.MemberWebsiteMigration.uuid == uuid)\
+        .where(models.MemberWebsiteMigration.uuid == str(uuid))\
         .where(models.MemberWebsiteMigration.security_token == security_token)
     result = (await db.execute(stmt)).fetchone()
     if result is None:
@@ -24,7 +24,7 @@ async def get_migrating_member_with_token(db: AsyncSession, uuid: UUID, security
 
 async def get_migrating_member_as_master(db: AsyncSession, uuid: UUID) -> MasterMigrationView:
     stmt = select(models.MemberWebsiteMigration)\
-        .where(models.MemberWebsiteMigration.uuid == uuid)
+        .where(models.MemberWebsiteMigration.uuid == str(uuid))
     result = (await db.execute(stmt)).fetchone()
     if result is None:
         raise KeyError()
@@ -47,16 +47,27 @@ async def migrate_member(db: AsyncSession,
                                                                          uuid=data.uuid,
                                                                          security_token=data.security_token)
 
-        # Update email and phone number from MigrateForm
-        member_website_migration.login_email = data.login_email
-        member_website_migration.phone = data.phone
-
         # Hash password
         hashed_password = ph.hash(data.password)
 
         # Create new member
         uuid = uuid4()
         db.add_all([
-            Member(uuid=str(uuid), hashed_password=hashed_password, **member_website_migration.dict()),
+            Member(uuid=str(uuid),
+                   hashed_password=hashed_password,
+
+                   # Use email and phone number from MigrateForm
+                   login_email=data.login_email,
+                   phone=data.phone,
+
+                   # Import data from old site
+                   current_role=member_website_migration.current_role,
+                   first_name=member_website_migration.first_name,
+                   nickname=member_website_migration.nickname,
+                   last_name=member_website_migration.last_name,
+                   drivers_license=member_website_migration.drivers_license,
+                   stad=member_website_migration.stad,
+                   fest=member_website_migration.fest,
+                   liquor_permit=member_website_migration.liquor_permit),
         ])
-        return await get_member(db=db, uuid=uuid, response_schema=MemberSelfView)
+    return await get_member(db=db, uuid=uuid, response_schema=MemberSelfView)
