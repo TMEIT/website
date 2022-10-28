@@ -5,6 +5,7 @@ from alembic import command as alembic_command
 
 from tmeit_backend.database import get_production_url, get_async_engine, get_async_session
 from tmeit_backend.testing_data import populate_db
+from tmeit_backend.testing_data.populate_db import create_member_website_migrations
 
 
 async def drop_all():
@@ -19,6 +20,7 @@ async def create_entries(engine):
     async with get_async_session(engine)() as db:
         await populate_db.create_members(1000, db)
         await populate_db.create_signups(20, db)
+        await create_member_website_migrations(20, db)
 
 
 def build_db(config: AlembicConfig):

@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import auth
-from ..models import Member, SignUp
+from ..models import Member, SignUp, MemberWebsiteMigration
 
 from ..schemas.members.enums import CurrentRoleEnum
 
@@ -63,6 +63,25 @@ def create_signup(hashed_password, email_number) -> SignUp:
     )
 
 
+def create_member_website_migration(email_number) -> SignUp:
+    first_name = random.choice(first_names)
+    last_name = random.choice(last_names)
+    return MemberWebsiteMigration(
+        uuid=str(uuid4()),
+        security_token="yeet",
+        current_role=CurrentRoleEnum.master.value,
+        login_email=f"vraq{email_number}@kth.se",
+        first_name=first_name,
+        nickname=random.choice([None, (first_name[:2] + last_name[:2])]),
+        last_name=last_name,
+        phone=random.choice([None, f"0{random.randint(100000000, 999999999)}"]),
+        drivers_license=random.choice([True, False, None]),
+        stad=random.choice([None, random_date(datetime.date(year=2005, month=1, day=1), datetime.date.today())]),
+        fest=random.choice([None, random_date(datetime.date(year=2005, month=1, day=1), datetime.date.today())]),
+        liquor_permit=random.choice([None, random_date(datetime.date(year=2005, month=1, day=1), datetime.date.today())]),
+    )
+
+
 async def create_members(number: int, db: AsyncSession) -> None:
     hashed_password = auth.ph.hash('yeet')
 
@@ -80,4 +99,13 @@ async def create_signups(number: int, db: AsyncSession) -> None:
 
     async with db.begin():
         db.add_all(signups)
+    await db.commit()
+
+
+async def create_member_website_migrations(number: int, db: AsyncSession) -> None:
+
+    mwms: list[MemberWebsiteMigration] = [create_member_website_migration(i) for i in range(number)]
+
+    async with db.begin():
+        db.add_all(mwms)
     await db.commit()
