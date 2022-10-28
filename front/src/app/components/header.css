@@ -2,6 +2,8 @@ header {
     background-color: #c5c5c5;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    grid-row-start: 1;
+    overflow: scroll;
 }
 
 header ul {

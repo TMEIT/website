@@ -9,13 +9,15 @@ body {
 
 #root {
     height: 100%;
-    display: flex;
-    flex-direction: column;
-}
+    display: grid;
+    grid-template-rows: 4rem 1fr 5rem;
+    row-gap: 2rem;
+ }
 
 main {
-    flex-shrink: 0;
-    margin: 2rem;
+    grid-row-start: 2;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 nav ul li {
