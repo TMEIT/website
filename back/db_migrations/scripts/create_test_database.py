@@ -5,6 +5,7 @@ from alembic import command as alembic_command
 
 from tmeit_backend.database import get_production_url, get_async_engine, get_async_session
 from tmeit_backend.testing_data import populate_db
+from tmeit_backend.testing_data.populate_db import create_member_website_migrations
 
 
 async def drop_all():
@@ -15,22 +16,18 @@ async def drop_all():
         await conn.exec_driver_sql("CREATE SCHEMA public;")
 
 
-async def create_members(engine):
+async def create_entries(engine):
     async with get_async_session(engine)() as db:
         await populate_db.create_members(1000, db)
-
-
-async def create_signups(engine):
-    async with get_async_session(engine)() as db:
-        await populate_db.create_members(20, db)
+        await populate_db.create_signups(20, db)
+        await create_member_website_migrations(20, db)
 
 
 def build_db(config: AlembicConfig):
     alembic_command.upgrade(config, "head")
     db_url = get_production_url()
     engine = get_async_engine(db_url, echo=True)
-    asyncio.run(create_members(engine))
-    asyncio.run(create_signups(engine))
+    asyncio.run(create_entries(engine))
 
 
 if __name__ == '__main__':

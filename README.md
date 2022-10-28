@@ -108,7 +108,7 @@ All data is stored with trusted cloud providers with good reputations, and no us
 This is the second revision of tmeit.se.
 
 ### tmeit.se (2011)
-The original tmeit.se was written in PHP by Wilhelm Svenselius in December 2011.
+The original tmeit.se was written in PHP by [Wilhelm Svenselius](https://github.com/wsv-accidis) in December 2011.
 
 It was a custom fork of Mediawiki hosted on a Loopia webbhotell. It had added features like workteams, events, multiple profile pictures, groups, and badges. 
 Users could earn points and level up for working at events (or maybe hacking some points for themselves)
@@ -116,6 +116,10 @@ Users could earn points and level up for working at events (or maybe hacking som
 TMEIT members could create their own pages, and people got pretty creative.
 
 The website lived for nearly 11 years. The website was finally taken down on 2022-10-26.
+
+[You can browse the source code for the original tmeit.se here](https://github.com/wsv-accidis/tmeit-wiki).
+
+The original tmeit.se even had an Android app. [You can find it's source code here](https://github.com/wsv-accidis/tmeit-android).
 
 ![Screenshot of the old website in 2022](/docs/old_website.png?raw=true "The original tmeit.se in 2022")
 
