@@ -1,4 +1,3 @@
-# Create mysql database
 podman build -f old_website_migration/Containerfile -t migrate_users .
 podman run --rm --network=host migrate_users
 
