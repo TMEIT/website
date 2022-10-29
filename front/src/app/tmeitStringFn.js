@@ -6,7 +6,6 @@ export const currentRolesEN = new Enum({
     'prao': 2,
     'vraq': 3,
     'ex': 4,
-    'inactive': 5,
     'exprao': -1
 },
     { //enum options
