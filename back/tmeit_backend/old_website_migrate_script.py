@@ -78,26 +78,31 @@ async def user_has_prop(cursor: DictCursor, user_id: int, prop_id: int) -> bool:
     return (await cursor.fetchone()) > 0
 
 
-async def migrate_user(user_id: int, cursor: DictCursor) -> MemberWebsiteMigration | None:
-    await cursor.execute("SELECT * FROM tmeit_users WHERE id = %s", (user_id,))
-    user_table_data = user_table_row(**(await cursor.fetchone()))
+async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
+    async with pool.acquire() as conn:
+        async with conn.cursor(cursor=DictCursor) as cursor:
+            await cursor.execute("use tmeit")
+            await cursor.execute(" SET CHARACTER SET utf8mb4")
 
-    if user_table_data.group_id is None:  # glitched/ deleted user, could be a duplicate, don't import
-        return None
+            await cursor.execute("SELECT * FROM tmeit_users WHERE id = %s", (user_id,))
+            user_table_data = user_table_row(**(await cursor.fetchone()))
 
-    # See if user has a marshal date
-    is_prao = not (await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropDateMars))
+            if user_table_data.group_id is None:  # glitched/ deleted user, could be a duplicate, don't import
+                return None
 
-    current_role = GROUP_ID_TRANSLATION[user_table_data.group_id]
-    if current_role == CurrentRoleEnum.ex.value and is_prao:  # Filter exprao out of ex and inactive groups
-        current_role = CurrentRoleEnum.exprao.value
+            # See if user has a marshal date
+            is_prao = not (await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropDateMars))
 
-    first_name, nickname, last_name = parse_name(user_table_data.realname)
+            current_role = GROUP_ID_TRANSLATION[user_table_data.group_id]
+            if current_role == CurrentRoleEnum.ex.value and is_prao:  # Filter exprao out of ex and inactive groups
+                current_role = CurrentRoleEnum.exprao.value
 
-    drivers_license: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagDriversLicense)
-    stad: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagStad)
-    fest: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagFest)
-    liquor_permit: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagPermit)
+            first_name, nickname, last_name = parse_name(user_table_data.realname)
+
+            drivers_license: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagDriversLicense)
+            stad: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagStad)
+            fest: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagFest)
+            liquor_permit: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagPermit)
 
     return MemberWebsiteMigration(
         uuid=uuid.uuid4(),
@@ -122,16 +127,18 @@ async def main():
     engine = get_async_engine(db_url, echo=True)
 
     # connect to old db
-    conn = await asyncmy.connect()
+    pool = await asyncmy.create_pool(host='127.0.0.1', port=3306,
+                                     user='root', password='',
+                                     db='tmeit', charset='utf8')
+
+    # Get list of users in old db
+    async with pool.acquire() as conn:
+        async with conn.cursor(cursor=DictCursor) as cursor:
+            await cursor.execute("SELECT id FROM tmeit_users")
+            user_ids: list[int] = [row['id'] for row in await cursor.fetchall()]
 
     # Build new data from old db
-    async with conn.cursor(cursor=DictCursor) as cursor:
-        await cursor.execute("use tmeit")
-        await cursor.execute(" SET CHARACTER SET utf8mb4")
-
-        await cursor.execute("SELECT id FROM tmeit_users")
-        user_ids: list[int] = [row['id'] for row in await cursor.fetchall()]
-        mwms: MemberWebsiteMigration = await asyncio.gather(*[migrate_user(id, cursor) for id in user_ids])
+    mwms: list[MemberWebsiteMigration] = await asyncio.gather(*[migrate_user(id, pool) for id in user_ids])
 
     # Commit new data to new db
     async with get_async_session(engine)() as db:
