@@ -35,6 +35,9 @@ class MemberWebsiteMigration(Base):
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
+    # If this user was migrated from the old tmeit.se, what their username was
+    old_username = Column(String, nullable=False, unique=True)
+
     # Email, used to log in. Users can either confirm their email or pick a new email in the transfer form
     # By having the user specify their email in the transfer form,
     # hopefully this will help their password manager save the password automatically
