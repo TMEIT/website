@@ -16,7 +16,7 @@ RUN npm run-script build:prod
 # Installs and builds backend deps, precompiled deps in .venv can then be copied to next stage.
 FROM docker.io/library/python:3.10 as back-build
 WORKDIR /code
-RUN pip install poetry~=1.1
+RUN pip install poetry~=1.2
 # Install dependencies and dev dependencies (keep venv inside /code/ because it's simpler)
 COPY back/pyproject.toml back/poetry.lock /code/
 RUN poetry config virtualenvs.in-project true \

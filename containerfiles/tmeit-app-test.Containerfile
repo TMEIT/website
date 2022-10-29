@@ -11,7 +11,7 @@ COPY front/package.json front/package-lock.json /code/
 RUN . /root/.nvm/nvm.sh && npm install --silent
 
 # Install backend deps
-RUN pip install poetry~=1.1
+RUN pip install poetry~=1.2
 COPY back/pyproject.toml back/poetry.lock /code/
 RUN poetry config virtualenvs.in-project true \
   && poetry install --no-interaction --no-ansi

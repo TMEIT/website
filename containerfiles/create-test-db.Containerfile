@@ -2,7 +2,7 @@ FROM docker.io/library/python:3.10-slim
 WORKDIR /code
 
 # Install poetry
-RUN pip install poetry~=1.1
+RUN pip install poetry~=1.2
 COPY back/pyproject.toml back/poetry.lock /code/
 
 # Install deps
