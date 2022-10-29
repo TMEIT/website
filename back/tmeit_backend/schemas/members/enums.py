@@ -8,7 +8,6 @@ class CurrentRoleEnum(str, Enum):
     prao = "prao"
     vraq = "vraq"
     ex = "ex"
-    inactive = "inactive"
     exprao = "exprao"
 
     def is_active(self):
