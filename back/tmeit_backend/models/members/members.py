@@ -34,7 +34,7 @@ class Member(Base):
     short_uuid = Column(String, Computed(short_uuid_from_uuid(uuid)), unique=True, index=True)
 
     # If this user was migrated from the old tmeit.se, what their username was
-    old_username = Column(String, nullable=False, unique=True)
+    old_username = Column(String)
 
     # Created/Updated timestamps
     time_created = Column(DateTime(timezone=True), server_default=func.now())
