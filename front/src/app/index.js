@@ -2,11 +2,9 @@ import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import React, { Fragment } from "react";
 import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  NavLink,
-  Routes,
+  createBrowserRouter,
+  RouterProvider,
+  Outlet
 } from "react-router-dom";
 import styles from "./index.css";
 import css_reset from "../reboot.css";
@@ -18,37 +16,37 @@ import Team from "./layouts/Team";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Profile from "./layouts/Profile";
-import Joined from "./components/Joined";
+import Joined from "./layouts/Joined";
 import MasterMenu from "./layouts/MasterMenu";
 
+const router = createBrowserRouter([{
+    element: <App />,
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/events", element: <Events /> },
+      { path: "/team", element: <Team /> },
+      { path: "/join_tmeit", element: <Join /> },
+      { path: "/profile/:shortUuid", element: <Profile /> },
+      { path: "/profile/:shortUuid/:name", element: <Profile /> },
+      { path: "/join_completed", element: <Joined /> },
+      { path: "/master", element: <MasterMenu /> },
+    ]
+}]);
+
+/**
+* Common wrapper for all routes for displaying the navbars
+*/
 function App() {
   return (
-    <Router>
-      <>
+    <>
         <Header />
-
         <main>
-          <Routes>
-            <Route path="/" exact element={<Home />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/join_tmeit" element={<Join />} />
-            <Route path="/profile/:shortUuid" element={<Profile />} />
-            <Route path="/profile/:shortUuid/:name" element={<Profile />} />
-            <Route path="/join_completed" element={<Joined />} />
-            <Route path="/master" element={<MasterMenu />} />
-          </Routes>
+            <Outlet />
         </main>
-
         <Footer />
-      </>
-    </Router>
+    </>
   );
 }
 
-function Login() {
-  return <h1>Login</h1>;
-}
 const container = document.getElementById("root");
-const root = createRoot(container);
-root.render(<App />);
+createRoot(container).render(<RouterProvider router={router} />);
