@@ -1,3 +1,4 @@
+import asyncio
 from typing import Generator, Callable
 
 from fastapi import Depends, status, HTTPException
@@ -10,25 +11,6 @@ from .schemas.members.schemas import MemberSelfView
 
 from .auth import JwtAuthenticator
 from .crud.members import get_member_by_login_email
-
-
-class DatabaseDependency:
-    """
-    Parameterized dependency for getting a database session during a request.
-
-    This Dep is written as a parameterized dependency so that we can
-    initialize the database connection alongside the app in api_app.py, instead of in this module.
-    That way, we can test this module without an active database.
-
-    https://fastapi.tiangolo.com/advanced/advanced-dependencies/
-    """
-    def __init__(self, async_session: Callable[[], AsyncSession]):
-        self.async_session = async_session
-
-    async def __call__(self) -> Generator:
-        """DB dependency for FastAPI endpoints. Yields an AsyncSession."""
-        async with self.async_session() as db:
-            yield db
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token",
