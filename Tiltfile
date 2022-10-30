@@ -17,5 +17,5 @@ podman_build('create-test-db', '.', extra_flags=["-f", "containerfiles/create-te
 k8s_yaml(kustomize('deploy/kubernetes/dev'))
 k8s_resource('tmeit-app', port_forwards="8080:8080")
 k8s_resource('tmeit-app-test')
-k8s_resource(new_name='tmeit-db', objects=['tmeit-db:Kubegres:default'],
-             extra_pod_selectors={'app':'tmeit-db'}, port_forwards="5432:5432")
+k8s_resource(new_name='tmeit-db', objects=['tmeit-db:Kubegres'], extra_pod_selectors={'app': 'tmeit-db'})
+local_resource('db-port-forward', serve_cmd='kubectl port-forward svc/tmeit-db 5432:5432')
