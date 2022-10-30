@@ -54,12 +54,12 @@ class user_table_row(BaseModel):
     group_id: Optional[int]
     title_id: Optional[int]
     team_id:  Optional[int]
-    mediawiki_user_id: int
+    mediawiki_user_id: Optional[int]
 
 
 def parse_name(realname: str) -> (str, str, str):
     last_name = realname.split(" ")[-1]
-    first_name = realname.split(" ")[:-1]
+    first_name = " ".join(realname.split(" ")[:-1])  # Handle multiple first names, eg "Britt Marie Komigen"
     nickname = None
 
     # try to derive nickname
@@ -75,19 +75,23 @@ def parse_name(realname: str) -> (str, str, str):
 
 async def user_has_prop(cursor: DictCursor, user_id: int, prop_id: int) -> bool:
     await cursor.execute("SELECT count(*) FROM tmeit_users_props WHERE user_id = %s AND prop_id = %s", (user_id, prop_id))
-    return (await cursor.fetchone()) > 0
+    return (await cursor.fetchone())['count(*)'] > 0
 
 
 async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
+    if user_id == 281:  # Skip duplicate account for Saasta
+        return None
+    if user_id == 356:  # Skip Lex, because he was imported manually
+        return None
     async with pool.acquire() as conn:
         async with conn.cursor(cursor=DictCursor) as cursor:
-            await cursor.execute("use tmeit")
-            await cursor.execute(" SET CHARACTER SET utf8mb4")
-
             await cursor.execute("SELECT * FROM tmeit_users WHERE id = %s", (user_id,))
             user_table_data = user_table_row(**(await cursor.fetchone()))
 
             if user_table_data.group_id is None:  # glitched/ deleted user, could be a duplicate, don't import
+                return None
+
+            if user_table_data.email == '':  # 13 Lost members that have no email address, RIP
                 return None
 
             # See if user has a marshal date
@@ -105,8 +109,8 @@ async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
             liquor_permit: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagPermit)
 
     return MemberWebsiteMigration(
-        uuid=uuid.uuid4(),
-        security_token=base64.b64encode(os.urandom(32)), # 256-bit key encoded with base64, generated from urandom
+        uuid=str(uuid.uuid4()),
+        security_token=base64.b64encode(os.urandom(64)).decode("utf8"),  # 512-bit key encoded with base64, generated from urandom
         old_username=user_table_data.username,
         login_email=user_table_data.email,
         current_role=current_role,
@@ -138,7 +142,10 @@ async def main():
             user_ids: list[int] = [row['id'] for row in await cursor.fetchall()]
 
     # Build new data from old db
-    mwms: list[MemberWebsiteMigration] = await asyncio.gather(*[migrate_user(id, pool) for id in user_ids])
+    mwms: list[Optional[MemberWebsiteMigration]] = await asyncio.gather(*[migrate_user(id, pool) for id in user_ids])
+
+    # Strip out bad users
+    mwms: list[MemberWebsiteMigration] = [mwm for mwm in mwms if mwm is not None]
 
     # Commit new data to new db
     async with get_async_session(engine)() as db:
