@@ -1,8 +1,10 @@
+import traceback
 from typing import Literal
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from sqlalchemy import text
 
 from ._database_deps import get_db
 
@@ -38,8 +40,9 @@ async def ready_check(db=Depends(get_db)):
     Returns 200 when db is up
     """
     try:
-        await db.execute("SELECT 1")
+        await db.execute(text("SELECT 1"))
     except Exception:
+        traceback.print_exc()
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                             content={"ready": False, "error": "Cannot connect to database"})
     else:
