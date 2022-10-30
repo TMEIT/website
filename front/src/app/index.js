@@ -6,6 +6,9 @@ import {
   RouterProvider,
   Outlet
 } from "react-router-dom";
+
+import { getApiFetcher } from "./api.js";
+
 import styles from "./index.css";
 import css_reset from "../reboot.css";
 
@@ -18,6 +21,7 @@ import Footer from "./components/Footer";
 import Profile from "./layouts/Profile";
 import Joined from "./layouts/Joined";
 import MasterMenu from "./layouts/MasterMenu";
+import WebsiteMigrations from "./layouts/WebsiteMigrations";
 
 const router = createBrowserRouter([{
     element: <App />,
@@ -30,6 +34,11 @@ const router = createBrowserRouter([{
       { path: "/profile/:shortUuid/:name", element: <Profile /> },
       { path: "/join_completed", element: <Joined /> },
       { path: "/master", element: <MasterMenu /> },
+      { path: "/migrating", element: <WebsiteMigrations />,
+            loader: async ({ params }) => {
+              return await getApiFetcher().get("/migrations/members").json();
+            }
+        },
     ]
 }]);
 

@@ -33,6 +33,7 @@ app.include_router(health_router)
 @app.get("/profile/{shortguid}")
 @app.get("/profile/{shortguid}/{name}")
 @app.get("/join_completed")
+@app.get("/migrating")
 async def load_js_app():
     return FileResponse('static/front/index.html')
 
