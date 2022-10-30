@@ -9,6 +9,7 @@ mysql --execute="CREATE DATABASE tmeit;"
 mysql tmeit < /dbdump.sql
 
 # password for dev environment, see deploy/kubernetes/dev/kustomization.yaml
+export POSTGRES_HOSTNAME=localhost
 export POSTGRES_PASSWORD=HBXOHEc6TpkquVHKy2zmSeUIEaUFvW
 
 # Migrate data to new db
