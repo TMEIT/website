@@ -3,6 +3,10 @@ podman run --rm --network=host migrate_users
 
 
 # notes
+#  podman run -p 3306 -v ~/Downloads/TMEIT.se\ Database.sql:/dbdump.sql:Z -d --name=mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true mariadb
+#  podman exec -it mariadb mysql --execute="CREATE DATABASE tmeit;"
+#  podman exec -it mariadb bash -c 'mysql tmeit < /dbdump.sql'
+#  podman exec -it mariadb mysql
 
 # use tmeit;
 # show tables;
