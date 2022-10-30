@@ -1,3 +1,7 @@
+# Script for importing data from the old database.
+# Run from the repo root directory with "TMEIT.se Database.sql" in the old_website_migration/ directory
+# Have postgres portforwarded to localhost, either using tilt or kubectl
+
 podman build -f old_website_migration/Containerfile -t migrate_users .
 podman run --rm --network=host migrate_users
 
