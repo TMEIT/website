@@ -100,6 +100,11 @@ async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
 
             first_name, nickname, last_name = parse_name(user_table_data.realname)
 
+            if user_id == 117:  # Fix weird nickname order for one user
+                first_name = "Joakim"
+                nickname = "d.ä"
+                last_name = "Joakim"
+
             drivers_license: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagDriversLicense)
             stad: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagStad)
             fest: bool = await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropFlagFest)
