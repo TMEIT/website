@@ -136,7 +136,8 @@ async def main():
     # connect to old db
     pool = await asyncmy.create_pool(host='127.0.0.1', port=3306,
                                      user='root', password='',
-                                     db='tmeit', charset='utf8')
+                                     db='tmeit', charset='utf8',
+                                     echo=True, maxsize=5)
 
     # Get list of users in old db
     async with pool.acquire() as conn:
@@ -147,6 +148,9 @@ async def main():
     # Build new data from old db
     mwms: list[Optional[MemberWebsiteMigration]] = await asyncio.gather(*[migrate_user(id, pool) for id in user_ids])
 
+    # Start closing MySQL connections
+    pool.terminate()
+
     # Strip out bad users
     mwms: list[MemberWebsiteMigration] = [mwm for mwm in mwms if mwm is not None]
 
@@ -154,6 +158,9 @@ async def main():
     async with get_async_session(engine)() as db:
         async with db.begin():
             db.add_all(mwms)
+
+    # Gracefully close MySQL connections
+    await pool.wait_closed()
 
 
 if __name__ == '__main__':
