@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./joinForm.css";
 
 function JoinForm() {
   const [firstName, setFirstName] = useState("");
@@ -85,7 +86,7 @@ function JoinForm() {
     <div>
       <div className="form">
         <div className="firstname">
-          <label htmlFor="firstName">First Name</label>
+          <label htmlFor="firstName">First Name </label>
           <input
             type="text"
             id="firstName"
@@ -95,7 +96,7 @@ function JoinForm() {
           ></input>
         </div>
         <div className="lastname">
-          <label htmlFor="lastName">Last name</label>
+          <label htmlFor="lastName">Last name </label>
           <input
             type="text"
             id="lastName"
@@ -105,7 +106,7 @@ function JoinForm() {
           ></input>
         </div>
         <div className="email">
-          <label htmlFor="email">Email adress</label>
+          <label htmlFor="email">Email adress </label>
           <input
             type="email"
             id="email"
@@ -115,7 +116,7 @@ function JoinForm() {
           ></input>
         </div>
         <div className="phone">
-          <label htmlFor="phone">phone number</label>
+          <label htmlFor="phone">phone number </label>
           <input
             type="text"
             id="phone"
@@ -124,7 +125,7 @@ function JoinForm() {
           ></input>
         </div>
         <div className="password">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Password </label>
           <input
             type="password"
             id="password"
@@ -133,7 +134,7 @@ function JoinForm() {
           ></input>
         </div>
         <div className="password">
-          <label htmlFor="confirmPassword">Confirm password</label>
+          <label htmlFor="confirmPassword">Confirm password </label>
           <input
             type="password"
             id="confirmPassword"
@@ -141,7 +142,7 @@ function JoinForm() {
             onChange={(e) => handleInputChange(e)}
           ></input>
         </div>
-        <div>
+        <div className="GDPRtext">
           <label htmlFor="GDPR">
             We store your name, email address, and any information you or other
             members of TMEIT enter about you. All data is stored securely within
@@ -150,6 +151,7 @@ function JoinForm() {
             conpliance with GDPR.
           </label>
           <input
+            className="GDPRcheckbox"
             type="checkbox"
             id="GDPR"
             onChange={(e) => handleInputChange(e)}
