@@ -53,8 +53,8 @@ class MemberWebsiteMigration(Base):
     # By having the user specify their email in the transfer form,
     # hopefully this will help their password manager save the password automatically
     # Note that we don't set a unique constraint because some users have null emails
-    # Bad things will happen if you import multiple users with the same non-null email, though, so don't do it
-    login_email: Mapped[str]
+    # The email system will get confusing if you import multiple users with the same non-null email, though, so don't do it
+    login_email: Mapped[Optional[str]]
 
     # current_role: What role the member currently has in TMEIT. Defines the member's permissions on the TMEIT
     #             website. Stored as a string that corresponds to a value in CurrentRoleEnum.
