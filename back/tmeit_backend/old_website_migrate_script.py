@@ -114,6 +114,7 @@ async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
         uuid=str(uuid.uuid4()),
         security_token=base64.b64encode(os.urandom(64)).decode("utf8"),  # 512-bit key encoded with base64, generated from urandom
         old_username=user_table_data.username,
+        migrated=False,
         login_email=user_table_data.email,
         current_role=current_role,
         first_name=first_name,

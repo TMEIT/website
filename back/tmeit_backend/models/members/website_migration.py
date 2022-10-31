@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.sql.functions import func
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from ...database import Base
 
@@ -45,15 +45,16 @@ class MemberWebsiteMigration(Base):
     old_username = Column(String, nullable=False, unique=True, index=True)
 
     # Relation to new member if this MWM has been migrated into a new Member object
-    new_member: Mapped["Member"] = relationship(back_populates="migration_entry")
+    new_member: Mapped[Optional["Member"]] = relationship(back_populates="migration_entry")
 
     migrated: Mapped[bool]  # Whether or not a full Member object has been created from this MWM
-
 
     # Email, used to log in. Users can either confirm their email or pick a new email in the transfer form
     # By having the user specify their email in the transfer form,
     # hopefully this will help their password manager save the password automatically
-    login_email = Column(String, nullable=False, unique=True)
+    # Note that we don't set a unique constraint because some users have null emails
+    # Bad things will happen if you import multiple users with the same non-null email, though, so don't do it
+    login_email: Mapped[str]
 
     # current_role: What role the member currently has in TMEIT. Defines the member's permissions on the TMEIT
     #             website. Stored as a string that corresponds to a value in CurrentRoleEnum.
