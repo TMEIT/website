@@ -1,9 +1,17 @@
-from sqlalchemy import Column, String, Boolean, Computed, Date, DateTime
+
+from sqlalchemy import Column, String, Boolean, Computed, Date, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.functions import func
+
+from typing import Optional
+from typing import TYPE_CHECKING
 
 from ...database import Base
 from .._utils import short_uuid_from_uuid
+
+if TYPE_CHECKING:
+    from .website_migration import MemberWebsiteMigration
 
 
 class Member(Base):
@@ -34,7 +42,8 @@ class Member(Base):
     short_uuid = Column(String, Computed(short_uuid_from_uuid(uuid)), unique=True, index=True)
 
     # If this user was migrated from the old tmeit.se, what their username was
-    old_username = Column(String)
+    old_username: Mapped[Optional[str]] = mapped_column(ForeignKey("member_website_migration.old_username"))
+    migration_entry: Mapped[Optional["MemberWebsiteMigration"]] = relationship(back_populates="new_member")
 
     # Created/Updated timestamps
     time_created = Column(DateTime(timezone=True), server_default=func.now())

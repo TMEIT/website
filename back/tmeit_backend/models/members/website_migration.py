@@ -1,8 +1,14 @@
 from sqlalchemy import Column, String, Boolean, Date, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.sql.functions import func
 
+from typing import TYPE_CHECKING
+
 from ...database import Base
+
+if TYPE_CHECKING:
+    from .members import Member
 
 
 class MemberWebsiteMigration(Base):
@@ -35,8 +41,14 @@ class MemberWebsiteMigration(Base):
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # If this user was migrated from the old tmeit.se, what their username was
-    old_username = Column(String, nullable=False, unique=True)
+    # Their username in the old db
+    old_username = Column(String, nullable=False, unique=True, index=True)
+
+    # Relation to new member if this MWM has been migrated into a new Member object
+    new_member: Mapped["Member"] = relationship(back_populates="migration_entry")
+
+    migrated: Mapped[bool]  # Whether or not a full Member object has been created from this MWM
+
 
     # Email, used to log in. Users can either confirm their email or pick a new email in the transfer form
     # By having the user specify their email in the transfer form,
@@ -69,4 +81,3 @@ class MemberWebsiteMigration(Base):
 
     # When the member was added to our liquor permit.
     liquor_permit = Column(Date)
-
