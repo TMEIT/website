@@ -47,7 +47,7 @@ class user_table_row(BaseModel):
     username: str
     realname: str
     phone: str
-    email: str
+    email: Optional[str]
     is_admin: bool
     is_team_admin: bool
     is_hidden: bool
@@ -90,6 +90,10 @@ async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
 
             if user_table_data.group_id is None:  # glitched/ deleted user, could be a duplicate, don't import
                 return None
+
+            # Convert empty string to null for clarity
+            if user_table_data.email == "":
+                user_table_data.email = None
 
             # See if user has a marshal date
             is_prao = not (await user_has_prop(cursor=cursor, user_id=user_id, prop_id=PropDateMars))

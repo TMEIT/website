@@ -1,5 +1,6 @@
 from uuid import UUID, uuid4
 
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -56,6 +57,9 @@ async def migrate_member(db: AsyncSession,
             Member(uuid=str(uuid),
                    hashed_password=hashed_password,
 
+                   # Remember old username
+                   old_username=member_website_migration.old_username,
+
                    # Use email and phone number from MigrateForm
                    login_email=data.login_email,
                    phone=data.phone,
@@ -70,4 +74,10 @@ async def migrate_member(db: AsyncSession,
                    fest=member_website_migration.fest,
                    liquor_permit=member_website_migration.liquor_permit),
         ])
+
+        # Update MWM to say migrated
+        await db.execute(update(models.MemberWebsiteMigration)
+                         .where(models.MemberWebsiteMigration.uuid == data.uuid)
+                         .values(migrated=True))
+
     return await get_member(db=db, uuid=uuid, response_schema=MemberSelfView)
