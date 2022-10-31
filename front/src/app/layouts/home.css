@@ -1,0 +1,9 @@
+#home {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+}
+
+#home > div {
+    grid-column-start: 2;
+    max-width: 60rem;
+}
