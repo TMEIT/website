@@ -5,7 +5,7 @@ import os
 import uuid
 import re
 
-from typing import TypedDict, Optional
+from typing import Optional
 
 # STATIC VARS FOR GROUP IDs AND PROP IDs
 import asyncmy
@@ -89,9 +89,6 @@ async def migrate_user(user_id: int, pool) -> MemberWebsiteMigration | None:
             user_table_data = user_table_row(**(await cursor.fetchone()))
 
             if user_table_data.group_id is None:  # glitched/ deleted user, could be a duplicate, don't import
-                return None
-
-            if user_table_data.email == '':  # 13 Lost members that have no email address, RIP
                 return None
 
             # See if user has a marshal date
