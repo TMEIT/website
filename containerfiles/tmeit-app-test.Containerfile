@@ -2,6 +2,7 @@
 
 FROM docker.io/library/python:3.10
 WORKDIR /code
+RUN apt update -q && apt install gcc -yq
 
 # Install Node and frontend deps
 ENV NODE_OPTIONS=--openssl-legacy-provider

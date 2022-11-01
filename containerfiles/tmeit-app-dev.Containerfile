@@ -13,10 +13,11 @@ RUN npm run-script build
 
 FROM docker.io/library/python:3.10-slim as back-build
 WORKDIR /code
+RUN apt update -q && apt install gcc -yq
 RUN pip install poetry~=1.2
 COPY back/pyproject.toml back/poetry.lock /code/
 RUN poetry config virtualenvs.in-project true \
-  && poetry install --no-dev --no-interaction --no-ansi
+  && poetry install --only main --no-interaction --no-ansi
 
 FROM docker.io/library/python:3.10-slim as app
 WORKDIR /code
