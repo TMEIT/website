@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import GetMyInfo from "./GetMyInfo";
 
 function Dropdown() {
-  const [profile, setProfile] = useState(false);
+  const [menu, setMenu] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
   const [master, setMaster] = useState(false);
 
@@ -22,16 +22,16 @@ function Dropdown() {
     }
   }
 
-  async function handleProfile() {
-    if (!profile) {
+  async function handleMenu() {
+    if (!menu) {
       let result = await GetMyInfo();
       try {
         setMaster(result.body.current_role == "master");
       } catch (error) {
-        console.log(error);
+        alert("could not fetch user data. Error message: \n" + error);
       }
     }
-    setProfile(!profile);
+    setMenu(!menu);
   }
 
   function handleLogout() {
@@ -44,10 +44,10 @@ function Dropdown() {
   return (
     <>
       <div className="link">
-        <a href={"#"} onClick={() => handleProfile()}>
+        <a href={"#"} onClick={() => handleMenu()}>
           Settings{" "}
         </a>
-        <div className={`menu ${profile ? "open" : ""}`}>
+        <div className={`menu ${menu ? "open" : ""}`}>
           <button onClick={() => goToProfile()}>My profile</button>
           <button onClick={() => setOpenLogout(true)}>Log out</button>
           {master ? (
