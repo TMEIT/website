@@ -32,7 +32,7 @@ spec:
      requests:
        memory: "100Mi"
        cpu: "50m"
-       ephemeral-storage: 1Gi
+       ephemeral-storage: 200Mi
   # Note: DB backups are not done with kubegres' built in backup system,
   # and are instead done with custom cronjobs found in deploy/kubernetes/tmeit-se/postgres/
   # This is done so that we can backup to Backblaze B2 storage,
