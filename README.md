@@ -49,7 +49,7 @@ If you use this code in your own projects, you must share your source code, even
 * Justin Lex-Hammarskjöld (AKA "Lex")
   * Project leader, Architecture, Python code, Terraform & Kubernetes configuration
   * [Github](https://github.com/JustinLex)
-* Axel Förshallen (AKA "Doggo")
+* Axel Forshällen (AKA "Doggo")
   * Frontend forms, cookie handling, and API integration
   * [Github](https://github.com/axelf08)
 * Jesper Falk
