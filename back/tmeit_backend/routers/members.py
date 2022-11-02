@@ -1,6 +1,7 @@
 from typing import Union, Literal
 
 from argon2.exceptions import VerificationError
+from arq import ArqRedis
 from fastapi import Depends, status, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
@@ -10,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
 from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member, change_password
+from ..deps import get_worker_pool
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
     MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch, ChangePassword
 
@@ -149,3 +151,14 @@ async def update_password(data: ChangePassword,
                             content={"error": '"Current password" is incorrect.'})
     except KeyError:
         raise KeyError("User not found even though we're logged in? Probably a race condition.")
+
+
+@router.post("/send_test_email", status_code=202, responses={403: {"model": ForbiddenResponse}})
+async def send_test_email(current_user: MemberSelfView = Depends(get_current_user),
+                          pool: ArqRedis = Depends(get_worker_pool)):
+    """Sends an email to the currently logged in member. (Masters only)"""
+    if current_user is None or current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters can send test emails."})
+    await pool.enqueue_job('send_test_email', current_user.uuid)
+    return "Email job submitted."
