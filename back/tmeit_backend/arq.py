@@ -1,21 +1,17 @@
-import asyncio
-from arq import create_pool
-from arq.connections import RedisSettings
-
-redis_settings = RedisSettings(host=[('rfs-redis', 26379)], sentinel=True, sentinel_master="mymaster")
+from .worker_tasks import functions
+from .redis import redis_settings
 
 
-async def yeet():
-    await asyncio.sleep(10)
+# This file is the entrypoint for the tmeit-worker container. This file is not used by the app.
 
-
-async def main():
-    redis = await create_pool(redis_settings)
-
-
-# WorkerSettings defines the settings to use when creating the work,
-# it's used by the arq cli.
-# For a list of available settings, see https://arq-docs.helpmanual.io/#arq.worker.Worker
 class WorkerSettings:
-    functions = [yeet]
+    """
+    Configuration used to start the worker container
+
+    functions is the list of functions that the worker can run (and the app can call)
+
+    redis_settings defines how to connect to redis
+
+    """
+    functions = functions
     redis_settings = redis_settings
