@@ -17,6 +17,7 @@ resources:
 - postgres
 - operators
 - certificate
+- tmeit-worker
 
 patchesJson6902:
   - target:

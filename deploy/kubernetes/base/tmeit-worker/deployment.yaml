@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tmeit-worker
+  labels:
+    app: tmeit-worker
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: tmeit-worker
+  template:
+    metadata:
+      labels:
+        app: tmeit-worker
+    spec:
+      containers:
+      - name: arq
+        image: tmeit-worker:0.0.1
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kubegres-passwords
+                key: tmeitBackendUserPassword
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+            ephemeral-storage: 200Mi # I think this is used for logs? kube-score says that it's important to limit this.
+          limits:
+            cpu: "200m"
+            memory: "100Mi"
+            ephemeral-storage: 1Gi
+        securityContext:
+          readOnlyRootFilesystem: true
+      affinity:  # Tries to place replicas on separate nodes
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - tmeit-worker
+                topologyKey: kubernetes.io/hostname
+      securityContext:
+        runAsUser: 20000
+        runAsGroup: 20000

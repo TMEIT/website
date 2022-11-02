@@ -15,7 +15,6 @@ sqlalchemy = {version = "2.0.0b2", extras = ["postgresql_asyncpg"]}
 asyncpg = "0.27.0"
 argon2-cffi = "^21.3.0"
 python-multipart = "^0.0.5"
-pytest-asyncio = "^0.18.3"
 arq = "^0.24.0"
 
 [tool.poetry.dev-dependencies]
@@ -23,9 +22,17 @@ pytest = "^7.1.2"
 alembic = "^1.8.1"
 hypothesis = "^6.46.11"
 requests = "^2.27.1"
+pytest-asyncio = "^0.18.3"
 
 [tool.poetry.group.migrate.dependencies]
 asyncmy = "^0.2.5"
+
+[tool.poetry.group.arq-worker.dependencies]
+pydantic = {extras = ["email"], version = "^1.10.2"}
+sqlalchemy = {version = "2.0.0b2", extras = ["postgresql_asyncpg"]}
+asyncpg = "0.27.0"
+python-multipart = "^0.0.5"
+arq = "^0.24.0"
 
 [build-system]
 requires = ["poetry>=1.1"]
