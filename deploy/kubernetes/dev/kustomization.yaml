@@ -20,6 +20,15 @@ patchesJson6902:
           path: /spec/template/spec/imagePullSecrets
           value: [{ name: regcred }]
   - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: tmeit-worker
+    patch: |-
+        - op: add
+          path: /spec/template/spec/imagePullSecrets
+          value: [{ name: regcred }]
+  - target:
       group: batch
       version: v1
       kind: Job

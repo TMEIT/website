@@ -4,6 +4,8 @@ kind: Kustomization
 resources:
 - tmeit-app/deployment.yaml
 - tmeit-app/poddisruptionbudget.yaml
+- tmeit-worker/deployment.yaml
+- tmeit-worker/poddisruptionbudget.yaml
 - postgres/kubegres.yaml
 - postgres/poddisruptionbudget.yaml
 - postgres/kubegres-conf.yaml
