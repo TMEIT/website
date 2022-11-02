@@ -1,16 +1,26 @@
-import asyncio
 from typing import Generator, Callable
+
+from arq.connections import ArqRedis
 
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
+from .worker_pool import pool
 from .schemas.members.schemas import MemberSelfView
 
 from .auth import JwtAuthenticator
 from .crud.members import get_member_by_login_email
+
+
+async def get_worker_pool() -> ArqRedis:
+    """
+    Gets the shared workerpool for submitting tasks to the workers
+
+    Note, available jobs that can be called are defined in worker_tasks/__init__.py:functions
+    """
+    return pool['pool']  # Should already be initialized on app_root startup using the init_pool() function
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token",

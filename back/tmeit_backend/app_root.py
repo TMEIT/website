@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from starlette.routing import Mount
 
 from . import app_api
+from .worker_pool import init_pool
 from .routers.health import router as health_router
 
 
@@ -18,7 +19,8 @@ routes = [
 ]
 
 
-app = FastAPI(routes=routes)
+app = FastAPI(routes=routes,
+              on_startup=[init_pool])  # Connect to redis and initialize arq worker pool
 
 
 # Import healthcheck endpoints
