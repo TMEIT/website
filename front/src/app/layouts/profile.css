@@ -3,11 +3,12 @@
     flex-wrap: wrap;
 }
 
-.react-tabs__tab-list{
+.react-tabs__tab-list {
     padding: 0;
 }
-.react-tabs__tab{
-    display: inline;
+
+.react-tabs__tab {
+    display: inline-block;
     border: thin solid black;
     list-style-type: none;
     -webkit-user-select: none;

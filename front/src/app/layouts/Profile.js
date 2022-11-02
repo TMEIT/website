@@ -64,6 +64,7 @@ function DetailsBox(props) {
       </TabPanel>
       <TabPanel>"Det var bättre förr"</TabPanel>
       <TabPanel>All of them</TabPanel>
+      <TabPanel>The {(Math.floor(Math.random() * 2) ? ("best") : ("worst"))} work team</TabPanel>
       {/*
 	  <TabPanel>
 		{props.data.workteams.map((team) => (
