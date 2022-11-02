@@ -1,4 +1,4 @@
-from typing import Generator, Callable
+from typing import Generator, Callable, ContextManager
 
 from arq.connections import ArqRedis
 
@@ -44,7 +44,7 @@ class CurrentUserDependency:
             self,
 
             async_session:
-            Callable[[], AsyncSession],
+            Callable[..., ContextManager[AsyncSession]],
 
             jwt_authenticator:
             JwtAuthenticator,

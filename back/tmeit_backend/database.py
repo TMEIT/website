@@ -1,5 +1,5 @@
 import os
-from typing import Callable
+from typing import Callable, ContextManager
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
@@ -34,7 +34,7 @@ def get_async_engine(sqlalchemy_database_url: str, echo: bool = False) -> AsyncE
     return engine
 
 
-def get_async_session(engine: AsyncEngine) -> Callable[[], AsyncSession]:
+def get_async_session(engine: AsyncEngine) -> Callable[..., ContextManager[AsyncSession]]:
     """Creates a sessionmaker for a given async engine."""
     async_session = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession,
                                  expire_on_commit=False)
