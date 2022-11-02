@@ -62,21 +62,40 @@ resource "cloudflare_record" "www-aaaa" {
   proxied = true
 }
 
+// node1.tmeit.se
+resource "cloudflare_record" "node1-a" {
+  zone_id = var.zone_id
+  name    = "node1"
+  type    = "A"
+  value   = hcloud_server.node1.ipv4_address
+  proxied = false
+}
+resource "cloudflare_record" "node1-aaaa" {
+  zone_id = var.zone_id
+  name    = "node1"
+  type    = "AAAA"
+  value   = hcloud_server.node1.ipv6_address
+  proxied = false
+}
+
 // MX
 resource "cloudflare_record" "mx-1" {
-  zone_id  = var.zone_id
-  name     = "@"
-  type     = "MX"
-  value    = "mailcluster.loopia.se."
+  zone_id = var.zone_id
+  name = "@"
+  type = "MX"
+  value = "node1.tmeit.se."
   priority = 10
 }
-resource "cloudflare_record" "mx-2" {
-  zone_id  = var.zone_id
-  name     = "@"
-  type     = "MX"
-  value    = "mail2.loopia.se."
-  priority = 20
+
+// SPF
+resource "cloudflare_record" "spf" {
+  zone_id = var.zone_id
+  name    = "@"
+  type    = "TXT"
+    value   = "v=spf1 +mx ~all"
+  proxied = false
 }
+
 
 # cert-manager + Let's Encrypt token for DNS-01 validation
 resource "cloudflare_api_token" "dns_validation_token" {
