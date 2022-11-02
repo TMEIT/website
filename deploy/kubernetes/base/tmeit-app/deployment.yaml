@@ -53,11 +53,11 @@ spec:
           failureThreshold: 3
         resources:
           requests:
-            cpu: "250m"
+            cpu: "200m"
             memory: "100Mi"
             ephemeral-storage: 500Mi # I think this is used for logs? kube-score says that it's important to limit this.
           limits:
-            cpu: "900m"
+            cpu: "800m"
             memory: "300Mi"
             ephemeral-storage: 2Gi
         securityContext:

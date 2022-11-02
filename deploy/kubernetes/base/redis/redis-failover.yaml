@@ -7,16 +7,17 @@ spec:
     replicas: 3
     resources:
       requests:
-        cpu: 50m
+        cpu: 25m
+        memory: 20Mi
       limits:
         cpu: 100m
-        memory: 50Mi
+        memory: 40Mi
   redis:
     replicas: 3
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 25Mi
       limits:
         cpu: 200m
-        memory: 100Mi
+        memory: 50Mi
