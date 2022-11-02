@@ -96,6 +96,27 @@ resource "cloudflare_record" "spf" {
   proxied = false
 }
 
+//// DMARC
+//resource "cloudflare_record" "dmarc" {
+//  zone_id = var.zone_id
+//  name    = "_dmarc"
+//  type    = "TXT"
+//    value   = "v=DMARC1;p=none;sp=none;aspf;adkim;"
+//  proxied = false
+//}
+
+
+//DKIM
+
+// keypairs used for DKIM signing
+resource "tls_private_key" "dkim-rsa" {
+  algorithm = "RSA"
+   rsa_bits= 2048
+}
+resource "tls_private_key" "dkim-ed25519" {
+  algorithm = "ED25519"
+}
+
 
 # cert-manager + Let's Encrypt token for DNS-01 validation
 resource "cloudflare_api_token" "dns_validation_token" {
