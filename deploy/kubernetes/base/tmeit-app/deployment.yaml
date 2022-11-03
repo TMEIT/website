@@ -55,7 +55,7 @@ spec:
           requests:
             cpu: "200m"
             memory: "100Mi"
-            ephemeral-storage: 500Mi # I think this is used for logs? kube-score says that it's important to limit this.
+            ephemeral-storage: 200Mi
           limits:
             cpu: "800m"
             memory: "300Mi"

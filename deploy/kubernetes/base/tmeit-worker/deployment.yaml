@@ -29,11 +29,11 @@ spec:
                 key: tmeitBackendUserPassword
         resources:
           requests:
-            cpu: "100m"
+            cpu: "75m"
             memory: "100Mi"
-            ephemeral-storage: 200Mi # I think this is used for logs? kube-score says that it's important to limit this.
+            ephemeral-storage: 100Mi
           limits:
-            cpu: "400m"
+            cpu: "300m"
             memory: "200Mi"
             ephemeral-storage: 1Gi
         securityContext:
