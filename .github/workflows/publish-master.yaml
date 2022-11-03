@@ -129,7 +129,7 @@ jobs:
         with:
           name: "tmeit-run-migrations-image"
           path: "tmeit-run-migrations-docker-container.tar"
-      - name: Send tmeit-run-migrations image to publish-tag job
+      - name: Send tmeit-worker image to publish-tag job
         uses: actions/upload-artifact@v3
         with:
           name: "tmeit-worker-image"
