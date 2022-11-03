@@ -144,7 +144,7 @@ jobs:
           curl -LO "https://dl.k8s.io/v1.25.3/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
-          kubectl apply --dry-run=server -f tmeit-rendered.yaml
+          kubectl apply --dry-run=server --server-side=true --force-conflicts -f tmeit-rendered.yaml
   test-containerfile: # Build containers to test that they build properly
     name: Build app containers
     runs-on: ubuntu-latest
