@@ -161,7 +161,7 @@ jobs:
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
           kubectl delete -f deploy/kubernetes/tmeit-se/run-migrations/job.yaml
-          kubectl apply -k deploy/kubernetes/tmeit-se/
+          kubectl apply --server-side=true --force-conflicts -k deploy/kubernetes/tmeit-se/
 # kubectl 1.25.3 has kustomize 4.5.7 built-in, according to "kubectl version"
 
   publish-tag:
