@@ -5,3 +5,4 @@ resources:
 - cert-manager.yaml
 - kubegres.yaml
 - sealedsecrets.yaml
+- redis-operator.yaml
