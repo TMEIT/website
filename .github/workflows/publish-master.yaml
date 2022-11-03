@@ -96,6 +96,14 @@ jobs:
           context: '.'
           containerfiles: |-
             containerfiles/tmeit-run-migrations.Containerfile
+      - name: Build OCI image for tmeit-worker
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ghcr.io/tmeit/tmeit-worker
+          tags: "${{ steps.release_version.outputs.version }}"
+          context: '.'
+          containerfiles: |-
+            containerfiles/tmeit-worker.Containerfile
       - name: Build OCI image for db-backup-agent
         uses: redhat-actions/buildah-build@v2
         with:
@@ -109,6 +117,7 @@ jobs:
         run: |
           podman save  --format docker-archive -o tmeit-app-docker-container.tar ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman save  --format docker-archive -o tmeit-run-migrations-docker-container.tar ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
+          podman save  --format docker-archive -o tmeit-worker-docker-container.tar ghcr.io/tmeit/tmeit-worker:${{ steps.release_version.outputs.version }}
           podman save  --format docker-archive -o db-backup-agent-docker-container.tar ghcr.io/tmeit/db-backup-agent:${{ steps.release_version.outputs.version }}
       - name: Send tmeit-app image to publish-tag job # https://stackoverflow.com/a/57877438
         uses: actions/upload-artifact@v3
@@ -120,6 +129,11 @@ jobs:
         with:
           name: "tmeit-run-migrations-image"
           path: "tmeit-run-migrations-docker-container.tar"
+      - name: Send tmeit-run-migrations image to publish-tag job
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tmeit-worker-image"
+          path: "tmeit-worker-docker-container.tar"
       - name: Send db-backup-agent image to publish-tag job
         uses: actions/upload-artifact@v3
         with:
@@ -136,6 +150,7 @@ jobs:
         run:  |
           podman push ghcr.io/tmeit/tmeit-app:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/tmeit-run-migrations:${{ steps.release_version.outputs.version }}
+          podman push ghcr.io/tmeit/tmeit-worker:${{ steps.release_version.outputs.version }}
           podman push ghcr.io/tmeit/db-backup-agent:${{ steps.release_version.outputs.version }}
       - name: 'Push manifests to prod'
         # We delete the job because jobs are immutable, but we also don't want to break our migration-check init-container with an old job
@@ -178,6 +193,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "tmeit-run-migrations-image"
+      - name: Receive tmeit-worker image from build-push job
+        uses: actions/download-artifact@v3
+        with:
+          name: "tmeit-worker-image"
       - name: Receive db-backup-agent image from build-push job
         uses: actions/download-artifact@v3
         with:
@@ -200,5 +219,6 @@ jobs:
           files: |
             tmeit-app-docker-container.tar
             tmeit-run-migrations-docker-container.tar
+            tmeit-worker-docker-container.tar
             db-backup-agent-docker-container.tar
             k8s-manifests.yaml
