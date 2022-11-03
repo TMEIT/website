@@ -11,10 +11,10 @@ patchesJson6902:
       version: v1
       kind: Deployment
       name: tmeit-worker
-    path: tmeit-app/init_container_patch.yaml
+    path: init_container_patch.yaml
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: tmeit-worker
-    path: tmeit-app/set_image_tag.json
+    path: set_image_tag.json
