@@ -6,3 +6,41 @@ resources:
 - kubegres.yaml
 - sealedsecrets.yaml
 - redis-operator.yaml
+
+patchesJson6902:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager
+    path: resources-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager-ca-injector
+    path: resources-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager-webhook
+    path: resources-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: redisoperator
+    path: resources-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: sealed-secrets-controller
+    path: resources-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: kubegres-controller-manager
+    path: resources-patch.yaml
