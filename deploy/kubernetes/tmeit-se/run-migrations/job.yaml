@@ -27,7 +27,7 @@ spec:
                 key: tmeitBackendUserPassword
         resources:
           requests:
-            cpu: "50m"
+            cpu: "20m"
             memory: "20Mi"
             ephemeral-storage: 200Mi
           limits:

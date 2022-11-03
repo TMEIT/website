@@ -53,7 +53,7 @@ spec:
           failureThreshold: 3
         resources:
           requests:
-            cpu: "200m"
+            cpu: "80m"
             memory: "100Mi"
             ephemeral-storage: 200Mi
           limits:

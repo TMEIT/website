@@ -8,7 +8,7 @@
         - "run-migrations"
       resources:
         requests:
-          cpu: "20m"
+          cpu: "8m"
           memory: "25Mi"
           ephemeral-storage: 10Mi
         limits:

@@ -94,7 +94,7 @@ spec:
                 memory: 200Mi
                 ephemeral-storage: 100Mi
               limits:
-                cpu: 50m  # Don't cripple the server while doing a backup, limit to 5% CPU
+                cpu: 100m  # Don't cripple the server while doing a backup, limit to 10% CPU
                 memory: 200Mi
                 ephemeral-storage: 1Gi
           restartPolicy: OnFailure
@@ -160,11 +160,13 @@ spec:
                   key: b2-db-backup-key
             resources:
               requests:
-                cpu: 20m
+                cpu: 10m
                 memory: 200Mi
+                ephemeral-storage: 100Mi
               limits:
                 cpu: 100m  # Don't cripple the server while doing a backup, limit to 10% CPU
                 memory: 200Mi
+                ephemeral-storage: 1Gi
           restartPolicy: OnFailure
           terminationGracePeriodSeconds: 30
           volumes:
@@ -229,11 +231,13 @@ spec:
                   key: b2-db-backup-key
             resources:
               requests:
-                cpu: 20m
+                cpu: 10m
                 memory: 200Mi
+                ephemeral-storage: 100Mi
               limits:
                 cpu: 100m  # Don't cripple the server while doing a backup, limit to 10% CPU
                 memory: 200Mi
+                ephemeral-storage: 1Gi
           restartPolicy: OnFailure
           terminationGracePeriodSeconds: 30
           volumes:
