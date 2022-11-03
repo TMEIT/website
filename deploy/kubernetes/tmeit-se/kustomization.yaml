@@ -7,6 +7,8 @@ bases:
 replicas:
 - name: tmeit-app
   count: 1
+- name: tmeit-worker
+  count: 1
 
 resources:
 - tmeit-app/service.yaml
@@ -17,7 +19,6 @@ resources:
 - postgres
 - operators
 - certificate
-- tmeit-worker
 
 patchesJson6902:
   - target:
@@ -32,6 +33,18 @@ patchesJson6902:
       kind: Deployment
       name: tmeit-app
     path: tmeit-app/set_image_tag.json
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: tmeit-worker
+    path: tmeit-worker/init_container_patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: tmeit-worker
+    path: tmeit-worker/set_image_tag.json
   - target:
       group: batch
       version: v1
