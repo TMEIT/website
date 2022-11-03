@@ -6,3 +6,12 @@
       args:
         - "job"
         - "run-migrations"
+      resources:
+        requests:
+          cpu: "8m"
+          memory: "25Mi"
+          ephemeral-storage: 10Mi
+        limits:
+          cpu: "80m"
+          memory: "50Mi"
+          ephemeral-storage: 100Mi

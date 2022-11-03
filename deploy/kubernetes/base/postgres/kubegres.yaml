@@ -31,7 +31,7 @@ spec:
        ephemeral-storage: 1Gi
      requests:
        memory: "75Mi"
-       cpu: "50m"
+       cpu: "20m"
        ephemeral-storage: 100Mi
   # Note: DB backups are not done with kubegres' built in backup system,
   # and are instead done with custom cronjobs found in deploy/kubernetes/tmeit-se/postgres/
