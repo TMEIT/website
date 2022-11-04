@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import Loading from "../components/Loading";
 import MasterSignups from "../components/MasterSignups";
+import MemberHandling from "../components/MemberHandling";
 import { useFetch } from "../FetchHooks";
 
 function MasterMenu() {
@@ -9,6 +10,7 @@ function MasterMenu() {
     <>
       <div>
         <button onClick={() => setMenu(1)}>Signups menu</button>
+        <button onClick={() => setMenu(2)}>Members</button>
       </div>
       <div>
         {(() => {
@@ -18,7 +20,7 @@ function MasterMenu() {
             case 1:
               return <MasterSignups></MasterSignups>;
             case 2:
-              return <></>;
+              return <MemberHandling></MemberHandling>;
 
             case 3:
               return <></>;
