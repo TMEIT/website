@@ -1,12 +1,13 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-import styles from "./home.css"
+import { kiesel_blue, secondary_purp, primary_light } from "../palette.js";
+import TextSummary from "../components/TextSummary.js";
 
 function Home() {
     return (
         <div id="home">
-            <div>
+            <TextSummary>
                 <h1>Welcome!</h1>
                 <p>
                     TraditionsMEsterIT (TMEIT) is a klubbmästeri within the Section for Information- and Nanotechnology,
@@ -26,7 +27,9 @@ function Home() {
                     If you are interested in joining TMEIT, helping out behind the bar at TMEIT's events,
                     and getting to hang out at tons of fun events and parties, you can sign up <Link to="/join_tmeit">here</Link>!
                 </p>
-                <br/>
+            </TextSummary>
+            <br/>
+            <TextSummary>
                 <p>
                     So yeah, this is the new website!
                 </p>
@@ -37,7 +40,7 @@ function Home() {
                     If you're interested in learning Python or ReactJS programming, come check out our <a href="https://github.com/TMEIT/website">Github</a>,
                     or join the discussion in the #webbweeb channel on the TMEIT discord!
                 </p>
-            </div>
+            </TextSummary>
         </div>
     );
 }

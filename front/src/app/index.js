@@ -7,16 +7,21 @@ import {
   Outlet
 } from "react-router-dom";
 
+import css from 'styled-jsx/css'
+
 import { getApiFetcher } from "./api.js";
 
-import styles from "./index.css";
 import css_reset from "../reboot.css";
+import { kiesel_blue, secondary_purp } from "./palette.js";
+
+import fonts from "./fonts.js"
 
 import Home from "./layouts/Home";
 import Events from "./layouts/Events";
 import Join from "./layouts/Join";
 import Team from "./layouts/Team";
 import Header from "./components/Header";
+import { header_height } from "./components/Header";
 import Footer from "./components/Footer";
 import Profile from "./layouts/Profile";
 import Joined from "./layouts/Joined";
@@ -42,18 +47,45 @@ const router = createBrowserRouter([{
     ]
 }]);
 
+
+const global_style = css.global`
+    html {
+        font-family: 'Atkinson Hyperlegible', arial, sans-serif;
+    }
+`
+
+export const main_container_style = css`
+    #background {
+        background: ${kiesel_blue};
+    }
+    #expander {
+        min-height: calc(100vh - ${header_height});
+        display: grid;
+        grid-template-rows: 1fr 5rem;
+    }
+    main {
+        padding: 2rem;
+    }
+`
+
+
 /**
 * Common wrapper for all routes for displaying the navbars
 */
 function App() {
   return (
-    <>
+    <div id="background">
         <Header />
-        <main>
-            <Outlet />
-        </main>
-        <Footer />
-    </>
+        <div id="expander">
+            <main>
+                <Outlet />
+            </main>
+            <Footer />
+        </div>
+        <style jsx global> {global_style} </style>
+        <style jsx> {main_container_style} </style>
+        <style jsx global> {fonts} </style>
+    </div>
   );
 }
 
