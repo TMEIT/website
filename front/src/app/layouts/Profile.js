@@ -64,13 +64,6 @@ function DetailsBox(props) {
       </TabPanel>
       <TabPanel>"Det var bättre förr"</TabPanel>
       <TabPanel>All of them</TabPanel>
-      {/*
-	  <TabPanel>
-		{props.data.workteams.map((team) => (
-		  <WorkteamItem key={team} team={team} />
-		))}
-	  </TabPanel>
-		*/}
     </Tabs>
   );
 }
