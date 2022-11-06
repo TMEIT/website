@@ -65,7 +65,7 @@ export const main_container_style = css`
     #expander {
         min-height: calc(100vh - ${header_height});
         display: grid;
-        grid-template-rows: 1fr 5rem;
+        grid-template-rows: 1fr auto;
     }
     main {
         padding: 2rem;
