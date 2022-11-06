@@ -52,6 +52,10 @@ const global_style = css.global`
     html {
         font-family: 'Atkinson Hyperlegible', arial, sans-serif;
     }
+    a:link { color: #444444; }
+    a:visited { color: #444444;}
+    a:hover { color: #444444;}
+    a:active { color: #444444;}
 `
 
 export const main_container_style = css`
