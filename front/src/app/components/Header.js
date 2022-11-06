@@ -56,24 +56,13 @@ const header_style = css`
 
 const navlink_style = css.global`
     a.headerlink {
-        height: 100%;
         font-family: 'Merriweather', serif;
         font-weight: 400;
     }
-    a.joinheaderlink {
-        height: 100%;
-        font-family: 'Merriweather', serif;
-        font-weight: 900;
-        text-shadow:
-            0 0.1rem 0.2rem ${kiesel_light_blue},
-            0.1rem 0 0.2rem ${kiesel_light_blue},
-            0 -0.1rem 0.2rem ${kiesel_light_blue},
-            -0.1rem 0 0.2rem ${kiesel_light_blue};
-    }
-    a:link.headerlink, a:link.joinheaderlink { color: #ffffff; text-decoration: none; }
-    a:visited.headerlink, a:visited.joinheaderlink { color: #ffffff; text-decoration: none; }
-    a:hover.headerlink, a:hover.joinheaderlink { color: #ffffff; text-decoration: none; }
-    a:active.headerlink, a:active.joinheaderlink { color: #ffffff; text-decoration: none; }
+    a:link.headerlink { color: #ffffff; text-decoration: none; }
+    a:visited.headerlink { color: #ffffff; text-decoration: none; }
+    a:hover.headerlink { color: #ffffff; text-decoration: none; }
+    a:active.headerlink { color: #ffffff; text-decoration: none; }
 `
 
 function Header() {
@@ -97,7 +86,7 @@ function Header() {
                 </NavLink>
               </li>
               <li id="join-navlink">
-                <NavLink to="/join_tmeit" className="joinheaderlink" activeclassname="selected">
+                <NavLink to="/join_tmeit" className="headerlink" activeclassname="selected">
                   Join
                 </NavLink>
               </li>
