@@ -30,7 +30,7 @@ export const home_style = css`
     }
     .content {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(min(38em, 100%), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(38em, 100%), 1fr));
         grid-auto-flow: row;
       gap: 1rem;
     }
