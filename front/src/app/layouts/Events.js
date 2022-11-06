@@ -16,8 +16,9 @@ function Events() {
         <Centered>
             <div>
                 <TextSummary>
-                    <h1>Events</h1>
-                    <p>Events page coming soon.</p>
+                    <h1>Events - Coming soon!</h1>
+                    <p>The events page is under construction.</p>
+                    <p>TMEIT.SE GEN 3 is very new and does not yet have the event pages that the old site had.</p>
                     <p>Check out our <a href="https://www.facebook.com/TMEIT/events" target="_blank">Facebook events</a> in the meantime!</p>
                 </TextSummary>
             </div>
