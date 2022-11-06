@@ -18,6 +18,11 @@ const shadowFilter = `filter: invert() drop-shadow(0 2vw 0px ${color0}) drop-sha
 
 
 export const home_style = css`
+
+    #home {
+        margin: 2em;
+    }
+
     .stylish-header {
         width: 80vw;
         max-width: 85rem;

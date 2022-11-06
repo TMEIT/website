@@ -7,6 +7,7 @@ import TextSummary from "../components/TextSummary.js";
 const max_width_style = css`
     div {
         max-width: 80em;
+        margin: 2em;
     }
 `
 
