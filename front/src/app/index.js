@@ -67,9 +67,6 @@ export const main_container_style = css`
         display: grid;
         grid-template-rows: 1fr auto;
     }
-    main {
-        padding: 2rem;
-    }
 `
 
 
