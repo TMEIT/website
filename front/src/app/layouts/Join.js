@@ -26,7 +26,6 @@ export const join_style = css`
         text-align: center;
         color: #ffffff;
         font-size: calc(0.6rem + 4vw);
-        background: ${accent_salmon_dark};
         border-radius: 0.5rem;
         padding: 0.5rem;
         padding-left: 1rem;
