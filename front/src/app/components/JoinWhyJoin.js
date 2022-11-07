@@ -35,17 +35,17 @@ function JoinWhyJoin() {
         <p>
             Sober lifestyles are also welcome in the klubbmästeri, and we speak both Swedish and English in TMEIT.
         </p>
-        <h2>Becoming a marshal</h2>
+        <h2>Becoming a Marshal</h2>
         <p>
             As a TMEIT PRAO, you can learn about what we do in TMEIT and join in on the fun.
-            Being a PRAO is the first step towards becoming a marshal and a permanent member of TMEIT.
+            Being a PRAO is the first step towards becoming a Marshal and a permanent member of TMEIT.
         </p>
         <p>
-            At TMEIT, we're all best friends, and we have a process of promoting new members from PRAO to marshal.
-            As a PRAO, you may be offered the chance to be accepted into TMEIT as a marshal.
+            At TMEIT, we're all best friends, and we have a process of promoting new members from PRAO to Marshal.
+            As a PRAO, you may be offered the chance to be accepted into TMEIT as a Marshal.
         </p>
         <p>
-            TMEIT does not have a limit on its member count, and every PRAO is able to become a marshal when they are ready for it.
+            TMEIT does not have a limit on its member count, and every PRAO is able to become a Marshal when they are ready for it.
         </p>
         <style jsx> {style} </style>
     </>

@@ -25,7 +25,7 @@ function JoinWhatTmeit() {
         <h2>Who we are</h2>
         <p>
             As one of the most active klubbmästerier in Stockholm,
-            our members (known as "marshals") are skilled bartenders and run many of the most popular parties in Kista.
+            our members (known as "Marshals") are skilled bartenders and run many of the most popular parties in Kista.
             Our members are well known at student pubs around Stockholm,
             and many of our alumni members can still be found bartending at Nymble or organizing cruises with Sjöslaget.
         </p>
