@@ -49,7 +49,7 @@ const router = createBrowserRouter([{
 
 
 const global_style = css.global`
-    html {
+    body {
         font-family: 'Atkinson Hyperlegible', arial, sans-serif;
     }
     a:link { color: #444444; }
