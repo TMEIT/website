@@ -21,6 +21,9 @@ export const primary_lighter = "#ded2c3";
 
 export const accent_yellow = "#a1873f";
 
+export const accent_orange = "#E19844";
+
+
 export const accent_red = "#993623";
 
 // Accent hues taken from combining kiesel_blue, primary_lighter, and secondary_purp_dark in colormind with Pokemon Crystal preset
