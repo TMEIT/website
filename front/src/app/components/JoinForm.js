@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 function JoinForm() {
@@ -86,67 +88,87 @@ function JoinForm() {
   return (
     <>
         <h2>PRAO Signup</h2>
-        <form onSubmit={submit}>
-            <TextField
-                variant="filled"
-                id="firstName"
-                label="First Name"
-                name="firstName"
-                autoComplete="given-name"
-                placeholder="Prao"
-                required
-                onChange={handleInputChange}
-            />
-            <TextField
-                variant="filled"
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-                placeholder="Praosson"
-                required
-                onChange={handleInputChange}
-            />
-            <TextField
-                variant="filled"
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                type="email"
-                placeholder="prao@kth.se"
-                required
-                onChange={handleInputChange}
-            />
-            <TextField
-                variant="filled"
-                id="phone"
-                label="Phone Number"
-                name="phone"
-                autoComplete="tel"
-                placeholder="+467000000000"
-                onChange={handleInputChange}
-            />
-            <TextField
-                variant="filled"
-                id="password"
-                label="Password"
-                name="password"
-                autoComplete="new-password"
-                type="password"
-                required
-                onChange={handleInputChange}
-            />
-            <TextField
-                variant="filled"
-                id="confirmPassword"
-                label="Confirm Password"
-                name="confirmPassword"
-                autoComplete="new-password"
-                type="password"
-                required
-                onChange={handleInputChange}
-            />
+        <Box component="form" onSubmit={submit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        variant="filled"
+                        fullWidth
+                        id="firstName"
+                        label="First Name"
+                        name="firstName"
+                        autoComplete="given-name"
+                        placeholder="Prao"
+                        required
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        variant="filled"
+                        fullWidth
+                        id="lastName"
+                        label="Last Name"
+                        name="lastName"
+                        autoComplete="family-name"
+                        placeholder="Praosson"
+                        required
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        variant="filled"
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        type="email"
+                        placeholder="prao@kth.se"
+                        required
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        variant="filled"
+                        fullWidth
+                        id="phone"
+                        label="Phone Number"
+                        name="phone"
+                        autoComplete="tel"
+                        placeholder="+467077267726"
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        variant="filled"
+                        fullWidth
+                        id="password"
+                        label="Password"
+                        name="password"
+                        autoComplete="new-password"
+                        type="password"
+                        required
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        variant="filled"
+                        fullWidth
+                        id="confirmPassword"
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        autoComplete="new-password"
+                        type="password"
+                        required
+                        onChange={handleInputChange}
+                    />
+                </Grid>
+            </Grid>
             <div>
               <label htmlFor="GDPR">
                 I give my informed consent for TMEIT to store and use my personal data.
@@ -160,7 +182,7 @@ function JoinForm() {
             <div className="submit">
               <input type="submit" value="Register" />
             </div>
-        </form>
+        </Box>
       <div className="errorMessage">
         {(() => {
           switch (errorMessage) {
