@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TextField from '@mui/material/TextField';
 
 function JoinForm() {
   const [firstName, setFirstName] = useState("");
@@ -39,7 +40,7 @@ function JoinForm() {
     }
   };
 
-  const submit = () => {
+  const submit = (event) => {
     if (password != confirmPassword || password == "") {
       setErrorMessage(2);
     } else if (!GDPR) {
@@ -79,88 +80,87 @@ function JoinForm() {
         alert("Request has failed, try again or contact web masters");
       };
     }
+    event.preventDefault();
   };
 
   return (
-    <div>
-      <div className="form">
-        <div className="firstname">
-          <label htmlFor="firstName">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            value={firstName}
-            placeholder="First Name"
-            onChange={(e) => handleInputChange(e)}
-          ></input>
-        </div>
-        <div className="lastname">
-          <label htmlFor="lastName">Last name</label>
-          <input
-            type="text"
-            id="lastName"
-            value={lastName}
-            placeholder="Last Name"
-            onChange={(e) => handleInputChange(e)}
-          ></input>
-        </div>
-        <div className="email">
-          <label htmlFor="email">Email adress</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            placeholder="prao@prao.prao"
-            onChange={(e) => handleInputChange(e)}
-          ></input>
-        </div>
-        <div className="phone">
-          <label htmlFor="phone">phone number</label>
-          <input
-            type="text"
-            id="phone"
-            value={phone}
-            onChange={(e) => handleInputChange(e)}
-          ></input>
-        </div>
-        <div className="password">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => handleInputChange(e)}
-          ></input>
-        </div>
-        <div className="password">
-          <label htmlFor="confirmPassword">Confirm password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => handleInputChange(e)}
-          ></input>
-        </div>
-        <div>
-          <label htmlFor="GDPR">
-            We store your name, email address, and any information you or other
-            members of TMEIT enter about you. All data is stored securely within
-            the EU. Contact a master for questions or issues regarding your
-            personal data. By checking this box you acknowledge this in
-            conpliance with GDPR.
-          </label>
-          <input
-            type="checkbox"
-            id="GDPR"
-            onChange={(e) => handleInputChange(e)}
-          />
-        </div>
-        <div className="submit">
-          <button type="submit" onClick={() => submit()}>
-            Register
-          </button>
-        </div>
-      </div>
+    <>
+        <h2>PRAO Signup</h2>
+        <form onSubmit={submit}>
+            <TextField
+                variant="filled"
+                id="firstName"
+                label="First Name"
+                name="firstName"
+                autoComplete="given-name"
+                placeholder="Prao"
+                required
+                onChange={handleInputChange}
+            />
+            <TextField
+                variant="filled"
+                id="lastName"
+                label="Last Name"
+                name="lastName"
+                autoComplete="family-name"
+                placeholder="Praosson"
+                required
+                onChange={handleInputChange}
+            />
+            <TextField
+                variant="filled"
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                type="email"
+                placeholder="prao@kth.se"
+                required
+                onChange={handleInputChange}
+            />
+            <TextField
+                variant="filled"
+                id="phone"
+                label="Phone Number"
+                name="phone"
+                autoComplete="tel"
+                placeholder="+467000000000"
+                onChange={handleInputChange}
+            />
+            <TextField
+                variant="filled"
+                id="password"
+                label="Password"
+                name="password"
+                autoComplete="new-password"
+                type="password"
+                required
+                onChange={handleInputChange}
+            />
+            <TextField
+                variant="filled"
+                id="confirmPassword"
+                label="Confirm Password"
+                name="confirmPassword"
+                autoComplete="new-password"
+                type="password"
+                required
+                onChange={handleInputChange}
+            />
+            <div>
+              <label htmlFor="GDPR">
+                I give my informed consent for TMEIT to store and use my personal data.
+              </label>
+              <input
+                type="checkbox"
+                id="GDPR"
+                onChange={(e) => handleInputChange(e)}
+              />
+            </div>
+            <div className="submit">
+              <input type="submit" value="Register" />
+            </div>
+        </form>
       <div className="errorMessage">
         {(() => {
           switch (errorMessage) {
@@ -168,7 +168,10 @@ function JoinForm() {
               return <></>;
             case 1:
               return (
-                <>You must check the box to consent and register to TMEIT</>
+                <>
+                    You must give TMEIT your GDPR consent for us to register an account for you at TMEIT.
+                    Please contact one of the Masters if you have any questions or concerns about your personal data.
+                </>
               );
 
             case 2:
@@ -182,7 +185,7 @@ function JoinForm() {
           }
         })()}
       </div>
-    </div>
+    </>
   );
 }
 
