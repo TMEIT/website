@@ -46,6 +46,7 @@ module.exports = {
         ]
     },
     plugins: [
+        "@emotion",
         new HtmlWebpackPlugin({
             filename: './index.html', //relative to root of the application
             favicon: "./src/favicon.png",
