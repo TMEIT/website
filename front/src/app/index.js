@@ -9,12 +9,19 @@ import {
 
 import css from 'styled-jsx/css'
 
+import "@fontsource/atkinson-hyperlegible"
+import "@fontsource/cantarell"
+import "@fontsource/caveat"
+import "@fontsource/merriweather"
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 import { getApiFetcher } from "./api.js";
 
 import css_reset from "../reboot.css";
 import { kiesel_blue, secondary_purp } from "./palette.js";
-
-import fonts from "./fonts.js"
 
 import Home from "./layouts/Home";
 import Events from "./layouts/Events";
@@ -85,7 +92,6 @@ function App() {
         </div>
         <style jsx global> {global_style} </style>
         <style jsx> {main_container_style} </style>
-        <style jsx global> {fonts} </style>
     </div>
   );
 }

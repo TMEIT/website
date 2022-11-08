@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const DIST_DIR = path.resolve(__dirname, "www");
 const SRC_DIR = path.resolve(__dirname, "src");
+const FONTSOURCE_DIR = path.resolve(__dirname, "node_modules", "@fontsource");
 
 const PACKAGE = require("./package.json");
 const version = PACKAGE.version;
@@ -33,8 +34,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                include: SRC_DIR,
-                exclude: /node_modules/,
+                include: [SRC_DIR, FONTSOURCE_DIR],
                 use: ['style-loader', 'css-loader']
             },
             {
