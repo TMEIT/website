@@ -1,87 +1,55 @@
-import React, {Fragment} from "react";
-import {Link} from "react-router-dom";
-import Loading from "../components/Loading";
-import {useFetch} from "../FetchHooks.js";
+import React from "react";
+import {useLoaderData} from "react-router-dom";
+import styled from "@emotion/styled";
+
+import MemberListItem from "../components/MemberListItem.js";
+
+// Bit of a hack, filtering result from server to separate types of members instead of filtering on db
+const render_memberlist = (members, role) =>
+    members.filter(member => member.current_role === role)
+    .map(member => <MemberListItem member={member} key={member.uuid}/>);
+
+
+const StyledMemberList = styled(MemberList)({
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    alignItems: "center",
+})
+
+function MemberList({className, children}) {
+    return (
+        <div className={className}>
+            {children}
+        </div>
+    );
+}
 
 function Team() {
-
-    const {loading, data} = useFetch("/api/v1/members/");
-
-    let loadMembers = false;
-    let loadingElement;
-    let masterList, marshalList, praoList, exList, vraqList;
-
-    //Loading
-    if(loading) loadingElement = <Loading />;
-
-    //API error
-    else if(data === "error") loadingElement = "Could not load API.";
+    const data = useLoaderData();
 
     // render memberlist
-    else {
-        loadMembers = true;
-        loadingElement = null;
-        masterList = data.filter(member => member.current_role === "master").map(member =>
-                <h3 key={member.uuid} >
-                    <Link to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` } >
-                        {member.first_name + " " + member.last_name}
-                    </Link>
-                </h3>
-            )
-        marshalList = data.filter(member => member.current_role === "marshal").map(member =>
-            <h3 key={member.uuid} >
-                <Link to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` } >
-                    {member.first_name + " " + member.last_name}
-                </Link>
-            </h3>
-        )
-        praoList = data.filter(member => member.current_role === "prao").map(member =>
-            <h3 key={member.uuid} >
-                <Link to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` } >
-                    {member.first_name + " " + member.last_name}
-                </Link>
-            </h3>
-        )
-        vraqList = data.filter(member => member.current_role === "vraq").map(member =>
-            <h3 key={member.uuid} >
-                <Link to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` } >
-                    {member.first_name + " " + member.last_name}
-                </Link>
-            </h3>
-        )
-
-        exList = data.filter(member => member.current_role === "ex").map(member =>
-            <h3 key={member.uuid} >
-                <Link to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` } >
-                    {member.first_name + " " + member.last_name}
-                </Link>
-            </h3>
-        )
-
-    }
-
+    const masterList = render_memberlist(data, "master");
+    const marshalList = render_memberlist(data, "marshal");
+    const praoList = render_memberlist(data, "prao");
+    const vraqList = render_memberlist(data, "vraq");
+    const exList = render_memberlist(data, "ex");
 
     return (
         <>
-        {loadingElement}
-        {loadMembers ?
-        <Fragment>
             <h1>Team</h1>
-            <h2>Masters</h2>            
-            {masterList}
+            <h2>Masters</h2>
+            <StyledMemberList>{masterList}</StyledMemberList>
             <h2>Marshals</h2>
-            {marshalList}
+            <StyledMemberList>{marshalList}</StyledMemberList>
             <h2>Prao</h2>
-            {praoList}
+            <StyledMemberList>{praoList}</StyledMemberList>
             <h2>Vraq</h2>
-            {vraqList}
-            <h2>Ex-members</h2>
-            {exList}
-        </Fragment>
-        : <></>
-        }
-    </>
-    )
+            <StyledMemberList>{vraqList}</StyledMemberList>
+            <h2>Ex-marshals</h2>
+            <StyledMemberList>{exList}</StyledMemberList>
+        </>
+    );
 }
 
 export default Team
