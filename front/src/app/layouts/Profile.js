@@ -5,10 +5,12 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import styles from "./profile.css";
 import { useFetch } from "../FetchHooks.js";
 import Loading from "../components/Loading";
+import Centered from "../components/Centered.js";
+import TextSummary from "../components/TextSummary.js";
 import { currentRolesEN, capitalizeFirstLetter } from "../tmeitStringFn.js";
 import { WorkteamItem } from "../components/Listables";
 
-function Profile() {
+function Profile({className}) {
   let { shortUuid, _ } = useParams();
 
   const { loading, data } = useFetch("/api/v1/members/" + shortUuid);
@@ -33,16 +35,18 @@ function Profile() {
   })(data.current_role);
 
   return (
-    <>
-      <img
-        src={"https://thispersondoesnotexist.com/image"}
-        style={{ height: "100px", width: "100px" }}
-      />
-      <h1>{nickname}</h1>
-      <h2>{fullName}</h2>
-      <h3>{role}</h3>
-      <DetailsBox data={data} />
-    </>
+    <Centered className={className}>
+        <TextSummary>
+            <img
+                src={"https://thispersondoesnotexist.com/image"}
+                style={{ height: "100px", width: "100px" }}
+            />
+            <h1>{nickname}</h1>
+            <h2>{fullName}</h2>
+            <h3>{role}</h3>
+            {/*<DetailsBox data={data} />*/}
+        </TextSummary>
+    </Centered>
   );
 }
 
