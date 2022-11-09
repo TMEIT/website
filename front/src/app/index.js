@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
-import React, { Fragment } from "react";
+import React, {lazy} from "react";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -25,34 +25,19 @@ import { getApiFetcher } from "./api.js";
 import css_reset from "../reboot.css";
 import { kiesel_blue, secondary_purp, data_pink } from "./palette.js";
 
-import Home from "./layouts/Home";
-import Events from "./layouts/Events";
-import Join from "./layouts/Join";
-import Team from "./layouts/Team";
 import Header from "./components/Header";
 import { header_height } from "./components/Header";
 import Footer from "./components/Footer";
-import Profile from "./layouts/Profile";
-import Joined from "./layouts/Joined";
-import MasterMenu from "./layouts/MasterMenu";
-import WebsiteMigrations from "./layouts/WebsiteMigrations";
+import LoadingBar from "./components/LoadingBar";
 
-
-const loading_bar_color = createTheme({
-    palette: {
-        primary: {
-            main: data_pink,
-        }
-    },
-});
-
-const LoadingBar = ({className}) => {
-    return (
-        <ThemeProvider theme={loading_bar_color}>
-            <LinearProgress className={className} />
-        </ThemeProvider>
-    )
-}
+const Home = lazy(() => import("./layouts/Home"));
+const Events = lazy(() => import("./layouts/Events"));
+const Join = lazy(() => import("./layouts/Join"));
+const Team = lazy(() => import("./layouts/Team"));
+const Profile = lazy(() => import("./layouts/Profile"));
+const Joined = lazy(() => import("./layouts/Joined"));
+const MasterMenu = lazy(() => import("./layouts/MasterMenu"));
+const WebsiteMigrations = lazy(() => import("./layouts/WebsiteMigrations"));
 
 
 /**
@@ -66,7 +51,9 @@ function App({className}) {
                 <Header />
                 <div id="expander">
                     <main>
-                        <Outlet />
+                        <React.Suspense>
+                            <Outlet />
+                        </React.Suspense>
                     </main>
                     <Footer />
                 </div>
@@ -99,7 +86,7 @@ const router = createBrowserRouter([{
     element: <StyledApp />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/events", element: <Events /> },
+        { path: "/events", element: <Events /> },
       { path: "/team", element: <Team />,
             loader: async ({ params }) => {
               return await getApiFetcher().get("/members").json();
