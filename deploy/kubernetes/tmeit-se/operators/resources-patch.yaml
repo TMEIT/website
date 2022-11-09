@@ -2,10 +2,10 @@
   path: /spec/template/spec/containers/0/resources
   value:
     requests:
-      cpu: "5m"
-      memory: "40Mi"
+      cpu: "50m"
+      memory: "80Mi"
       ephemeral-storage: 50Mi
     limits:
-      cpu: "200m"
-      memory: "80Mi"
+      cpu: "500m"
+      memory: "160Mi"
       ephemeral-storage: 500Mi

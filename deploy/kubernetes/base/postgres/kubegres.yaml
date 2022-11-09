@@ -26,12 +26,12 @@ spec:
               key: tmeitBackendUserPassword
    resources:
      limits:
-       memory: "150Mi"
-       cpu: "200m"
+       memory: "500Mi"
+       cpu: "500m"
        ephemeral-storage: 1Gi
      requests:
-       memory: "75Mi"
-       cpu: "20m"
+       memory: "200Mi"
+       cpu: "100m"
        ephemeral-storage: 100Mi
   # Note: DB backups are not done with kubegres' built in backup system,
   # and are instead done with custom cronjobs found in deploy/kubernetes/tmeit-se/postgres/

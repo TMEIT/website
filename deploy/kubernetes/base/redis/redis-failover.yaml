@@ -7,19 +7,21 @@ spec:
     replicas: 3
     resources:
       requests:
-        cpu: 8m
-        memory: 20Mi
-      limits:
-        cpu: 80m
+        cpu: 20m
         memory: 40Mi
+        ephemeral-storage: 50Mi
+      limits:
+        cpu: 100m
+        memory: 80Mi
+        ephemeral-storage: 500Mi
   redis:
     replicas: 3
     resources:
       requests:
-        cpu: 10m
-        memory: 25Mi
+        cpu: 40m
+        memory: 50Mi
         ephemeral-storage: 50Mi
       limits:
-        cpu: 100m
-        memory: 50Mi
+        cpu: 200m
+        memory: 100Mi
         ephemeral-storage: 500Mi

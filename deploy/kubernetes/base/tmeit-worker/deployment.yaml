@@ -29,12 +29,12 @@ spec:
                 key: tmeitBackendUserPassword
         resources:
           requests:
-            cpu: "30m"
-            memory: "100Mi"
+            cpu: "80m"
+            memory: "400Mi"
             ephemeral-storage: 100Mi
           limits:
-            cpu: "300m"
-            memory: "200Mi"
+            cpu: "400m"
+            memory: "800Mi"
             ephemeral-storage: 1Gi
         securityContext:
           readOnlyRootFilesystem: true

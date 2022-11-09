@@ -6,7 +6,7 @@ bases:
 
 replicas:
 - name: tmeit-app
-  count: 1
+  count: 2
 - name: tmeit-worker
   count: 1
 
