@@ -16,7 +16,8 @@ module.exports = {
     entry: SRC_DIR + "/app/index.js",
     output: {
         path: DIST_DIR,
-        filename: "bundle-" + version + ".js",
+        filename: "[name]-bundle-[contenthash].js",
+        chunkFilename: "[name]-chunk-[chunkhash].js",
         publicPath: "/static/front/"
     },
     module: {
@@ -57,7 +58,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: './index.html', //relative to root of the application
             favicon: "./src/favicon.png",
-            hash: true,
+            hash: false,
             templateContent: `
               <!DOCTYPE html>
               <html lang="en">
@@ -75,6 +76,10 @@ module.exports = {
         })
     ],
     optimization: {
-        usedExports: true,
+//        runtimeChunk: 'single',
+        splitChunks: {
+            chunks: 'all',
+            maxSize: 50000 // Split chunks less than 50KB
+        },
     },
 };
