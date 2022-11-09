@@ -1,3 +1,4 @@
+import {Suspense} from "react";
 import { createRoot } from "react-dom/client";
 import {
     createBrowserRouter,
@@ -39,9 +40,9 @@ function App({className}) {
                 <Header />
                 <div id="expander">
                     <main>
-                        <React.Suspense>
+                        <Suspense>
                             <Outlet />
-                        </React.Suspense>
+                        </Suspense>
                     </main>
                     <Footer />
                 </div>
