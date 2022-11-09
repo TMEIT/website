@@ -1,20 +1,19 @@
 import React from "react";
-import css from 'styled-jsx/css';
+import styled from "@emotion/styled";
 
 
-export const style = css`
-    p {
-        text-align: justify;
+const StyledJoinWhatTmeit = styled(JoinWhatTmeit)({
+    p: {
+        textAlign: "justify"
+    },
+    h2: {
+        fontSize: "calc(1.325rem + .9vw)"
     }
-    h2 {
-        font-size: calc(1.325rem + .9vw);
-    }
-`;
+});
 
-
-function JoinWhatTmeit() {
+function JoinWhatTmeit({className}) {
   return (
-    <>
+    <div className={className}>
         <h2>TraditionsMEsterIT</h2>
         <p>
             TMEIT is one of the two klubbmästerier at KTH Kista, and we make up a large amount of the student activity at IN-sektionen.
@@ -35,9 +34,8 @@ function JoinWhatTmeit() {
             you join countless student parties both here in Kista and elsewhere in Stockholm,
             and you join a tight-knit student community with best friends that look out for one-another.
         </p>
-        <style jsx> {style} </style>
-    </>
+    </div>
   )
 }
 
-export default JoinWhatTmeit;
+export default StyledJoinWhatTmeit;
