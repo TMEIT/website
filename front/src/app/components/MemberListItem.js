@@ -79,7 +79,7 @@ function MemberRoleLine({ member, className }) {
 
 
 const StyledMemberListItem = styled(MemberListItem)({
-    width: "25em",
+    width: "24em",
     background: primary_lighter,
     border: "2px solid black",
     borderRadius: "1em",

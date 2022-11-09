@@ -33,11 +33,11 @@ const StyledTeam = styled(Team)({
         color: "white"
     },
 
-    "@media (max-width: 40em)": {
+    "@media (max-width: 52em)": {
         padding: "0.5em",
     },
 
-    "@media (min-width: 40em)": {
+    "@media (min-width: 52em)": {
         padding: "1em",
     },
 })
