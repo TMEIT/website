@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-function JoinForm() {
+const StyledJoinForm = styled(JoinForm)({})
+
+function JoinForm({className}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -86,7 +89,7 @@ function JoinForm() {
   };
 
   return (
-    <>
+      <div className={className}>
         <h2>PRAO Signup</h2>
         <Box component="form" onSubmit={submit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -207,8 +210,8 @@ function JoinForm() {
           }
         })()}
       </div>
-    </>
+    </div>
   );
 }
 
-export default JoinForm;
+export default StyledJoinForm;
