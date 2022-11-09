@@ -4,7 +4,7 @@ const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const DIST_DIR = path.resolve(__dirname, "www");
+const DIST_DIR = path.resolve(__dirname, "static", "front");
 const SRC_DIR = path.resolve(__dirname, "src");
 const FONTSOURCE_DIR = path.resolve(__dirname, "node_modules", "@fontsource");
 
