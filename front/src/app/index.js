@@ -40,7 +40,11 @@ const router = createBrowserRouter([{
     children: [
       { path: "/", element: <Home /> },
       { path: "/events", element: <Events /> },
-      { path: "/team", element: <Team /> },
+      { path: "/team", element: <Team />,
+            loader: async ({ params }) => {
+              return await getApiFetcher().get("/members").json();
+            }
+      },
       { path: "/join_tmeit", element: <Join /> },
       { path: "/profile/:shortUuid", element: <Profile /> },
       { path: "/profile/:shortUuid/:name", element: <Profile /> },
