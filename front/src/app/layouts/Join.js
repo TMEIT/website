@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import css from 'styled-jsx/css';
+import styled from "@emotion/styled";
 
 import sjo_group from "../layout_photos/sjoslaget_group_2022.webp";
 
@@ -24,68 +24,64 @@ const useIsScreenWide = () => {
     return screenWidth >= 1280;
 };
 
-export const join_style = css`
-    .container {
-        width: 100vw;
-    }
-    h1 {
-        place-self: center;
-        text-align: center;
-        color: #ffffff;
-        font-size: calc(0.6rem + 4vw);
-        font-family: Cantarell, sans-serif;
-        font-weight: 900;
-        padding: 1em;
-        padding-bottom: 0.5em;
 
+const StyledJoin = styled(Join)({
+    width: "100vw",
+    h1: {
+        placeSelf: "center",
+        textAlign: "center",
+        color: "#ffffff",
+        fontSize: "calc(0.6rem + 4vw)",
+        fontFamily: "Cantarell, sans-serif",
+        fontWeight: 900,
+        padding: "1em",
+        paddingBottom: "0.5em",
+    },
+    ".joining": {
+        display: "grid",
+    },
+    "@media (max-width: 60rem)": {
+        ".joining": {
+            grid: '"about" auto "form" auto "gdpr" auto / 1fr'
+        },
+        ".joining > div": {
+            padding: "1em"
+        },
+    },
+    "@media (min-width: 60rem)": {
+        ".joining": {
+            grid: '"about form gdpr" auto / 1fr 1fr 1fr'
+        },
+        ".joining > div": {
+            padding: "2em"
+        },
+    },
+    ".aboutJoining": {
+        gridArea: "about",
+        background: me_and_in_teal,
+        fontSize: "1.5em",
+    },
+    [JoinForm]: {
+        gridArea: "form",
+        background: primary_lighter
+    },
+    ".gdpr": {
+        gridArea: "gdpr",
+        background: data_pink
+    },
+    ".group-photo": {
+        width: "100%"
     }
+});
 
-    .joining {
-        display: grid;
-    }
-    @media (max-width: 60rem) {
-        .joining {
-            grid: "about" auto "form" auto "gdpr" auto / 1fr;
-        }
-        .joining > div {
-            padding: 1em;
-        }
-    }
-    @media (min-width: 60rem) {
-        .joining {
-            grid: "about form gdpr" auto / 1fr 1fr 1fr;
-        }
-        .joining > div {
-            padding: 2em;
-        }
-    }
-
-    .aboutJoining {
-        grid-area: about;
-        background: ${me_and_in_teal};
-        font-size: 1.5em;
-    }
-    .form {
-        grid-area: form;
-        background: ${primary_lighter};
-    }
-    .gdpr {
-        grid-area: gdpr;
-            background: ${data_pink};
-    }
-    .group-photo {
-        width: 100%;
-    }
-`;
-
-function Join() {
+function Join({className}) {
     const screenIsWide = useIsScreenWide();
 
     // Switch layouts based on media query
     const AboutTmeit = screenIsWide ? JoinAboutTmeitWide : JoinAboutTmeitMobile;
 
   return (
-    <div className="container">
+      <div className={className}>
         <h1> So you want to join TMEIT? </h1>
         <AboutTmeit />
         <h1> Become PRAO! </h1>
@@ -109,9 +105,7 @@ function Join() {
                     note that TMEIT holds a special meeting at the end of Mottagning with all new PRAO that you don't want to miss!
                 </p>
             </div>
-            <div className="form">
-                <JoinForm />;
-            </div>
+            <JoinForm />;
             <div className="gdpr">
                 <h2> Your personal data </h2>
                 <h3> How your personal data is used </h3>
@@ -143,9 +137,8 @@ function Join() {
         </div>
         <h1> See you at the pub! </h1>
         <img className="group-photo" src={sjo_group} alt="A group photo of TMEIT after Sjöslaget 2022" />
-        <style jsx> {join_style} </style>
     </div>
   )
 }
 
-export default Join;
+export default StyledJoin;
