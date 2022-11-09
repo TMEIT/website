@@ -8,9 +8,6 @@ import {
 } from "react-router-dom";
 import styled from "@emotion/styled";
 
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import LinearProgress from "@mui/material/LinearProgress";
-
 import "@fontsource/atkinson-hyperlegible"
 import "@fontsource/cantarell"
 import "@fontsource/caveat"
@@ -30,14 +27,7 @@ import { header_height } from "./components/Header";
 import Footer from "./components/Footer";
 import LoadingBar from "./components/LoadingBar";
 
-const Home = lazy(() => import("./layouts/Home"));
-const Events = lazy(() => import("./layouts/Events"));
-const Join = lazy(() => import("./layouts/Join"));
-const Team = lazy(() => import("./layouts/Team"));
-const Profile = lazy(() => import("./layouts/Profile"));
-const Joined = lazy(() => import("./layouts/Joined"));
-const MasterMenu = lazy(() => import("./layouts/MasterMenu"));
-const WebsiteMigrations = lazy(() => import("./layouts/WebsiteMigrations"));
+import routes from "./routes.js";
 
 
 /**
@@ -85,21 +75,23 @@ const StyledApp = styled(App)({
 const router = createBrowserRouter([{
     element: <StyledApp />,
     children: [
-      { path: "/", element: <Home /> },
-        { path: "/events", element: <Events /> },
-      { path: "/team", element: <Team />,
+        { path: "/", element: <routes.Home.component />, loader: routes.Home.loader },
+        { path: "/events", element: <routes.Events.component />, loader: routes.Events.loader },
+        { path: "/team", element: <routes.Team.component />,
+        loader: async ({ params }) => {
+            await routes.Team.loader()
+            return await getApiFetcher().get("/members").json();
+        }
+        },
+        { path: "/join_tmeit", element: <routes.Join.component />, loader: routes.Join.loader },
+        { path: "/profile/:shortUuid", element: <routes.Profile.component />, loader: routes.Profile.loader },
+        { path: "/profile/:shortUuid/:name", element: <routes.Profile.component />, loader: routes.Profile.loader },
+        { path: "/join_completed", element: <routes.Joined.component />, loader: routes.Joined.loader },
+        { path: "/master", element: <routes.MasterMenu.component />, loader: routes.MasterMenu.loader },
+        { path: "/migrating", element: <routes.WebsiteMigrations.component />,
             loader: async ({ params }) => {
-              return await getApiFetcher().get("/members").json();
-            }
-      },
-      { path: "/join_tmeit", element: <Join /> },
-      { path: "/profile/:shortUuid", element: <Profile /> },
-      { path: "/profile/:shortUuid/:name", element: <Profile /> },
-      { path: "/join_completed", element: <Joined /> },
-      { path: "/master", element: <MasterMenu /> },
-      { path: "/migrating", element: <WebsiteMigrations />,
-            loader: async ({ params }) => {
-              return await getApiFetcher().get("/migrations/members").json();
+                await routes.WebsiteMigrations.loader()
+                return await getApiFetcher().get("/migrations/members").json();
             }
         },
     ]
