@@ -13,6 +13,7 @@ const StyledMemberNameLine = styled(MemberNameLine)({
     },
     "& > h2": {
         fontSize: "2em",
+        color: "#000000",
         margin: 0,
         whiteSpace: "nowrap",
         overflow: "hidden",
@@ -54,6 +55,7 @@ const StyledMemberRoleLine = styled(MemberRoleLine)({
     display: "grid",
     gridTemplateColumns: "auto 1fr",
     alignItems: "end",
+    color: "#000000",
 })
 
 function MemberRoleLine({ member, className }) {
@@ -103,6 +105,13 @@ const StyledMemberListItem = styled(MemberListItem)({
     [StyledMemberRoleLine]: {
         gridArea: "role",
     },
+
+    // Don't style text just because item is a link
+    textDecoration: "none",
+    "a:link": { color: "black", textDecoration: "none" },
+    "a:visited": { ccolor: "black", textDecoration: "none" },
+    "a:hover": { color: "black", textDecoration: "none" },
+    "a:active": { color: "black", textDecoration: "none" },
 
     // Shrink item if on tiny screen
     "@media (max-width: 25em)": {
