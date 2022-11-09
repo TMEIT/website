@@ -10,8 +10,21 @@ allow_k8s_contexts(settings.get("allow_k8s_contexts"))
 watch_file('deploy/kubernetes/base')
 watch_file('deploy/kubernetes/dev')
 
+# Build main app with live_update enabled
+podman_build('tmeit-app', '.',
+    extra_flags=["-f", "containerfiles/tmeit-app-dev.Containerfile"],
+    live_update=[
+        sync('./back', '/code/'),
+        sync('./front', '/code/'),
+        run('poetry install --only main --no-interaction --no-ansi',
+            trigger=['./back/pyproject.toml', './back/poetry.lock']),
+        run('npm install',
+            trigger=['./front/package.json', './front/package-lock.json']),
+        run('npm run-script build'),
+    ]
+)
+
 # Build, deploy, and port-forward
-podman_build('tmeit-app', '.', extra_flags=["-f", "containerfiles/tmeit-app-dev.Containerfile"])
 podman_build('tmeit-app-test', '.', extra_flags=["-f", "containerfiles/tmeit-app-test.Containerfile"])
 podman_build('tmeit-worker', '.', extra_flags=["-f", "containerfiles/tmeit-worker.Containerfile"])
 podman_build('create-test-db', '.', extra_flags=["-f", "containerfiles/create-test-db.Containerfile"])
