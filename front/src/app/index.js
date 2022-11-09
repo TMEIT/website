@@ -6,8 +6,7 @@ import {
   RouterProvider,
   Outlet
 } from "react-router-dom";
-
-import css from 'styled-jsx/css'
+import styled from "@emotion/styled";
 
 import "@fontsource/atkinson-hyperlegible"
 import "@fontsource/cantarell"
@@ -35,8 +34,42 @@ import Joined from "./layouts/Joined";
 import MasterMenu from "./layouts/MasterMenu";
 import WebsiteMigrations from "./layouts/WebsiteMigrations";
 
+
+/**
+* Common wrapper for all routes that displays the navbars around the route
+*/
+function App({className}) {
+    return (
+            <div className={className}>
+                <Header />
+                <div id="expander">
+                    <main>
+                        <Outlet />
+                    </main>
+                    <Footer />
+                </div>
+            </div>
+            );
+}
+
+
+const StyledApp = styled(App)({
+    background: kiesel_blue,
+    fontFamily: "'Atkinson Hyperlegible', arial, sans-serif",
+    "#expander": {
+        minHeight: `calc(100vh - ${header_height})`,
+        display: "grid",
+        gridTemplateRows: "1fr auto",
+    },
+    "a:link": { color: "#444444" },
+    "a:visited": { color: "#444444"},
+    "a:hover": { color: "#444444"},
+    "a:active": { color: "#444444"}
+});
+
+
 const router = createBrowserRouter([{
-    element: <App />,
+    element: <StyledApp />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/events", element: <Events /> },
@@ -57,48 +90,6 @@ const router = createBrowserRouter([{
         },
     ]
 }]);
-
-
-const global_style = css.global`
-    body {
-        font-family: 'Atkinson Hyperlegible', arial, sans-serif;
-    }
-    a:link { color: #444444; }
-    a:visited { color: #444444;}
-    a:hover { color: #444444;}
-    a:active { color: #444444;}
-`
-
-export const main_container_style = css`
-    #background {
-        background: ${kiesel_blue};
-    }
-    #expander {
-        min-height: calc(100vh - ${header_height});
-        display: grid;
-        grid-template-rows: 1fr auto;
-    }
-`
-
-
-/**
-* Common wrapper for all routes for displaying the navbars
-*/
-function App() {
-  return (
-    <div id="background">
-        <Header />
-        <div id="expander">
-            <main>
-                <Outlet />
-            </main>
-            <Footer />
-        </div>
-        <style jsx global> {global_style} </style>
-        <style jsx> {main_container_style} </style>
-    </div>
-  );
-}
 
 const container = document.getElementById("root");
 createRoot(container).render(<RouterProvider router={router} />);
