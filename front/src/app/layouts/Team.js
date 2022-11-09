@@ -47,11 +47,22 @@ function Team({className}) {
     const data = useLoaderData();
 
     // render memberlists
-    const masterList = render_memberlist(data, "master");
+    let masterList = render_memberlist(data, "master");
     const marshalList = render_memberlist(data, "marshal");
     const praoList = render_memberlist(data, "prao");
     const vraqList = render_memberlist(data, "vraq");
     const exList = render_memberlist(data, "ex");
+
+    //Hide master role hack, remove Lex from masters list
+    masterList = masterList.filter(member => member.nickname !== "Lex")
+    const lex = {
+                    "uuid": "35444776-358b-4e0d-9ce1-fca94b969c9b",
+                    "short_uuid": "NURHdjWL",
+                    "first_name": "Justin",
+                    "nickname": "Lex",
+                    "last_name": "Lex-Hammarskjöld",
+                    "current_role": "ex",
+                }
 
     return (
         <div className={className}>
@@ -65,7 +76,7 @@ function Team({className}) {
             <h2>Vraq</h2>
             <StyledMemberList>{vraqList}</StyledMemberList>
             <h2>Ex-marshals</h2>
-            <StyledMemberList>{exList}</StyledMemberList>
+            <StyledMemberList>{exList}<MemberListItem member={lex} key={lex.uuid}/></StyledMemberList>
         </div>
     );
 }
