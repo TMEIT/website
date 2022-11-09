@@ -80,7 +80,7 @@ async def change_password(db: AsyncSession, uuid: UUID, data: ChangePassword) ->
         member.hashed_password = ph.hash(data.new_password)
 
 
-async def get_members(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 100) -> list[S]:
+async def get_members(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 1000) -> list[S]:
     stmt = select(models.Member).offset(skip).limit(limit)
     result = await db.execute(stmt)
     sql_members = [dict(e.__dict__) for e in result.scalars().all()]
