@@ -25,10 +25,28 @@ function MemberList({className, children}) {
     );
 }
 
-function Team() {
+const StyledTeam = styled(Team)({
+    h1: {
+        color: "white"
+    },
+    h2: {
+        color: "white"
+    },
+
+    "@media (max-width: 40em)": {
+        padding: "0.5em",
+    },
+
+    "@media (min-width: 40em)": {
+        padding: "1em",
+    },
+})
+
+
+function Team({className}) {
     const data = useLoaderData();
 
-    // render memberlist
+    // render memberlists
     const masterList = render_memberlist(data, "master");
     const marshalList = render_memberlist(data, "marshal");
     const praoList = render_memberlist(data, "prao");
@@ -36,7 +54,7 @@ function Team() {
     const exList = render_memberlist(data, "ex");
 
     return (
-        <>
+        <div className={className}>
             <h1>Team</h1>
             <h2>Masters</h2>
             <StyledMemberList>{masterList}</StyledMemberList>
@@ -48,8 +66,8 @@ function Team() {
             <StyledMemberList>{vraqList}</StyledMemberList>
             <h2>Ex-marshals</h2>
             <StyledMemberList>{exList}</StyledMemberList>
-        </>
+        </div>
     );
 }
 
-export default Team
+export default StyledTeam;
