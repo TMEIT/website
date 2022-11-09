@@ -1,7 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-
-import css from 'styled-jsx/css'
+import styled from "@emotion/styled";
 
 import website_header_text from "../layout_photos/website_header_text.png";
 import tmeit_long_logo_nogojan_mono from "../logos/LogoTMEIT_HiLong_nogojan_mono.png";
@@ -10,47 +9,41 @@ import TextSummary from "../components/TextSummary.js";
 import Centered from "../components/Centered.js";
 
 
+// Pick random colors for the banner
 const colors = [kiesel_light_blue, me_green, data_pink, laser_purp, me_and_in_teal, accent_yellow, accent_red];
 const colorsToUse = colors.sort(() => .5 - Math.random()).slice(0, 2);
 const color0 = colorsToUse[0];
 const color1 = colorsToUse[1];
-const shadowFilter = `filter: invert() drop-shadow(0 2vw 0px ${color0}) drop-shadow(0 2vw 0px ${color1});`;
+const shadowFilter = `invert() drop-shadow(0 2vw 0px ${color0}) drop-shadow(0 2vw 0px ${color1})`;
 
 
-export const home_style = css`
-
-    #home {
-        margin: 2em;
+const StyledHome = styled(Home)({
+    margin: "2em",
+    ".stylish-header": {
+        width: "80vw",
+        maxWidth: "85rem",
+        marginBottom: "6vw",
+    },
+    ".content": {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(38em, 100%), 1fr))",
+        gridAutoFlow: "row",
+        gap: "1rem"
+    },
+    ".long-logo": {
+        width: "100%",
+        filter: shadowFilter
+    },
+    ".website-header": {
+        height: "10vw",
+        maxHeight: "4em",
+        imageRendering: ["crisp-edges", "pixelated"]
     }
+});
 
-    .stylish-header {
-        width: 80vw;
-        max-width: 85rem;
-        margin-bottom: 6vw;
-    }
-    .content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(38em, 100%), 1fr));
-        grid-auto-flow: row;
-      gap: 1rem;
-    }
-
-    .long-logo {
-        width: 100%;
-        ${shadowFilter}
-    }
-
-    .website-header {
-        height: 10vw;
-        max-height: 4em;
-        image-rendering: crisp-edges;
-        image-rendering: pixelated;
-    }
-`
-
-function Home() {
+function Home({className}) {
     return (
-        <div id="home">
+        <div className={className}>
             <Centered>
                 <div className="stylish-header">
                     <img className="long-logo" src={tmeit_long_logo_nogojan_mono} alt="TraditionsMEsterIT" />
@@ -92,9 +85,8 @@ function Home() {
                     </p>
                 </TextSummary>
             </div>
-            <style jsx> {home_style} </style>
         </div>
     );
 }
 
-export default Home
+export default StyledHome
