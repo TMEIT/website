@@ -28,7 +28,7 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-react'],
-                        plugins: ["styled-jsx/babel"]
+                        plugins: ["@emotion", "styled-jsx/babel"]
                     }
                 }
             },
@@ -46,7 +46,6 @@ module.exports = {
         ]
     },
     plugins: [
-        "@emotion",
         new HtmlWebpackPlugin({
             filename: './index.html', //relative to root of the application
             favicon: "./src/favicon.png",
