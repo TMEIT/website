@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, memo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 
@@ -72,7 +72,7 @@ function DetailsBox(props) {
   );
 }
 
-const InfoList = React.memo(function InfoList(props) {
+const InfoList = memo(function InfoList(props) {
   var email;
   if (props.data.login_email != null)
     email = <li>Email: {props.data.login_email}</li>;
@@ -117,7 +117,7 @@ const InfoList = React.memo(function InfoList(props) {
   );
 });
 
-const HistoryList = React.memo(function HistoryList(props) {
+const HistoryList = memo(function HistoryList(props) {
   if (props.histories == null) return;
   return (
     <div>
