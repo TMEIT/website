@@ -1,5 +1,6 @@
 {
   "name": "tmeit-frontend",
+  "sideEffects": ["*.css"],
   "version": "0.11.3",
   "description": "Front-end for the TMEIT website.",
   "main": "index.js",
