@@ -2,11 +2,14 @@ import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import React, { Fragment } from "react";
 import {
-  createBrowserRouter,
-  RouterProvider,
-  Outlet
+    createBrowserRouter,
+    RouterProvider,
+    Outlet, useNavigation
 } from "react-router-dom";
 import styled from "@emotion/styled";
+
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import LinearProgress from "@mui/material/LinearProgress";
 
 import "@fontsource/atkinson-hyperlegible"
 import "@fontsource/cantarell"
@@ -20,7 +23,7 @@ import '@fontsource/roboto/700.css';
 import { getApiFetcher } from "./api.js";
 
 import css_reset from "../reboot.css";
-import { kiesel_blue, secondary_purp } from "./palette.js";
+import { kiesel_blue, secondary_purp, data_pink } from "./palette.js";
 
 import Home from "./layouts/Home";
 import Events from "./layouts/Events";
@@ -35,12 +38,31 @@ import MasterMenu from "./layouts/MasterMenu";
 import WebsiteMigrations from "./layouts/WebsiteMigrations";
 
 
+const loading_bar_color = createTheme({
+    palette: {
+        primary: {
+            main: data_pink,
+        }
+    },
+});
+
+const LoadingBar = ({className}) => {
+    return (
+        <ThemeProvider theme={loading_bar_color}>
+            <LinearProgress className={className} />
+        </ThemeProvider>
+    )
+}
+
+
 /**
 * Common wrapper for all routes that displays the navbars around the route
 */
 function App({className}) {
+    const navigation = useNavigation();
     return (
             <div className={className}>
+                {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
                 <Header />
                 <div id="expander">
                     <main>
@@ -56,6 +78,11 @@ function App({className}) {
 const StyledApp = styled(App)({
     background: kiesel_blue,
     fontFamily: "'Atkinson Hyperlegible', arial, sans-serif",
+    ".loading-bar": {
+        width: "100vw",
+        position: "fixed",
+        top: 0
+    },
     "& > #expander": {
         minHeight: `calc(100vh - ${header_height})`,
         display: "grid",
