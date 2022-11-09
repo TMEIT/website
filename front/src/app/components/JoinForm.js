@@ -174,7 +174,7 @@ function JoinForm({className}) {
             </Grid>
             <div>
               <label htmlFor="GDPR">
-                I give my informed consent for TMEIT to store and use my personal data.
+                I give my consent for TMEIT to store and use my personal data.
               </label>
               <input
                 type="checkbox"
