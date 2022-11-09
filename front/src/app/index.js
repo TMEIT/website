@@ -1,6 +1,4 @@
-import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
-import React, {lazy} from "react";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -20,7 +18,7 @@ import '@fontsource/roboto/700.css';
 import { getApiFetcher } from "./api.js";
 
 import css_reset from "../reboot.css";
-import { kiesel_blue, secondary_purp, data_pink } from "./palette.js";
+import { kiesel_blue } from "./palette.js";
 
 import Header from "./components/Header";
 import { header_height } from "./components/Header";

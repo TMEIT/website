@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import Loading from "../components/Loading";
 import MasterSignups from "../components/MasterSignups";
 import { useFetch } from "../FetchHooks";

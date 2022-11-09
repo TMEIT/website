@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "@emotion/styled";
 
 import join_council from "../layout_photos/join_council.webp";
