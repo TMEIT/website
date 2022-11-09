@@ -40,6 +40,12 @@ async def load_js_app():
     return FileResponse('static/front/index.html')
 
 
+@app.get("/webpack_report")
+async def load_report():
+    """ A report for showing how big each webpack bundle is """
+    return FileResponse('static/front/report.html')
+
+
 # Redirect invalid pages
 @app.get("/profile")
 @app.get("/profile/")

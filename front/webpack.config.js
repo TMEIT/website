@@ -3,6 +3,7 @@
 const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const DIST_DIR = path.resolve(__dirname, "static", "front");
 const SRC_DIR = path.resolve(__dirname, "src");
@@ -46,6 +47,10 @@ module.exports = {
         ]
     },
     plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerMode: "static",
+            reportFilename: DIST_DIR + "/report.html"
+        }),
         new HtmlWebpackPlugin({
             filename: './index.html', //relative to root of the application
             favicon: "./src/favicon.png",
