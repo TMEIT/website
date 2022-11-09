@@ -56,7 +56,7 @@ function App({className}) {
 const StyledApp = styled(App)({
     background: kiesel_blue,
     fontFamily: "'Atkinson Hyperlegible', arial, sans-serif",
-    "#expander": {
+    "& > #expander": {
         minHeight: `calc(100vh - ${header_height})`,
         display: "grid",
         gridTemplateRows: "1fr auto",
