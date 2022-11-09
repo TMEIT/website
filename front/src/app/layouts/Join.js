@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import styled from "@emotion/styled";
 
 import sjo_group from "../layout_photos/sjoslaget_group_2022.webp";

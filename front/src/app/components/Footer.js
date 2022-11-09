@@ -1,4 +1,3 @@
-import React from "react";
 
 import { kiesel_blue, secondary_purp, primary_light, accent_yellow, primary_dark, accent_maroon } from "../palette.js";
 
