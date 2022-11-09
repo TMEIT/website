@@ -11,6 +11,7 @@
 resource "hcloud_server" "node1" {
   name        = "node1"
   server_type = "cx31"
+  keep_disk   = true
   image       = "debian-11" # Note that you shouldn't upgrade Debian from here, you should use "apt full-upgrade" from SSH
   location = "hel1"  # Helsinki
   user_data = local.cloud_init # Configures cloud-init to install an SSH key for us
