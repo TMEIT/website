@@ -28,7 +28,7 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-react'],
-                        plugins: ["@emotion", "styled-jsx/babel"]
+                        plugins: ["@emotion"]
                     }
                 }
             },
