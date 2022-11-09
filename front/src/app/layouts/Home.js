@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import website_header_text from "../layout_photos/website_header_text.png";
-import tmeit_long_logo_nogojan_mono from "../logos/LogoTMEIT_HiLong_nogojan_mono.png";
+import tmeit_long_logo_nogojan_mono from "../logos/LogoTMEIT_HiLong_nogojan_mono.webp";
 import { kiesel_blue, kiesel_light_blue, me_green, data_pink, laser_purp, me_and_in_teal, secondary_purp, primary_light, primary_lighter, secondary_purp_dark, accent_yellow, accent_red, accent_maroon, accent_salmon } from "../palette.js";
 import TextSummary from "../components/TextSummary.js";
 import Centered from "../components/Centered.js";
