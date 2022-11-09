@@ -1,0 +1,11 @@
+- op: add
+  path: /spec/template/spec/containers/0/resources
+  value:
+    requests:
+      cpu: "100m"
+      memory: "200Mi"
+      ephemeral-storage: 500Mi
+    limits:
+      cpu: "500m"
+      memory: "200Mi"
+      ephemeral-storage: 2Gi

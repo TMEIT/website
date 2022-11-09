@@ -56,7 +56,7 @@ resource "null_resource" "run-ssh-install" {
       })),
 
       # Install/Update k3s
-      "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL='${var.k3s_release_channel}' sh -",
+      "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL='${var.k3s_release_channel}' INSTALL_K3S_EXEC="--no-deploy traefik" sh -",
     ])
   }
 }

@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - cert-manager.yaml
+- ingress-nginx.yaml
 - kubegres.yaml
 - sealedsecrets.yaml
 - redis-operator.yaml
@@ -26,6 +27,12 @@ patchesJson6902:
       kind: Deployment
       name: cert-manager-webhook
     path: resources-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: ingress-nginx-controller
+    path: ingress-resources-patch.yaml
   - target:
       group: apps
       version: v1
