@@ -1,18 +1,19 @@
 import React from "react";
-import css from 'styled-jsx/css';
+import styled from "@emotion/styled";
 
-export const style = css`
-    p {
-        text-align: justify;
-    }
-    h2 {
-        font-size: calc(1.325rem + .9vw);
-    }
-`;
 
-function JoinWhyJoin() {
+const StyledJoinWhyJoin = styled(JoinWhyJoin)({
+    p: {
+        textAlign: "justify"
+    },
+    h2: {
+        fontSize: "calc(1.325rem + .9vw)"
+    }
+});
+
+function JoinWhyJoin({className}) {
   return (
-    <>
+    <div className={className}>
         <h2>Our community</h2>
         <p>
             TMEIT isn't the only student club in Kista that runs fun social events.
@@ -47,9 +48,8 @@ function JoinWhyJoin() {
         <p>
             TMEIT does not have a limit on its member count, and every PRAO is able to become a Marshal when they are ready for it.
         </p>
-        <style jsx> {style} </style>
-    </>
+    </div>
   )
 }
 
-export default JoinWhyJoin;
+export default StyledJoinWhyJoin;
