@@ -79,7 +79,20 @@ module.exports = {
 //        runtimeChunk: 'single',
         splitChunks: {
             chunks: 'all',
-            maxSize: 50000 // Split chunks less than 50KB
+            maxSize: 50000, // Split chunks less than 50KB
+            cacheGroups: {
+                vendor: { // Label chunks with package name https://medium.com/hackernoon/the-100-correct-way-to-split-your-chunks-with-webpack-f8a9df5b7758
+                    test: /[/]node_modules[/]/,
+                    name(module) {
+                        // get the name. E.g. node_modules/packageName/not/this/part.js
+                        // or node_modules/packageName
+                        const packageName = module.context.match(/[/]node_modules[/](.*?)([/]|$)/)[1];
+
+                        // npm package names are URL-safe, but some servers don't like @ symbols
+                        return `npm.${packageName.replace('@', '')}`;
+                        },
+                },
+            },
         },
     },
 };
