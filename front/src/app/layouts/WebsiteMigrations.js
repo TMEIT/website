@@ -3,8 +3,6 @@ import {
     Link,
     useLoaderData
 } from "react-router-dom";
-import Loading from "../components/Loading";
-import {useFetch} from "../FetchHooks.js";
 
 function WebsiteMigrations() {
     const data = useLoaderData();
