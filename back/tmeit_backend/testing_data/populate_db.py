@@ -63,7 +63,7 @@ def create_signup(hashed_password, email_number) -> SignUp:
     )
 
 
-def create_member_website_migration(email_number) -> SignUp:
+def create_member_website_migration(email_number) -> MemberWebsiteMigration:
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
     return MemberWebsiteMigration(
