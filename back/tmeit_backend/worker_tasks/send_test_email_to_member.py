@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select
 
-from ._email_header import email_header
+from ._email_html_utils import email_header, convert_body_to_html
 from ._send_email import send_email
 from .. import models
 from ..redis import WorkerContext
@@ -28,14 +28,6 @@ async def send_test_email_to_member(ctx: WorkerContext, member_uuid: str):
         "XOXO,\n"
         "A fucking computer\n"
     )
-
-    def convert_body_to_html(plain_body: str) -> str:
-        """Replaces double-linebreaks with <p> tags, and single-linebreaks with <br />"""
-        output = ""
-        for line in plain_body.split("\n\n"):
-            line_with_br = line.replace("\n", "<br />")
-            output += f"<p>{line_with_br}</p>"
-        return output
 
     send_email(
         sending_user="email_test",
