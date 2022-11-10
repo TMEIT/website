@@ -92,7 +92,7 @@ resource "cloudflare_record" "spf" {
   zone_id = var.zone_id
   name    = "@"
   type    = "TXT"
-    value   = "v=spf1 +mx ~all"
+    value   = "v=spf1 +mx -all"
   proxied = false
 }
 
