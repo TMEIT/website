@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select
 
+from ._email_header import email_header
 from ._send_email import send_email
-from ._tmeit_logo import tmeit_logo
 from .. import models
 from ..redis import WorkerContext
 
@@ -29,22 +29,19 @@ async def send_test_email_to_member(ctx: WorkerContext, member_uuid: str):
         "A fucking computer\n"
     )
 
+    def convert_body_to_html(plain_body: str) -> str:
+        """Replaces double-linebreaks with <p> tags, and single-linebreaks with <br />"""
+        output = ""
+        for line in plain_body.split("\n\n"):
+            line_with_br = line.replace("\n", "<br />")
+            output += f"<p>{line_with_br}</p>"
+        return output
+
     send_email(
         sending_user="email_test",
         to_display_name=full_name,
         to_email=member.login_email,
         subject=f"Email test from tmeit.se - {datetime.now(timezone.utc)}",
         message_text=body,
-        message_html=(
-            '<!DOCTYPE html>'
-            '<html lang="en">'
-            '<head>'
-                '<meta charset="UTF-8">'
-            '</head>'
-            '<body>'
-            f'<img src={tmeit_logo} style="width: 50%;" alt="TMEIT logo"/>'
-        ) + body + (
-            '</body>'
-            '</html>'
-        ),
+        message_html=(email_header + convert_body_to_html(body) + '</body></html>'),
     )
