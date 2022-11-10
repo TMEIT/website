@@ -6,6 +6,7 @@ resources:
 - tmeit-app/poddisruptionbudget.yaml
 - tmeit-worker/deployment.yaml
 - tmeit-worker/poddisruptionbudget.yaml
+- postfix/deployment.yaml
 - postgres/kubegres.yaml
 - postgres/poddisruptionbudget.yaml
 - postgres/kubegres-conf.yaml
