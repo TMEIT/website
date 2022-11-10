@@ -116,6 +116,19 @@ resource "tls_private_key" "dkim-rsa" {
 resource "tls_private_key" "dkim-ed25519" {
   algorithm = "ED25519"
 }
+//resource "cloudflare_record" "dkim-rsa" {
+//  zone_id = var.zone_id
+//  name    = "backend-rsa._domainkey"
+//  type    = "TXT"
+//  value   = "v=DKIM1; h=sha256; k=rsa; p=???; t=s" # How do we convert from from PEM to base64
+//  proxied = false
+//}
+//resource "cloudflare_record" "dkim-ed-25519" {
+//  zone_id = var.zone_id
+//  name    = "backend-ed25519._domainkey"
+//  type    = "TXT"
+//  value   = "v=DKIM1; h=ed25519; k=rsa; p=???; t=s" # How do we convert from from PEM to base64
+//}
 
 
 # cert-manager + Let's Encrypt token for DNS-01 validation
