@@ -20,12 +20,12 @@ resource "b2_bucket" "db-backups" {
 
   # Lifecycle rules used to prune old backups
   lifecycle_rules {
-    file_name_prefix = "tmeit-db-backup-hourly"
-    days_from_hiding_to_deleting  = 14
-  }
-  lifecycle_rules {
     file_name_prefix = "tmeit-db-backup-daily"
     days_from_hiding_to_deleting  = 365
+  }
+  lifecycle_rules {
+    file_name_prefix = "tmeit-db-backup-hourly"
+    days_from_hiding_to_deleting  = 14
   }
   # (Monthly backups are kept forever)
 
