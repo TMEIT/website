@@ -160,5 +160,5 @@ async def send_test_email(current_user: MemberSelfView = Depends(get_current_use
     if current_user is None or current_user.current_role != "master":
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"error": f"Only masters can send test emails."})
-    await pool.enqueue_job('send_test_email', current_user.uuid)
+    await pool.enqueue_job('send_test_email_to_member', current_user.uuid)
     return "Email job submitted."
