@@ -4,7 +4,7 @@ import email.policy
 import email.utils
 import uuid
 
-POSTFIX_HOSTNAME = "postfix"
+POSTFIX_HOSTNAME = "postfix-mail"
 POSTFIX_PORT = 587
 
 

@@ -8,7 +8,8 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: postfix
+      app.kubernetes.io/name: mail
+      app.kubernetes.io/instance: postfix
   policyTypes:
     - Ingress
   ingress:

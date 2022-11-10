@@ -30,11 +30,11 @@ spec:
         resources:
           requests:
             cpu: "80m"
-            memory: "400Mi"
+            memory: "200Mi"
             ephemeral-storage: 100Mi
           limits:
             cpu: "400m"
-            memory: "800Mi"
+            memory: "400Mi"
             ephemeral-storage: 1Gi
         securityContext:
           readOnlyRootFilesystem: true
