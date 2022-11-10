@@ -6,8 +6,9 @@ async def send_test_email_to_dkimvalidator(ctx: WorkerContext, validator_random_
     """Sends a test email to DKIMvalidator"""
     send_email(
         sending_user="email_test",
+        to_display_name="Mr. Testör Man",
         to_email=f"{validator_random_user}@dkimvalidator.com",
-        subject="Is this thing working?",
-        message_text="yeet",
-        message_html="<h1>yeet</h1>",
+        subject="Is this thing working? ööööö",
+        message_text="yööt",
+        message_html="<h1>yööt</h1>",
     )
