@@ -19,10 +19,14 @@ spec:
         image: boky/postfix
         imagePullPolicy: Always
         env:
+          - name: POSTFIX_myhostname
+            value: "tmeit.se"
           - name: ALLOWED_SENDER_DOMAINS
             value: "tmeit.se"
           - name: LOG_FORMAT
             value: "json"
+#          - name: SMTP_HEADER_CHECKS
+#            value: "1"
         resources:
           requests:
             cpu: "20m"
@@ -32,11 +36,17 @@ spec:
             cpu: "100m"
             memory: "200Mi"
             ephemeral-storage: 2Gi
-#        volumeMounts:
+        volumeMounts:
+          - name: postfix-hide-sender
+            mountPath: /etc/postfix/header_checks
+            subPath: smtp_header_checks
 #          - name: dkim-keys
 #            mountPath: "/etc/opendkim/keys"
 #            readOnly: true
-#      volumes:
+      volumes:
+      - name: postfix-hide-sender
+        configMap:
+          name: postfix-hide-sender
 #      - name: dkim-keys
 #        secret:
 #          secretName: postfix-dkim-keys
