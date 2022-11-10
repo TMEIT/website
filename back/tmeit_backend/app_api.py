@@ -6,6 +6,7 @@ from .routers.member_website_migration import router as mwm_router
 from .routers.version import router as version_router
 from .routers.login import router as login_router
 from .routers.sign_up import router as sign_up_router
+from .routers.test_email import router as test_email_router
 
 # Our FastAPI sub-app for the v1 API
 app = FastAPI()
@@ -17,3 +18,4 @@ app.include_router(me_router)
 app.include_router(mwm_router, prefix="/migrations")
 app.include_router(version_router)
 app.include_router(sign_up_router, prefix="/sign_up")
+app.include_router(test_email_router)

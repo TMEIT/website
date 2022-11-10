@@ -1,3 +1,4 @@
-from .send_test_email import send_test_email
+from .send_test_email_to_member import send_test_email_to_member
+from .send_test_email_to_dkimvalidator import send_test_email_to_dkimvalidator
 
-functions = [send_test_email]
+functions = [send_test_email_to_member, send_test_email_to_dkimvalidator]
