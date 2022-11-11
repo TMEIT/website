@@ -44,7 +44,7 @@ async def send_test_email_to_member(ctx: WorkerContext, mwm_uuid: str):
         "Please go to your account migration page, linked below, to activate your account on the new tmeit.se!\n"
         f"{migration_confirmation_url}\n"
         "(Please note that this email is going out before the website is live. "
-        "The link above will become active at 2022-11-11 17:30 CET.)\n\n"
+        "The link above will become active at 2022-11-11 18:00 CET.)\n\n"
         
         "Please email Lex if you have any questions at mail@jlh.name.\n"
         "Also, let me know if there were any mistakes importing your data.\n\n"
@@ -69,7 +69,7 @@ async def send_test_email_to_member(ctx: WorkerContext, mwm_uuid: str):
         '<p style="text-align: center;">Please go to your account migration page, linked below, to activate your account on the new tmeit.se!<br />'
         f'<a href="{migration_confirmation_url}" style="color: #dddddd;">{migration_confirmation_url}</a><br />'
         "(Please note that this email is going out before the website is live. "
-        "The link above will become active at 2022-11-11 17:30 CET.)</p>"
+        "The link above will become active at 2022-11-11 18:00 CET.)</p>"
         
         '<p style="text-align: center;">Please email Lex if you have any questions at mail@jlh.name.<br />'
         "Also, let me know if there were any mistakes importing your data.</p>"
