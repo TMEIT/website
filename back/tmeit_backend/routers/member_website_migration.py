@@ -1,6 +1,7 @@
 import traceback
 from uuid import UUID
 
+from arq import ArqRedis
 from fastapi import Depends, status, APIRouter
 from fastapi.responses import JSONResponse
 
@@ -10,6 +11,7 @@ from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse
 from ..crud.member_website_migrations import get_migrating_members, get_migrating_member_with_token, \
     get_migrating_member_as_master, migrate_member
+from ..deps import get_worker_pool
 
 from ..schemas.member_website_migrations import MasterMigrationView, Migration, MigrateForm
 from ..schemas.members.schemas import MemberSelfView
@@ -75,4 +77,14 @@ async def perform_member_migration(migrate_form_data: MigrateForm,
                             content={"error": f"No member_website_migration with the uuid={migrate_form_data.uuid} was found."})
     return member
 
-# TODO: Send email for member website migration (Masters only)
+
+@router.post("/members/{uuid}/send_email", status_code=202, responses={403: {"model": ForbiddenResponse}})
+async def send_migration_email(uuid: UUID,
+                               current_user: MemberSelfView = Depends(get_current_user),
+                               pool: ArqRedis = Depends(get_worker_pool)):
+    """Sends an email to the member with a link they cna use to complete their account migration. (Masters only)"""
+    if current_user is None or current_user.current_role != "master":
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters can send migration emails."})
+    await pool.enqueue_job('send_website_migration_email', str(uuid))
+    return "Email job submitted."
