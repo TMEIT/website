@@ -1,3 +1,5 @@
+from datetime import datetime, timezone, timedelta
+
 from sqlalchemy import select
 
 from ._email_html_utils import email_header
@@ -16,6 +18,11 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
         if result is None:
             raise KeyError()
         mwm: models.MemberWebsiteMigration = result.MemberWebsiteMigration
+
+    if mwm.email_sent is not None \
+            and (mwm.email_sent > (datetime.now(tz=timezone.utc) - timedelta(seconds=10))):
+        print("Last email was sent less than 10 seconds ago! Job may have been run twice by ARQ. Aborting.")
+        return
 
     if mwm.nickname is not None:
         full_name = f'{mwm.first_name} "{mwm.nickname}" {mwm.last_name}'
@@ -94,3 +101,15 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
         message_text=body,
         message_html=html_body,
     )
+
+    # Update email sent column
+
+    # FIXME: breaks pydantic validation on mwm schema??
+    # async with ctx['db_session']() as db:
+    #     async with db.begin():
+    #         stmt = select(models.MemberWebsiteMigration).where(models.MemberWebsiteMigration.uuid == str(mwm_uuid))
+    #         result = (await db.execute(stmt)).fetchone()
+    #         if result is None:
+    #             raise KeyError()
+    #         mwm: models.MemberWebsiteMigration = result.MemberWebsiteMigration
+    #         mwm.email_sent = datetime.now(tz=timezone.utc)
