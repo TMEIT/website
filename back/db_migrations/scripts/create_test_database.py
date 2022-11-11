@@ -20,7 +20,7 @@ async def create_entries(engine):
     async with get_async_session(engine)() as db:
         await populate_db.create_members(1000, db)
         await populate_db.create_signups(20, db)
-        await create_member_website_migrations(20, db)
+        await create_member_website_migrations(10, db)
 
 
 def build_db(config: AlembicConfig):
