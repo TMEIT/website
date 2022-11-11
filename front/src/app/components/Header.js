@@ -1,14 +1,12 @@
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
+import {Button} from "@mui/material";
 import styled from "@emotion/styled";
-
-import Login from "./Login.js";
 
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
 import { kiesel_blue, kiesel_light_blue, secondary_purp, secondary_purp_dark, primary_light, accent_yellow } from "../palette.js";
-
+import HeaderMenu from "./HeaderMenu.js";
 
 export const header_height = "6rem"
-
 
 const StyledHeader = styled(Header)({
     gridRowStart: 1,
@@ -60,7 +58,7 @@ const StyledHeader = styled(Header)({
 
 });
 
-function Header({className}) {
+function Header({className, loggedIn, setLoginModalOpen}) {
   return (
     <header className={className}>
       <nav>
@@ -85,7 +83,12 @@ function Header({className}) {
                   Join
                 </NavLink>
               </li>
-              <Login></Login>
+              <li>
+                  {loggedIn?
+                      <HeaderMenu />
+                      : <Button onClick={() => {setLoginModalOpen(true)}}>Log in</Button>
+                  }
+              </li>
             </ul>
         </div>
       </nav>
