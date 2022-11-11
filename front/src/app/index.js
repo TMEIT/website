@@ -1,4 +1,4 @@
-import {Suspense} from "react";
+import {Suspense, lazy, useState} from "react";
 import {createRoot} from "react-dom/client";
 import {createBrowserRouter, RouterProvider, Outlet, useNavigation} from "react-router-dom";
 import styled from "@emotion/styled";
@@ -21,8 +21,10 @@ import Header from "./components/Header";
 import { header_height } from "./components/Header";
 import Footer from "./components/Footer";
 import LoadingBar from "./components/LoadingBar";
+const LoginModal =  lazy(() => import("./components/LoginModal"));
 
 import routes from "./routes.js";
+import hasLoginCookie from "./hasLoginCookie";
 
 
 /**
@@ -30,10 +32,16 @@ import routes from "./routes.js";
 */
 function App({className}) {
     const navigation = useNavigation();
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+    // State storing whether user is logged in or not. Initializes based on if user has login cookie or not. ( We assume cookie is valid)
+    const [loggedIn, setLoggedIn] = useState(hasLoginCookie());
+
     return (
             <div className={className}>
                 {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
-                <Header />
+                {loginModalOpen? <Suspense><LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} /></Suspense>: null}
+                <Header loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
                 <div id="expander">
                     <main>
                         <Suspense>
@@ -83,7 +91,7 @@ const router = createBrowserRouter([{
         { path: "/profile/:shortUuid/:name", element: <routes.Profile.component />, loader: routes.Profile.loader },
         { path: "/join_completed", element: <routes.Joined.component />, loader: routes.Joined.loader },
         { path: "/master", element: <routes.MasterMenu.component />, loader: routes.MasterMenu.loader },
-        { path: "/migrate/:uuid", element: <routes.WebsiteMigrate.component />,
+        { path: "/migrate/:uuid", element: <routes.WebsiteMigrate.component adminVersion={false} />,
             loader: async ({ params }) => {
                 await routes.WebsiteMigrate.loader(); // begin loading page component
                 let searchParams = new URLSearchParams(document.location.search)
@@ -91,7 +99,7 @@ const router = createBrowserRouter([{
                 return await getApiFetcher().get(`/migrations/members/${params.uuid}?token=${security_token}`).json();
             }
         },
-        { path: "/migrate/:uuid/admin", element: <routes.WebsiteMigrate.component />,  // Same migrate page as above, but using admin permissions
+        { path: "/migrate/:uuid/admin", element: <routes.WebsiteMigrate.component adminVersion={true} />,  // Same migrate page as above, but using admin permissions
             loader: async ({ params }) => {
                 await routes.WebsiteMigrate.loader(); // begin loading page component
                 return await getApiFetcher().get(`/migrations/members/${params.uuid}/admin`).json();
