@@ -33,7 +33,7 @@ async def get_migrating_member_as_master(db: AsyncSession, uuid: UUID) -> Master
     return MasterMigrationView.parse_obj(sql_mwm)
 
 
-async def get_migrating_members(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[MasterMigrationView]:
+async def get_migrating_members(db: AsyncSession, skip: int = 0, limit: int = 1000) -> list[MasterMigrationView]:
     stmt = select(models.MemberWebsiteMigration).offset(skip).limit(limit)
     result = await db.execute(stmt)
     sql_mwms = [dict(e.__dict__) for e in result.scalars().all()]
