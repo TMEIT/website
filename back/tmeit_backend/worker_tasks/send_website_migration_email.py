@@ -7,7 +7,7 @@ from ..redis import WorkerContext
 from ..schemas.members.enums import CurrentRoleEnum
 
 
-async def send_test_email_to_member(ctx: WorkerContext, mwm_uuid: str):
+async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
     """Sends an email to a migrating member so that they can finish their migration to the new website."""
 
     async with ctx['db_session']() as db:
