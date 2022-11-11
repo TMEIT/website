@@ -60,37 +60,18 @@ module.exports = {
             favicon: "./src/favicon.png",
             hash: false,
             templateContent: `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <title>TMEIT</title>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-            </head>
-            <body style="display: grid; grid-template: repeat(3, 1fr) / 1fr 20em 1fr;">
-            <div style="grid-column-start: 2; grid-row-start: 2; width: 100%;">
-            <img
-            style="width: 100%;"
-            src="https://raw.githubusercontent.com/insektionen/presskit/master/namnder/tmeit/LogoTMEIT.png"
-            />
-            <div style="width: 100%; font-size: 2em; text-align: center;"> Coming soon! </div>
-            </div>
-            </body>
-            </html>
+              <!DOCTYPE html>
+              <html lang="en">
+                <head>
+                    <title>TMEIT</title>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+                </head>
+                <body>
+                  <div id="root"></div>
+                </body>
+              </html>
             `
-//            templateContent: `
-//              <!DOCTYPE html>
-//              <html lang="en">
-//                <head>
-//                    <title>TMEIT</title>
-//                    <meta charset="UTF-8">
-//                    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-//                </head>
-//                <body>
-//                  <div id="root"></div>
-//                </body>
-//              </html>
-//            `
 
         })
     ],

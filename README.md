@@ -137,7 +137,7 @@ The goal was to build a new, modern, and flexible website from scratch to replac
 Development was pretty slow the first few years since it was a large, complicated project, starting from scratch. 
 There were a number of revisions and rewrites of the early code.
 
-After 4 years of off-and-on development, the new tmeit.se was finally released (soon?).
+After 4 years of off-and-on development, the new tmeit.se was finally released on 2022-11-11.
 
 ## How to get involved
 Everyone is welcome to open an [Issue](https://github.com/TMEIT/website/issues) if they have any ideas for features! 
