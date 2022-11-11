@@ -16,7 +16,7 @@ function Events({className}) {
             <TextSummary>
                 <h1>Events - Coming soon!</h1>
                 <p>The events page is under construction.</p>
-                <p>TMEIT.SE GEN 3 is very new and we're still re-implementing event pages feature.</p>
+                <p>TMEIT.SE GEN 3 is very new and we're still re-implementing the event pages.</p>
                 <p>Check out our <a href="https://www.facebook.com/TMEIT/events" target="_blank">Facebook events</a> in the meantime!</p>
             </TextSummary>
         </Centered>
