@@ -17,7 +17,11 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
             raise KeyError()
         mwm: models.MemberWebsiteMigration = result.MemberWebsiteMigration
 
-    full_name = f'{mwm.first_name} "{mwm.nickname}" {mwm.last_name}'
+    if mwm.nickname is not None:
+        full_name = f'{mwm.first_name} "{mwm.nickname}" {mwm.last_name}'
+    else:
+        full_name = f'{mwm.first_name} {mwm.last_name}'
+
     migration_confirmation_url = f"https://tmeit.se/migrate/{mwm.uuid}?token={mwm.security_token}"
 
     feature_brag = ""
@@ -71,7 +75,8 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
         "(Please note that this email is going out before the website is live. "
         "The link above will become active at 2022-11-11 18:00 CET.)</p>"
         
-        '<p style="text-align: center;">Please email Lex if you have any questions at <a href="mailto:mail@jlh.name">mail@jlh.name</a>.<br />'
+        '<p style="text-align: center;">Please email Lex if you have any questions at '
+        '<a href="mailto:mail@jlh.name" style="color: #dddddd;">mail@jlh.name</a>.<br />'
         "Also, let me know if there were any mistakes importing your data.</p>"
         
         f'<p style="text-align: center;">{feature_brag}</p>'
