@@ -50,7 +50,7 @@ function Home({className}) {
             </Centered>
             <div className="content">
                 <TextSummary>
-                    <h1>Home of Stockholm's starkaste märkesdrink</h1>
+                    <h1>Welcome!</h1>
                     <p>
                         TraditionsMEsterIT (TMEIT) is a klubbmästeri within the Section for Information- and Nanotechnology,
                         which is based at KTH in Kista.
