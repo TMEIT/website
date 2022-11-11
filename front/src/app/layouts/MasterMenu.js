@@ -8,7 +8,7 @@ function MasterMenu() {
   const [menu, setMenu] = useState(0);
   return (
     <>
-        <Link to="/migrating">here</Link>
+        <Link to="/migrating">See Pending member migrations</Link>
       <div>
         <button onClick={() => setMenu(1)}>Signups menu</button>
       </div>

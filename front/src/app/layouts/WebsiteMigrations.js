@@ -1,15 +1,12 @@
-import {Fragment} from "react";
-import {
-    Link,
-    useLoaderData
-} from "react-router-dom";
+import {Link, useLoaderData} from "react-router-dom";
 
 function WebsiteMigrations() {
-    const data = useLoaderData();
+    let data = useLoaderData();
+    data = data.filter((mwm) => mwm.migrated !== true) // Only list members that haven't completed migration
 
     let memberList = data.map(mwm =>
         <h2 key={mwm.uuid} >
-            <Link to={`/migrating/member/${mwm.uuid}` } >
+            <Link to={`/migrate/${mwm.uuid}/admin` } >
                 {mwm.first_name + " " + mwm.last_name}
             </Link>
         </h2>
