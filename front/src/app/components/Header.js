@@ -86,7 +86,7 @@ function Header({className, loggedIn, setLoginModalOpen}) {
               <li>
                   {loggedIn?
                       <HeaderMenu />
-                      : <Button onClick={() => {setLoginModalOpen(true)}}>Log in</Button>
+                      : <Button variant="contained" onClick={() => {setLoginModalOpen(true)}}>Log in</Button>
                   }
               </li>
             </ul>
