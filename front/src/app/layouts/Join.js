@@ -117,7 +117,7 @@ function Join({className}) {
                 </p>
                 <h3> Who can see your data </h3>
                 <p>
-                    As a member of TMEIT, your name, some photos of you, your current Workteam,
+                    As a member of TMEIT, your name, some photos of you, your rank in TMEIT, your current Workteam,
                     and whether you have attended/are attending an event are displayed publicly on the website.
                     Please contact one of the Masters if this is an issue.
                     All other personal data can only be seen by other members of TMEIT.
