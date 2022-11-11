@@ -15,7 +15,7 @@ class Migration(BaseModel):
     email_sent: Optional[datetime.datetime]
     old_username: str
     migrated: bool
-    login_email: Optional[EmailStr]
+    login_email: Optional[str]
     current_role: CurrentRoleEnum
     first_name: str
     nickname: Optional[str]
