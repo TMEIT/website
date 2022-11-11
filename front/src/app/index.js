@@ -83,7 +83,7 @@ const router = createBrowserRouter([{
         { path: "/team", element: <routes.Team.component />,
             loader: async ({ params }) => {
             await routes.Team.loader();
-            return await getApiFetcher().get("/members").json();
+            return await getApiFetcher().get("/members/").json();
         }
         },
         { path: "/join_tmeit", element: <routes.Join.component />, loader: routes.Join.loader },
@@ -108,7 +108,7 @@ const router = createBrowserRouter([{
         { path: "/migrating", element: <routes.WebsiteMigrations.component />,
             loader: async ({ params }) => {
                 await routes.WebsiteMigrations.loader();
-                return await getApiFetcher().get("/migrations/members").json();
+                return await getApiFetcher().get("/migrations/members/").json();
             }
         },
     ]

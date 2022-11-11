@@ -4,7 +4,7 @@ import { useFetch } from "../FetchHooks";
 import { useNavigate } from "react-router-dom";
 
 function MasterSignups() {
-  const { loading, data } = useFetch("/api/v1/sign_up");
+  const { loading, data } = useFetch("/api/v1/sign_up/");
 
   let signups;
   let navigate = useNavigate();
