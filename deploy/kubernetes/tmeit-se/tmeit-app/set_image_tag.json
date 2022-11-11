@@ -2,6 +2,6 @@
   {
     "op": "replace",
     "path": "/spec/template/spec/containers/0/image",
-    "value": "ghcr.io/tmeit/tmeit-app:0.13.0"
+    "value": "ghcr.io/tmeit/tmeit-app:1.0.0"
   }
 ]
