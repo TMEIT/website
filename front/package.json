@@ -3,7 +3,7 @@
   "sideEffects": [
     "*.css"
   ],
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Front-end for the TMEIT website.",
   "main": "index.js",
   "scripts": {
