@@ -70,6 +70,7 @@ def create_member_website_migration(email_number) -> MemberWebsiteMigration:
         uuid=str(uuid4()),
         security_token="yeet",
         old_username=f"vraq{email_number}",
+        migrated=False,
         current_role=CurrentRoleEnum.master.value,
         login_email=f"vraq{email_number}@kth.se",
         first_name=first_name,
