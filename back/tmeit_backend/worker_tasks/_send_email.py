@@ -26,6 +26,14 @@ def send_email(
     message_text: str,
     message_html: str,
 ):
+    """
+    Builds a MIME email and sends it.
+
+    Builds an RFC5322/RFC6532 compliant email with both plaintext and html bodies.
+    The email contains all the headers needed to make SpamAssassin happy.
+
+    The email is then sent to the postfix container to be sent out to the recipient's email server.
+    """
     sender_email = f"{sending_user}@tmeit.se"
 
     message = email.message.EmailMessage(policy=email.policy.SMTP)
