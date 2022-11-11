@@ -32,6 +32,10 @@ const routes = {
         "component": lazy(() => import("./layouts/MasterMenu")),
         "loader": async () => await import("./layouts/MasterMenu"),
     },
+    "WebsiteMigrate": {
+        "component": lazy(() => import("./layouts/WebsiteMigrate")),
+        "loader": async () => await import("./layouts/WebsiteMigrate"),
+    },
     "WebsiteMigrations": {
         "component": lazy(() => import("./layouts/WebsiteMigrations")),
         "loader": async () => await import("./layouts/WebsiteMigrations"),

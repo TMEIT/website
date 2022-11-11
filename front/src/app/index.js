@@ -1,10 +1,6 @@
 import {Suspense} from "react";
-import { createRoot } from "react-dom/client";
-import {
-    createBrowserRouter,
-    RouterProvider,
-    Outlet, useNavigation
-} from "react-router-dom";
+import {createRoot} from "react-dom/client";
+import {createBrowserRouter, RouterProvider, Outlet, useNavigation} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import "@fontsource/atkinson-hyperlegible"
@@ -77,8 +73,8 @@ const router = createBrowserRouter([{
         { path: "/", element: <routes.Home.component />, loader: routes.Home.loader },
         { path: "/events", element: <routes.Events.component />, loader: routes.Events.loader },
         { path: "/team", element: <routes.Team.component />,
-        loader: async ({ params }) => {
-            await routes.Team.loader()
+            loader: async ({ params }) => {
+            await routes.Team.loader();
             return await getApiFetcher().get("/members").json();
         }
         },
@@ -87,9 +83,23 @@ const router = createBrowserRouter([{
         { path: "/profile/:shortUuid/:name", element: <routes.Profile.component />, loader: routes.Profile.loader },
         { path: "/join_completed", element: <routes.Joined.component />, loader: routes.Joined.loader },
         { path: "/master", element: <routes.MasterMenu.component />, loader: routes.MasterMenu.loader },
+        { path: "/migrate/:uuid", element: <routes.WebsiteMigrate.component />,
+            loader: async ({ params }) => {
+                await routes.WebsiteMigrate.loader(); // begin loading page component
+                let searchParams = new URLSearchParams(document.location.search)
+                const security_token = searchParams.get('token');
+                return await getApiFetcher().get(`/migrations/members/${params.uuid}?token=${security_token}`).json();
+            }
+        },
+        { path: "/migrate/:uuid/admin", element: <routes.WebsiteMigrate.component />,  // Same migrate page as above, but using admin permissions
+            loader: async ({ params }) => {
+                await routes.WebsiteMigrate.loader(); // begin loading page component
+                return await getApiFetcher().get(`/migrations/members/${params.uuid}/admin`).json();
+            }
+        },
         { path: "/migrating", element: <routes.WebsiteMigrations.component />,
             loader: async ({ params }) => {
-                await routes.WebsiteMigrations.loader()
+                await routes.WebsiteMigrations.loader();
                 return await getApiFetcher().get("/migrations/members").json();
             }
         },
