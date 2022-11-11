@@ -8,7 +8,7 @@ email_header = (
                 '<meta charset="UTF-8">'
             '</head>'
             '<body style="display: grid; place-items: center; background: #44687d; font-family: sans-serif; color: white;" >'
-            f'<img src="{tmeit_logo}" style="height: 10em;" alt="TMEIT logo" />'
+            # f'<img src="{tmeit_logo}" style="height: 10em;" alt="TMEIT logo" />' # Email clients cant render the SVG
 )
 
 

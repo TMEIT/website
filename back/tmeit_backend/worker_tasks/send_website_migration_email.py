@@ -57,13 +57,13 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
 
     html_body = (
         f"{email_header}"
-        f'<h1>The New tmeit.se has been released!!</h1>'
+        f'<h1>The new tmeit.se has been released!!</h1>'
         
         f'<p>Hi {full_name},</p>'
         
         '<p>The 1.0 of the new <a href="https://tmeit.se" style="color: #dddddd;">tmeit.se</a> is finally here!</p>'
         
-        "<p>We are migrating all of the accounts from the old mediawiki website, "
+        '<p style="text-align: center;">We are migrating all of the accounts from the old mediawiki website, '
         "and we are asking all TMEIT members to activate their accounts and set a new password.</p>"
         
         '<p style="text-align: center;">Please go to your account migration page, linked below, to activate your account on the new tmeit.se!<br />'
@@ -71,7 +71,7 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
         "(Please note that this email is going out before the website is live. "
         "The link above will become active at 2022-11-11 18:00 CET.)</p>"
         
-        '<p style="text-align: center;">Please email Lex if you have any questions at mail@jlh.name.<br />'
+        '<p style="text-align: center;">Please email Lex if you have any questions at <a href="mailto:mail@jlh.name">mail@jlh.name</a>.<br />'
         "Also, let me know if there were any mistakes importing your data.</p>"
         
         f'<p style="text-align: center;">{feature_brag}</p>'
@@ -82,7 +82,7 @@ async def send_website_migration_email(ctx: WorkerContext, mwm_uuid: str):
     )
 
     send_email(
-        sending_user="email_test",
+        sending_user="account_migration",
         to_display_name=full_name,
         to_email=mwm.login_email,
         subject=f"The new tmeit.se is here! - Please migrate your account",
