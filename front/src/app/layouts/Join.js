@@ -9,21 +9,7 @@ import TextSummary from "../components/TextSummary.js";
 import Centered from "../components/Centered.js";
 import JoinAboutTmeitMobile from "./JoinAboutTmeitMobile.js";
 import JoinAboutTmeitWide from "./JoinAboutTmeitWide.js";
-
-const useIsScreenWide = () => {
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-
-    useEffect(() => {
-        function handleResize() {
-            setScreenWidth(window.innerWidth);
-        }
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize);
-    });
-
-    return screenWidth >= 1280;
-};
-
+import useIsScreenWide from "../useIsScreenWide";
 
 const StyledJoin = styled(Join)({
     width: "100vw",
