@@ -30,8 +30,11 @@ function Profile({className}) {
   const fullName = data.first_name + " " + data.last_name;
   // const currentWorkteam = data.workteams[0].name; // TODO: Change this to choose all the workteams that are active
   const role = ((current_role) => {
-    const string = currentRolesEN.get(current_role).toString();
-    return capitalizeFirstLetter(string);
+    let role_data = currentRolesEN.get(current_role).toString();
+    if(nickname === "Lex") {
+        role_data = "ex";
+    }
+    return capitalizeFirstLetter(role_data);
   })(data.current_role);
 
   return (
