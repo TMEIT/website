@@ -2,6 +2,7 @@ import {Suspense, lazy, useState} from "react";
 import {createRoot} from "react-dom/client";
 import {createBrowserRouter, RouterProvider, Outlet, useNavigation} from "react-router-dom";
 import styled from "@emotion/styled";
+import {ThemeProvider} from '@mui/material/styles';
 
 import "@fontsource/atkinson-hyperlegible"
 import "@fontsource/cantarell"
@@ -22,6 +23,7 @@ import { header_height } from "./components/Header";
 import Footer from "./components/Footer";
 import LoadingBar from "./components/LoadingBar";
 const LoginModal =  lazy(() => import("./components/LoginModal"));
+import theme from "./muiTheme"
 
 import routes from "./routes.js";
 import hasLoginCookie from "./hasLoginCookie";
@@ -39,17 +41,19 @@ function App({className}) {
 
     return (
             <div className={className}>
-                {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
-                {loginModalOpen? <Suspense><LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} /></Suspense>: null}
-                <Header loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                <div id="expander">
-                    <main>
-                        <Suspense>
-                            <Outlet />
-                        </Suspense>
-                    </main>
-                    <Footer />
-                </div>
+                <ThemeProvider theme={theme}>
+                    {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
+                    {loginModalOpen? <Suspense><LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} /></Suspense>: null}
+                    <Header loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
+                    <div id="expander">
+                        <main>
+                            <Suspense>
+                                <Outlet />
+                            </Suspense>
+                        </main>
+                        <Footer />
+                    </div>
+                </ThemeProvider>
             </div>
             );
 }
