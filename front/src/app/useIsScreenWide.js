@@ -1,5 +1,8 @@
 import {useState, useEffect} from "react";
 
+/**
+* Custom React hook that returns true or false depending on if the screen is 1280 px wide
+*/
 const useIsScreenWide = () => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
