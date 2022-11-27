@@ -46,7 +46,7 @@ function App({className}) {
 
 
 const StyledApp = styled(App)({
-    background: kiesel_blue,
+    background: kisel_blue,
     fontFamily: "'Atkinson Hyperlegible', arial, sans-serif",
     ".loading-bar": {
         width: "100vw",
