@@ -18,15 +18,11 @@ import { getApiFetcher } from "./api.js";
 import css_reset from "../reboot.css";
 import { kiesel_blue } from "./palette.js";
 
-import DesktopHeader from "./components/HeaderFooter/DesktopHeader";
-import { header_height } from "./components/HeaderFooter/DesktopHeader";
-import Footer from "./components/HeaderFooter/Footer";
+import HeaderFooterWrapper from "./components/HeaderFooter/HeaderFooterWrapper";
 import LoadingBar from "./components/LoadingBar";
-const LoginModal =  lazy(() => import("./components/LoginModal"));
 import theme from "./muiTheme"
 
 import routes from "./routes.js";
-import hasLoginCookie from "./hasLoginCookie";
 
 
 /**
@@ -34,25 +30,15 @@ import hasLoginCookie from "./hasLoginCookie";
 */
 function App({className}) {
     const navigation = useNavigation();
-    const [loginModalOpen, setLoginModalOpen] = useState(false);
-
-    // State storing whether user is logged in or not. Initializes based on if user has login cookie or not. ( We assume cookie is valid)
-    const [loggedIn, setLoggedIn] = useState(hasLoginCookie());
-
     return (
             <div className={className}>
                 <ThemeProvider theme={theme}>
                     {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
-                    {loginModalOpen? <Suspense><LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} /></Suspense>: null}
-                    <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                    <div id="expander">
-                        <main>
-                            <Suspense>
-                                <Outlet />
-                            </Suspense>
-                        </main>
-                        <Footer />
-                    </div>
+                    <HeaderFooterWrapper>
+                        <Suspense>
+                            <Outlet />
+                        </Suspense>
+                    </HeaderFooterWrapper>
                 </ThemeProvider>
             </div>
             );
@@ -66,11 +52,6 @@ const StyledApp = styled(App)({
         width: "100vw",
         position: "fixed",
         top: 0
-    },
-    "& > #expander": {
-        minHeight: `calc(100vh - ${header_height})`,
-        display: "grid",
-        gridTemplateRows: "1fr auto",
     },
     "a:link": { color: "#444444" },
     "a:visited": { color: "#444444"},
