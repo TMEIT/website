@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 
 import {DropdownMenu, DropdownMenuItem} from "../DropdownMenu.js";
 import {getApiFetcher} from "../../api";
+import logOut from "../../login_cookie/logOut";
 
 
 const StyledDesktopHeaderMenu = styled(DesktopHeaderMenu)({});
@@ -19,20 +20,11 @@ function DesktopHeaderMenu({className}) {
 
     const isAdmin = meData && meData.current_role === "master";
 
-    function logOut() {
-        // TODO: add logout confirm logic
-        // Delete the login cookie and refresh the page
-        document.cookie = "access_token=; expires = Thu, 01 Jan 1970 00:00:00 UTC;";
-        navigate(0);
-    }
-
     const menuItems = [
         [meData, (meData? <Link to={`/profile/${meData.short_uuid}/${meData.first_name}_${meData.last_name}`}><DropdownMenuItem>My Profile</DropdownMenuItem></Link>: null)],
         [isAdmin, (<Link to={"/master"}><DropdownMenuItem>Master Menu</DropdownMenuItem></Link>)],
-        [true, (<DropdownMenuItem onClick={logOut}>Log Out</DropdownMenuItem>)],
+        [true, (<DropdownMenuItem onClick={() => logOut(navigate)}>Log Out</DropdownMenuItem>)],
     ]
-
-
 
     return (
         <DropdownMenu
