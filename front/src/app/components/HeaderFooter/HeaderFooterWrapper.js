@@ -33,21 +33,38 @@ function HeaderFooterWrapper({className, children}) {
 
     const screenIsWide = useIsScreenWide()
 
-    return (
-        <div className={className}>
-        {loginModalOpen?
-            (<Suspense>
-                <LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} />
-            </Suspense>)
-            : null
-        }
-            <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-            <div id="expander">
-                {children}
-                <Footer />
+    if(screenIsWide) {
+        return (
+            <div className={className}>
+                {loginModalOpen?
+                (<Suspense>
+                    <LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} />
+                </Suspense>)
+                : null
+                }
+                <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
+                <div id="expander">
+                    {children}
+                    <Footer />
+                </div>
             </div>
-        </div>
-            );
+        );
+    } else {
+        return (
+            <div className={className}>
+                {loginModalOpen?
+                (<Suspense>
+                    <LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} />
+                </Suspense>)
+                : null
+                }
+                <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
+                <div id="expander">
+                    {children}
+                </div>
+            </div>
+        );
+    }
 }
 
 export default StyledHeaderFooterWrapper;
