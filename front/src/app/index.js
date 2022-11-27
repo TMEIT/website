@@ -18,9 +18,9 @@ import { getApiFetcher } from "./api.js";
 import css_reset from "../reboot.css";
 import { kiesel_blue } from "./palette.js";
 
-import Header from "./components/Header";
-import { header_height } from "./components/Header";
-import Footer from "./components/Footer";
+import DesktopHeader from "./components/HeaderFooter/DesktopHeader";
+import { header_height } from "./components/HeaderFooter/DesktopHeader";
+import Footer from "./components/HeaderFooter/Footer";
 import LoadingBar from "./components/LoadingBar";
 const LoginModal =  lazy(() => import("./components/LoginModal"));
 import theme from "./muiTheme"
@@ -44,7 +44,7 @@ function App({className}) {
                 <ThemeProvider theme={theme}>
                     {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
                     {loginModalOpen? <Suspense><LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} /></Suspense>: null}
-                    <Header loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
+                    <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
                     <div id="expander">
                         <main>
                             <Suspense>

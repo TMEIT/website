@@ -3,13 +3,13 @@ import {Link, useNavigate} from "react-router-dom";
 import {Button} from "@mui/material";
 import styled from "@emotion/styled";
 
-import {DropdownMenu, DropdownMenuItem} from "./DropdownMenu.js";
-import {getApiFetcher} from "../api";
+import {DropdownMenu, DropdownMenuItem} from "../DropdownMenu.js";
+import {getApiFetcher} from "../../api";
 
 
-const StyledHeaderMenu = styled(HeaderMenu)({});
+const StyledDesktopHeaderMenu = styled(DesktopHeaderMenu)({});
 
-function HeaderMenu({className}) {
+function DesktopHeaderMenu({className}) {
     let navigate = useNavigate();
 
     const [meData, setMeData] = useState(null); // Yarr, set me data (Logged-in user's member data)
@@ -49,4 +49,4 @@ function HeaderMenu({className}) {
     );
 }
 
-export default StyledHeaderMenu;
+export default StyledDesktopHeaderMenu;
