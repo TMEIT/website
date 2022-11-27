@@ -16,7 +16,7 @@ import '@fontsource/roboto/700.css';
 import { getApiFetcher } from "./api.js";
 
 import css_reset from "../reboot.css";
-import { kiesel_blue } from "./palette.js";
+import { kisel_blue } from "./palette.js";
 
 import HeaderFooterWrapper from "./components/HeaderFooter/HeaderFooterWrapper";
 import LoadingBar from "./components/LoadingBar";

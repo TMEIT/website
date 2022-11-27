@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-import { kiesel_blue, secondary_purp, primary_light, accent_yellow, primary_dark, accent_maroon } from "../../palette.js";
+import { kisel_blue, secondary_purp, primary_light, accent_yellow, primary_dark, accent_maroon } from "../../palette.js";
 
 const StyledFooter = styled(Footer)({
     height: "5rem",

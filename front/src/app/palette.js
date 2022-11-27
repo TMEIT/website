@@ -1,8 +1,8 @@
 
-// Hues taken from plugging in kiesel blue into Colormind's Fauvist preset
+// Hues taken from plugging in kisel blue into Colormind's Fauvist preset
 
-export const kiesel_blue = "#44687d";
-export const kiesel_light_blue = "#8cb1c8";
+export const kisel_blue = "#44687d";
+export const kisel_blue_light = "#8cb1c8";
 
 export const me_green = "#ADFF5C";
 export const data_pink = "#E83D84";
@@ -26,7 +26,7 @@ export const accent_orange = "#E19844";
 
 export const accent_red = "#993623";
 
-// Accent hues taken from combining kiesel_blue, primary_lighter, and secondary_purp_dark in colormind with Pokemon Crystal preset
+// Accent hues taken from combining kisel_blue, primary_lighter, and secondary_purp_dark in colormind with Pokemon Crystal preset
 export const accent_maroon = "#361B36";
 
 export const accent_salmon = "#EA8174";

@@ -3,7 +3,7 @@ import {Button} from "@mui/material";
 import styled from "@emotion/styled";
 
 import tmeit_logo_nogojan_mono from "../../logos/LogoTMEIT_withoutGojan_monochrome.svg";
-import { kiesel_blue, kiesel_light_blue, secondary_purp, secondary_purp_dark, primary_light, accent_yellow } from "../../palette.js";
+import { kisel_blue, secondary_purp, secondary_purp_dark, primary_light, accent_yellow } from "../../palette.js";
 import DesktopHeaderMenu from "./DesktopHeaderMenu.js";
 
 export const header_height = "6rem"

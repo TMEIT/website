@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import join_council from "../layout_photos/join_council.webp";
 import tmeit_boat from "../layout_photos/tmeit_boat.webp";
 
-import { kiesel_blue, secondary_purp, me_green, accent_maroon, accent_salmon } from "../palette.js";
+import { kisel_blue, secondary_purp, me_green, accent_maroon, accent_salmon } from "../palette.js";
 import JoinWhatTmeit from "../components/JoinWhatTmeit.js";
 import JoinWhyJoin from "../components/JoinWhyJoin.js";
 

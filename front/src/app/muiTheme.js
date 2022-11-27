@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-import { kiesel_blue, me_green, data_pink } from "./palette.js";
+import { kisel_blue, me_green, data_pink } from "./palette.js";
 
 
 const theme = createTheme({

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 import { getApiFetcher } from "../../api.js";
 
-import { kiesel_blue } from "../../palette.js";
+import { kisel_blue } from "../../palette.js";
 
 import DesktopHeader from "./DesktopHeader";
 import { header_height } from "./DesktopHeader";
