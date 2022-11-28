@@ -61,7 +61,7 @@ const StyledJoin = styled(Join)({
 });
 
 function Join({className}) {
-    const screenIsWide = useIsScreenWide();
+    const screenIsWide = useIsScreenWide(1280);
 
     // Switch layouts based on media query
     const AboutTmeit = screenIsWide ? JoinAboutTmeitWide : JoinAboutTmeitMobile;

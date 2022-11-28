@@ -31,7 +31,10 @@ function HeaderFooterWrapper({className, children}) {
     // State storing whether user is logged in or not. Initializes based on if user has login cookie or not. (We assume cookie is valid)
     const [loggedIn, setLoggedIn] = useState(hasLoginCookie());
 
-    const screenIsWide = useIsScreenWide()
+    // Switch between mobile header and desktop header/footer at 950 px
+    // 950 px should be wide enough for 5 links on the desktop header
+    // 950 px is also less than half of 1920 px but more than the 810 px of an iPad.
+    const screenIsWide = useIsScreenWide(950)
 
     if(screenIsWide) {
         return (

@@ -1,9 +1,9 @@
 import {useState, useEffect} from "react";
 
 /**
-* Custom React hook that returns true or false depending on if the screen is 1280 px wide
+* Custom React hook that returns true or false depending on if the screen is {minWidth} px wide
 */
-const useIsScreenWide = () => {
+const useIsScreenWide = (minWidth) => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
     useEffect(() => {
@@ -12,9 +12,9 @@ const useIsScreenWide = () => {
         }
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize);
-    });
+    }, []);
 
-    return screenWidth >= 1280;
+    return screenWidth >= minWidth;
 };
 
 export default useIsScreenWide;
