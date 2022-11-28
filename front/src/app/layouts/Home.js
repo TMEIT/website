@@ -52,7 +52,7 @@ function Home({className}) {
                 <TextSummary>
                     <h1>Welcome!</h1>
                     <p>
-                        TraditionsMEsterIT (TMEIT) is a klubbmästeri within the Section for Information- and Nanotechnology,
+                        TraditionsMEsterIT (TMEIT) is a klubbmästeri within the Chapter for Information- and Nanotechnology,
                         which is based at KTH in Kista.
                     </p>
                     <p>
