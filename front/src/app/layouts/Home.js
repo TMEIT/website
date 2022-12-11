@@ -80,7 +80,7 @@ function Home({className}) {
                     </p>
                     <p>
                         If you're interested in learning Python or ReactJS programming, come check out our <a href="https://github.com/TMEIT/website">Github</a>,
-                        or join the discussion in the #webbweeb channel on the TMEIT discord!
+                        or join the discussion in the #webbweebs channel on the TMEIT discord!
                     </p>
                 </TextSummary>
             </div>
