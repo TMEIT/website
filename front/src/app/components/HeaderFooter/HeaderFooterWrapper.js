@@ -6,7 +6,9 @@ import { getApiFetcher } from "../../api.js";
 import { kisel_blue } from "../../palette.js";
 
 import DesktopHeader from "./DesktopHeader";
+import MobileHeader from "./MobileHeader";
 import { header_height } from "./DesktopHeader";
+import { mobile_header_height } from "./MobileHeader";
 import Footer from "./Footer";
 const LoginModal =  lazy(() => import("../LoginModal"));
 
@@ -21,6 +23,21 @@ const StyledHeaderFooterWrapper = styled(HeaderFooterWrapper)({
     },
 });
 
+const desktopExpanderStyle = {
+    minHeight: `calc(100vh - ${header_height})`,
+    display: "grid",
+    gridTemplateRows: "1fr auto",
+};
+
+const mobileExpanderStyle = {
+    minHeight: "100vh",
+    display: "grid",
+    gridTemplateRows: "1fr auto",
+};
+
+const MobileHeaderSpacer = styled.div({
+    height: mobile_header_height
+});
 
 /**
 * Common wrapper for all routes that displays the navbars around the route
@@ -46,7 +63,7 @@ function HeaderFooterWrapper({className, children}) {
                 : null
                 }
                 <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                <div id="expander">
+                <div id="expander" css={desktopExpanderStyle}>
                     <div>{children}</div>
                     <Footer />
                 </div>
@@ -61,9 +78,10 @@ function HeaderFooterWrapper({className, children}) {
                 </Suspense>)
                 : null
                 }
-                <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                <div id="expander">
-                    {children}
+                <MobileHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
+                <div id="expander" css={mobileExpanderStyle}>
+                    <div> {children} </div>
+                    <MobileHeaderSpacer />
                 </div>
             </div>
         );
