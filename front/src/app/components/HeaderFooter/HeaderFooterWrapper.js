@@ -47,7 +47,7 @@ function HeaderFooterWrapper({className, children}) {
                 }
                 <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
                 <div id="expander">
-                    {children}
+                    <div>{children}</div>
                     <Footer />
                 </div>
             </div>
