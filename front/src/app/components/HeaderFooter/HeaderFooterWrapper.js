@@ -23,17 +23,16 @@ const StyledHeaderFooterWrapper = styled(HeaderFooterWrapper)({
     },
 });
 
-const desktopExpanderStyle = {
+const DesktopExpander = styled.div({
     minHeight: `calc(100vh - ${header_height})`,
     display: "grid",
-    gridTemplateRows: "1fr auto",
-};
-
-const mobileExpanderStyle = {
+    gridTemplateRows: "1fr auto"
+});
+const MobileExpander = styled.div({
     minHeight: "100vh",
     display: "grid",
-    gridTemplateRows: "1fr auto",
-};
+    gridTemplateRows: "1fr auto"
+});
 
 const MobileHeaderSpacer = styled.div({
     height: mobile_header_height
@@ -63,10 +62,10 @@ function HeaderFooterWrapper({className, children}) {
                 : null
                 }
                 <DesktopHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                <div id="expander" css={desktopExpanderStyle}>
+                <DesktopExpander>
                     <div>{children}</div>
                     <Footer />
-                </div>
+                </DesktopExpander>
             </div>
         );
     } else {
@@ -79,10 +78,10 @@ function HeaderFooterWrapper({className, children}) {
                 : null
                 }
                 <MobileHeader loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                <div id="expander" css={mobileExpanderStyle}>
+                <MobileExpander>
                     <div> {children} </div>
                     <MobileHeaderSpacer />
-                </div>
+                </MobileExpander>
             </div>
         );
     }
