@@ -1,11 +1,30 @@
 
 // Hues taken from plugging in kisel blue into Colormind's Fauvist preset
 
+// Light/Dark done by putting the color into the GIMP color picker and setting Value to 100 or dividing by 2.
+
 export const kisel_blue = "#44687d";
-export const kisel_blue_light = "#8cb1c8";
+export const kisel_blue_light = "#8bd4ff";
+export const kisel_blue_dark = "#22343e";
 
 export const me_green = "#ADFF5C";
+export const me_green_light = "#d6ffae"; // me_green already had full Value, so Saturation was reduced by half.
+export const me_green_dark = "#56802e";
+
 export const data_pink = "#E83D84";
+export const data_pink_light = "#ffa1c8"; // data_pink had a high Value, so Saturation was also reduced by half.
+export const data_pink_dark = "#741f42";
+
+// Light background calculated by inverting kisel_blue HSV hue and setting Lightness to 90.
+export const light_background = "#dae9aa";
+export const light_background_light = "#efffba";
+export const light_background_dark = "#6d7555";
+
+// Dark background calculated by inverting me_green HSV hue, setting Chroma to half, and setting lightness to 20.
+export const dark_background = "#15315b";
+export const dark_background_light = "#3a8aff";
+export const dark_background_dark = "#0b192e";
+
 export const laser_purp = "#CC99FF";
 export const qmisk_red = "#800000";
 
