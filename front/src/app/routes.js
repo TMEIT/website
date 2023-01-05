@@ -20,6 +20,10 @@ const routes = {
         "component": lazy(() => import("./layouts/Team")),
         "loader": async () => await import("./layouts/Team"),
     },
+    "Documents": {
+        "component": lazy(() => import("./layouts/Documents")),
+        "loader": async () => await import("./layouts/Documents"),
+    },
     "Profile": {
         "component": lazy(() => import("./layouts/Profile")),
         "loader": async () => await import("./layouts/Profile"),

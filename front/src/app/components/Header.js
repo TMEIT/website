@@ -84,6 +84,11 @@ function Header({className, loggedIn, setLoginModalOpen}) {
                 </NavLink>
               </li>
               <li>
+                <NavLink to="/documents" activeclassname="selected">
+                  Documents
+                </NavLink>
+              </li>
+              <li>
                   {loggedIn?
                       <HeaderMenu />
                       : <Button variant="contained" onClick={() => {setLoginModalOpen(true)}}>Log in</Button>
