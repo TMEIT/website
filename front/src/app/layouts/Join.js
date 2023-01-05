@@ -3,27 +3,13 @@ import styled from "@emotion/styled";
 
 import sjo_group from "../layout_photos/sjoslaget_group_2022.webp";
 
-import { kiesel_blue, secondary_purp, secondary_purp_dark, me_green, data_pink, me_and_in_teal, primary_light, primary_lighter, accent_yellow, accent_maroon, accent_salmon } from "../palette.js";
+import { kisel_blue, secondary_purp, secondary_purp_dark, me_green, data_pink, me_and_in_teal, primary_light, primary_lighter, accent_yellow, accent_maroon, accent_salmon } from "../palette.js";
 import JoinForm from "../components/JoinForm";
 import TextSummary from "../components/TextSummary.js";
 import Centered from "../components/Centered.js";
 import JoinAboutTmeitMobile from "./JoinAboutTmeitMobile.js";
 import JoinAboutTmeitWide from "./JoinAboutTmeitWide.js";
-
-const useIsScreenWide = () => {
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-
-    useEffect(() => {
-        function handleResize() {
-            setScreenWidth(window.innerWidth);
-        }
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize);
-    });
-
-    return screenWidth >= 1280;
-};
-
+import useIsScreenWide from "../useIsScreenWide";
 
 const StyledJoin = styled(Join)({
     width: "100vw",
@@ -75,7 +61,7 @@ const StyledJoin = styled(Join)({
 });
 
 function Join({className}) {
-    const screenIsWide = useIsScreenWide();
+    const screenIsWide = useIsScreenWide(1280);
 
     // Switch layouts based on media query
     const AboutTmeit = screenIsWide ? JoinAboutTmeitWide : JoinAboutTmeitMobile;

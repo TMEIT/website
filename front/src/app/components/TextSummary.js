@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-import { kiesel_blue, secondary_purp, primary_light, primary_lighter } from "../palette.js";
+import { kisel_blue, secondary_purp, primary_light, primary_lighter } from "../palette.js";
 
 
 const StyledTextSummary = styled(TextSummary)({

@@ -2,13 +2,14 @@ import {NavLink} from "react-router-dom";
 import {Button} from "@mui/material";
 import styled from "@emotion/styled";
 
-import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
-import { kiesel_blue, kiesel_light_blue, secondary_purp, secondary_purp_dark, primary_light, accent_yellow } from "../palette.js";
-import HeaderMenu from "./HeaderMenu.js";
+import tmeit_logo_nogojan_mono from "../../logos/LogoTMEIT_withoutGojan_monochrome.svg";
+import { kisel_blue, secondary_purp, secondary_purp_dark, primary_light, accent_yellow } from "../../palette.js";
+import DesktopHeaderMenu from "./DesktopHeaderMenu.js";
+import getHeaderNavItems from "./navs/HeaderNav";
 
 export const header_height = "6rem"
 
-const StyledHeader = styled(Header)({
+const StyledDesktopHeader = styled(DesktopHeader)({
     gridRowStart: 1,
     nav: {
         height: header_height,
@@ -58,7 +59,7 @@ const StyledHeader = styled(Header)({
 
 });
 
-function Header({className, loggedIn, setLoginModalOpen}) {
+function DesktopHeader({className, loggedIn, setLoginModalOpen}) {
   return (
     <header className={className}>
       <nav>
@@ -68,27 +69,13 @@ function Header({className, loggedIn, setLoginModalOpen}) {
         <div className="header-rows">
             <div id="header-gradient"></div>
             <ul>
-              <li>
-                <NavLink to="/events" activeclassname="selected">
-                  Events
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/team" activeclassname="selected">
-                  Team
-                </NavLink>
-              </li>
-              <li id="join-navlink">
-                <NavLink to="/join_tmeit" activeclassname="selected">
-                  Join
-                </NavLink>
-              </li>
-              <li>
-                  {loggedIn?
-                      <HeaderMenu />
-                      : <Button variant="contained" onClick={() => {setLoginModalOpen(true)}}>Log in</Button>
-                  }
-              </li>
+                {getHeaderNavItems(false).map((item) => (<li>{item}</li>))}
+                <li>
+                    {loggedIn?
+                        <DesktopHeaderMenu />
+                        : <Button variant="contained" onClick={() => {setLoginModalOpen(true)}}>Log in</Button>
+                    }
+                </li>
             </ul>
         </div>
       </nav>
@@ -96,4 +83,4 @@ function Header({className, loggedIn, setLoginModalOpen}) {
   );
 }
 
-export default StyledHeader;
+export default StyledDesktopHeader;
