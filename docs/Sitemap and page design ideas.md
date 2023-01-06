@@ -78,3 +78,7 @@
 * Must sign up with a kth email, masters/marskalk can bypass this
 * Proper GDPR consent
 * Make sure to rate limit signups
+
+## Documents
+* Links to Reglemente, Meeting protocols (limit availability of Meeting protocols to members only?)
+* Random trivia like on the old website?

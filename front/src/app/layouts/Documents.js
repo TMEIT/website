@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-//import {Link} from "react-router-dom";  //Included for the future, when there will be something to link to
+import {Link} from "react-router-dom";  
 
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
@@ -11,17 +11,15 @@ const StyledDocuments = styled(Documents)({
     }
 });
 
-function Documents({className})
-{
+function Documents({className}){
     return(
         <Centered className={className}>
             <TextSummary>
                 <h1>Documents</h1>
                 <p>* Reglemente</p>
-                <p>* Meeting protocol</p>
+                <p>* <Link to="https://drive.google.com/drive/folders/16nr4Zem5E2HfjWQ135W_fiy7F58fCFDk?usp=share_link">Meeting protocols</Link></p>
             </TextSummary>
         </Centered>
     );
 }
-
 export default StyledDocuments

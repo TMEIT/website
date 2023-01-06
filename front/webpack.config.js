@@ -29,8 +29,8 @@ module.exports = {
                 use: { //more loaders can be added here in an array
                     loader: 'babel-loader',
                     options: {
-                        presets:  [["@babel/preset-react", {"runtime": "automatic"}]],
-                        plugins: ["@emotion"]
+                        presets:  [["@babel/preset-react", {"runtime": "automatic", "importSource": "@emotion/react"}]],
+                        plugins: ["@emotion/babel-plugin"]
                     }
                 }
             },

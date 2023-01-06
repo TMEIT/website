@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import styled from '@emotion/styled'
 
-import { kiesel_blue, kiesel_light_blue, secondary_purp, secondary_purp_dark, primary_light, primary_lighter, accent_yellow } from "../palette.js";
+import { kisel_blue, secondary_purp, secondary_purp_dark, primary_light, primary_lighter, accent_yellow } from "../palette.js";
 
 const StyledMemberNameLine = styled(MemberNameLine)({
     display: "grid",

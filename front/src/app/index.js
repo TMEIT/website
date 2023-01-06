@@ -2,6 +2,7 @@ import {Suspense, lazy, useState} from "react";
 import {createRoot} from "react-dom/client";
 import {createBrowserRouter, RouterProvider, Outlet, useNavigation} from "react-router-dom";
 import styled from "@emotion/styled";
+import {ThemeProvider} from '@mui/material/styles';
 
 import "@fontsource/atkinson-hyperlegible"
 import "@fontsource/cantarell"
@@ -15,16 +16,13 @@ import '@fontsource/roboto/700.css';
 import { getApiFetcher } from "./api.js";
 
 import css_reset from "../reboot.css";
-import { kiesel_blue } from "./palette.js";
+import { kisel_blue } from "./palette.js";
 
-import Header from "./components/Header";
-import { header_height } from "./components/Header";
-import Footer from "./components/Footer";
+import HeaderFooterWrapper from "./components/HeaderFooter/HeaderFooterWrapper";
 import LoadingBar from "./components/LoadingBar";
-const LoginModal =  lazy(() => import("./components/LoginModal"));
+import theme from "./muiTheme"
 
 import routes from "./routes.js";
-import hasLoginCookie from "./hasLoginCookie";
 
 
 /**
@@ -32,41 +30,28 @@ import hasLoginCookie from "./hasLoginCookie";
 */
 function App({className}) {
     const navigation = useNavigation();
-    const [loginModalOpen, setLoginModalOpen] = useState(false);
-
-    // State storing whether user is logged in or not. Initializes based on if user has login cookie or not. ( We assume cookie is valid)
-    const [loggedIn, setLoggedIn] = useState(hasLoginCookie());
-
     return (
             <div className={className}>
-                {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
-                {loginModalOpen? <Suspense><LoginModal loggedIn={loggedIn} setLoggedIn={setLoggedIn} setLoginModalOpen={setLoginModalOpen} /></Suspense>: null}
-                <Header loggedIn={loggedIn} setLoginModalOpen={setLoginModalOpen} />
-                <div id="expander">
-                    <main>
+                <ThemeProvider theme={theme}>
+                    {navigation.state === "loading"? <LoadingBar className="loading-bar" />: null}
+                    <HeaderFooterWrapper>
                         <Suspense>
                             <Outlet />
                         </Suspense>
-                    </main>
-                    <Footer />
-                </div>
+                    </HeaderFooterWrapper>
+                </ThemeProvider>
             </div>
             );
 }
 
 
 const StyledApp = styled(App)({
-    background: kiesel_blue,
+    background: kisel_blue,
     fontFamily: "'Atkinson Hyperlegible', arial, sans-serif",
     ".loading-bar": {
         width: "100vw",
         position: "fixed",
         top: 0
-    },
-    "& > #expander": {
-        minHeight: `calc(100vh - ${header_height})`,
-        display: "grid",
-        gridTemplateRows: "1fr auto",
     },
     "a:link": { color: "#444444" },
     "a:visited": { color: "#444444"},

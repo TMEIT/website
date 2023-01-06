@@ -105,12 +105,3 @@ export const DropdownMenu = React.forwardRef(
                     );
         }
         );
-
-export const DropdownMenuItem = styled(MenuItem)`
-display: flex;
-justify-content: space-between !important;
-
-& > svg {
-margin-left: 32px;
-}
-`;
