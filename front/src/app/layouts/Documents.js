@@ -1,13 +1,12 @@
-import styled from "@emotion/styled";
-import {Link} from "react-router-dom";  
+import styled from "@emotion/styled";  
 
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
 
 const StyledDocuments = styled(Documents)({
     [TextSummary]:  {
-        maxWidth: "80em",
-        margin: "2em"
+        maxWidth: "240em",
+        margin: "10em"
     }
 });
 

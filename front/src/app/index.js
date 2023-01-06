@@ -65,13 +65,14 @@ const router = createBrowserRouter([{
     children: [
         { path: "/", element: <routes.Home.component />, loader: routes.Home.loader },
         { path: "/events", element: <routes.Events.component />, loader: routes.Events.loader },
+        { path: "/about", element: <routes.About.component />, loader: routes.About.loader },
+        { path: "/documents", element: <routes.Documents.component />, loader: routes.Documents.loader},
         { path: "/team", element: <routes.Team.component />,
             loader: async ({ params }) => {
             await routes.Team.loader();
             return await getApiFetcher().get("/members/").json();
         }
         },
-        { path: "/documents", element: <routes.Documents.component />, loader: routes.Documents.loader},
         { path: "/join_tmeit", element: <routes.Join.component />, loader: routes.Join.loader },
         { path: "/profile/:shortUuid", element: <routes.Profile.component />, loader: routes.Profile.loader },
         { path: "/profile/:shortUuid/:name", element: <routes.Profile.component />, loader: routes.Profile.loader },
