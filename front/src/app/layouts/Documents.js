@@ -17,7 +17,7 @@ function Documents({className}){
             <TextSummary>
                 <h1>Documents</h1>
                 <p>* Reglemente</p>
-                <p>* <Link to="https://drive.google.com/drive/folders/16nr4Zem5E2HfjWQ135W_fiy7F58fCFDk?usp=share_link">Meeting protocols</Link></p>
+                <p>* <a target="_blank" href="https://drive.google.com/drive/folders/16nr4Zem5E2HfjWQ135W_fiy7F58fCFDk?usp=share_link">Meeting protocols</a></p>
             </TextSummary>
         </Centered>
     );
