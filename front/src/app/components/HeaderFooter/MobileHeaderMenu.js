@@ -24,6 +24,10 @@ function MobileHeaderMenu({className}) {
     const menuItems = [
         [meData, (meData? <Link to={`/profile/${meData.short_uuid}/${meData.first_name}_${meData.last_name}`}><MenuItem>My Profile</MenuItem></Link>: null)],
         [isAdmin, (<Link to={"/master"}><MenuItem>Master Menu</MenuItem></Link>)],
+        [true, (<Link to={"/"}><MenuItem>Home</MenuItem></Link>)],
+        [true, (<Link to={"/events"}><MenuItem>Events</MenuItem></Link>)],
+        [true, (<Link to={"/team"}><MenuItem>Team</MenuItem></Link>)],
+        [true, (<Link to={"/about"}><MenuItem>About TMEIT</MenuItem></Link>)],
         [true, (<MenuItem onClick={() => logOut(navigate)}>Log Out</MenuItem>)],
         ]
 

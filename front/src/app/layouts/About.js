@@ -6,8 +6,8 @@ import TextSummary from "../components/TextSummary.js";
 
 const StyledAbout = styled(About)({
     [TextSummary]:  {
-        maxWidth: "240em",
-        margin: "10em"
+        maxWidth: "80em",
+        margin: "2em"
     }
 });
 

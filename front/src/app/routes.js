@@ -22,7 +22,7 @@ const routes = {
     },
     "About": {
         "component": lazy(() => import("./layouts/About")),
-        "loader": async () => await import(".layouts/About"),
+        "loader": async () => await import("./layouts/About"),
     },
     "Documents": {
         "component": lazy(() => import("./layouts/Documents")),
