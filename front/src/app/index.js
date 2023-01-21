@@ -65,6 +65,8 @@ const router = createBrowserRouter([{
     children: [
         { path: "/", element: <routes.Home.component />, loader: routes.Home.loader },
         { path: "/events", element: <routes.Events.component />, loader: routes.Events.loader },
+        { path: "/about", element: <routes.About.component />, loader: routes.About.loader },
+        { path: "/documents", element: <routes.Documents.component />, loader: routes.Documents.loader},
         { path: "/team", element: <routes.Team.component />,
             loader: async ({ params }) => {
             await routes.Team.loader();

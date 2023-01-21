@@ -39,6 +39,8 @@ app.include_router(health_router)
 @app.get("/migrate/{uuid}")
 @app.get("/migrate/{uuid}/admin")
 @app.get("/migrating")
+@app.get("/about")
+@app.get("/documents")
 async def load_js_app():
     return FileResponse('static/front/index.html')
 

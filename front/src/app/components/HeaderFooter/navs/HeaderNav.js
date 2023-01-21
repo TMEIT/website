@@ -10,6 +10,7 @@ const getHeaderNavItems = (wrapInMenuItem) => {
     const links = {
         "/events": "Events",
         "/team": "Team",
+        "/about": "About TMEIT",
         "/join_tmeit": "Join",
         "/documents": "Documents",
     }
