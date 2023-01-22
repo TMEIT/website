@@ -15,15 +15,16 @@ const StyledLoginModal = styled(LoginModal)({
     zIndex: 10,
 
     dialog: {
-        position: "fixed",
+        position: "relative",
         zIndex: 20,
         background: "#fff",
         width: "500px",
+        marginTop: "10%",
 
         /* Center the modal */
-        top: "50%",
-        left: "50%",
-        transform: "translateX(-50%) translateY(-50%)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
     },
 
     ".modalHeader": {

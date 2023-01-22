@@ -7,6 +7,7 @@ import {DropdownMenu} from "../DropdownMenu.js";
 import {getApiFetcher} from "../../api";
 import logOut from "../../login_cookie/logOut";
 import MenuItem from "@mui/material/MenuItem";
+import hasLoginCookie from "../../hasLoginCookie.js";
 
 
 const StyledMobileHeaderMenu = styled(MobileHeaderMenu)({});
@@ -28,7 +29,8 @@ function MobileHeaderMenu({className}) {
         [true, (<Link to={"/events"}><MenuItem>Events</MenuItem></Link>)],
         [true, (<Link to={"/team"}><MenuItem>Team</MenuItem></Link>)],
         [true, (<Link to={"/about"}><MenuItem>About TMEIT</MenuItem></Link>)],
-        [true, (<MenuItem onClick={() => logOut(navigate)}>Log Out</MenuItem>)],
+        [!hasLoginCookie(), (<MenuItem onClick={() => {setLoginModalOpen(true)}}>Log in</MenuItem>)],
+        [hasLoginCookie(), (<MenuItem onClick={() => logOut(navigate)}>Log Out</MenuItem>)],
         ]
 
     return (
