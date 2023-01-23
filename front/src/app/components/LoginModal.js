@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import {getApiFetcher} from "../api";
+import useIsScreenWide from "../useIsScreenWide";
 
 const StyledLoginModal = styled(LoginModal)({
 
@@ -14,6 +15,7 @@ const StyledLoginModal = styled(LoginModal)({
     left: 0,
     zIndex: 10,
 
+    //Desktop/widescreen-headers 
     dialog: {
         position: "relative",
         zIndex: 20,
@@ -38,11 +40,6 @@ const StyledLoginModal = styled(LoginModal)({
         padding: "20px",
     },
 
-    form: {
-        display: "flex",
-        flexDirection: "column",
-    },
-
     ".closeButton": {
         border: "none",
         background: "transparent",
@@ -54,6 +51,46 @@ const StyledLoginModal = styled(LoginModal)({
 
     ".closeButton:hover": {
         color: "yellow",
+    },
+
+    //Mobile/thinscreen-headers
+    dialogMobile: {
+        position: "relative",
+        zIndex: 20,
+        background: "#fff",
+        width: "250px",
+        marginTop: "10%",
+        marginLeft: "auto",
+        marginRight: "auto",
+
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
+    },
+
+    ".modalHeaderMobile": {
+        background:" #44687d",
+        padding: "5px 10px",
+        display: "flex",
+        justifyContent: "space-between",
+    },
+
+    ".modalMainMobile": {
+        padding: "10px",
+    },
+
+    ".closeButtonMobile": {
+        border: "none",
+        background: "transparent",
+        padding: "5px",
+        color: "#fff",
+        fontsize: "18px",
+    },
+
+    //header used on both desktop and mobil
+    form: {
+        display: "flex",
+        flexDirection: "column",
     },
 });
 
@@ -82,6 +119,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
     // Error message for logins
     const [errorMessage, setError] = useState(0);
 
+    const ScreenIsWide = useIsScreenWide(950);
 
     function handleLogin(e) {
         e.preventDefault();
@@ -113,19 +151,69 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
         };
     }
 
-    return (
+    if(ScreenIsWide)  //Make a big LoginModal for desktops/wider screens
+    {   return (
+            <div className={className}>
+                <dialog open>
+                    <header className="modalHeader">
+                        <h2>Login</h2>
+                        <button
+                            onClick={() => setLoginModalOpen(false)}
+                            className="closeButton"
+                            >
+                            &times;
+                        </button>
+                    </header>
+                    <div className="modalMain">
+                        <form onSubmit={handleLogin}>
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="text"
+                                id="email"
+                                name="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                ></input>
+                            <label htmlFor="pswrd">Password</label>
+                            <input
+                                type="password"
+                                id="pswrd"
+                                name="password"
+                                value={pswrd}
+                                onChange={(e) => setPswrd(e.target.value)}
+                                ></input>
+                            <input type="submit" value="login"></input>
+                        </form>
+                        <div className="errorMessage">
+                            {(() => {
+                                switch (errorMessage) {
+                                    case 0:
+                                        return <></>;
+                                    case 1:
+                                        return <>Incorrect email or password</>;
+                                    case 2:
+                                        return <>Validation error</>;
+                                }
+                            })()}
+                        </div>
+                    </div>
+                </dialog>
+            </div>
+        )}
+    else            //Make a small LoginModal for mobiles/thinner screens
+    {return (
         <div className={className}>
-            <dialog open>
-                <header className="modalHeader">
+            <dialogMobile open>
+                <header className="modalHeaderMobile">
                     <h2>Login</h2>
                     <button
                         onClick={() => setLoginModalOpen(false)}
-                        className="closeButton"
+                        className="closeButtonMobile"
                         >
                         &times;
                     </button>
                 </header>
-                <div className="modalMain">
+                <div className="modalMainMobile">
                     <form onSubmit={handleLogin}>
                         <label htmlFor="email">Email</label>
                         <input
@@ -158,9 +246,9 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                         })()}
                     </div>
                 </div>
-            </dialog>
+            </dialogMobile>
         </div>
-    )
+    )}
 }
 
 export default StyledLoginModal;

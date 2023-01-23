@@ -12,7 +12,7 @@ import hasLoginCookie from "../../hasLoginCookie.js";
 
 const StyledMobileHeaderMenu = styled(MobileHeaderMenu)({});
 
-function MobileHeaderMenu({className}) {
+function MobileHeaderMenu({className, loggedIn, setLoginModalOpen}) {
     let navigate = useNavigate();
 
     const [meData, setMeData] = useState(null); // Yarr, set me data (Logged-in user's member data)
@@ -29,8 +29,9 @@ function MobileHeaderMenu({className}) {
         [true, (<Link to={"/events"}><MenuItem>Events</MenuItem></Link>)],
         [true, (<Link to={"/team"}><MenuItem>Team</MenuItem></Link>)],
         [true, (<Link to={"/about"}><MenuItem>About TMEIT</MenuItem></Link>)],
-        [!hasLoginCookie(), (<MenuItem onClick={() => {setLoginModalOpen(true)}}>Log in</MenuItem>)],
-        [hasLoginCookie(), (<MenuItem onClick={() => logOut(navigate)}>Log Out</MenuItem>)],
+        [true, (<Link to={"/join_tmeit"}><MenuItem>Join</MenuItem></Link>)],
+        [!loggedIn, (<MenuItem onClick={() => {setLoginModalOpen(true)}}>Log in</MenuItem>)],
+        [loggedIn, (<MenuItem onClick={() => logOut(navigate)}>Log Out</MenuItem>)],
         ]
 
     return (
