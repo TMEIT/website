@@ -7,7 +7,6 @@ import {DropdownMenu} from "../DropdownMenu.js";
 import {getApiFetcher} from "../../api";
 import logOut from "../../login_cookie/logOut";
 import MenuItem from "@mui/material/MenuItem";
-import hasLoginCookie from "../../hasLoginCookie.js";
 
 
 const StyledMobileHeaderMenu = styled(MobileHeaderMenu)({});
