@@ -10,12 +10,13 @@ const StyledSignupForm = styled(SignupForm)({})
 
 function SignupForm({className, eventID})
 {
-    const timeMarks = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00",
-                    "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "00:00", "00:30", "01:00",
-                    "01:30", "02:00", "02:30", "03:00"];
+    const timeMarks = [{value: 0, label:"10"}, {value: 1, label:"11"}, {value: 2, label:"12"}, {value: 3, label:"13"}, {value: 4, label: "14"}, 
+                {value: 5, label:"15"}, {value: 6, label:"16"}, {value: 7, label: "17"}, {value: 8, label: "18"}, {value: 9, label: "19"}, 
+                {value: 10, label:"20"}, {value: 11, label:"21"}, {value: 12, label:"22"}, {value: 13, label:"23"}, {value: 14, label: "00"}, 
+                {value: 15, label: "01"}, {value: 16, label: "02"}, {value: 17, label: "03"}];
 
     const [canwork, setCanwork] = useState(false);
-    const [time, setTime] = useState([0,35]);
+    const [time, setTime] = useState([0,17]);
     //SKAPA RÄTT FUNKTIONER
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -79,15 +80,18 @@ function SignupForm({className, eventID})
         <div className={className}>
             <h2>Work signup for event: *INSERT EVENT IDENTIFIER*</h2>
             <Box component="form" onSubmit={submit} sx={{ mt: 3}}>
-                <Grid container spacing={3}>
-                    <label htmlFor="canWork">Can you work this event?</label>
-                    <input 
-                    type="checkbox" 
-                    id="canWork" 
-                    onChange={(e) => handleInputChange(e)}
-                    />
+                <Grid container spacing={1}>
+                    <p>Can you work this event?</p><br/>
+                    <div id="canWork" name="answer" onChange={(e) => handleInputChange(e)}>
+                        <input type="radio" id="Yes" name="answer" value={true}/>
+                        <label htmlFor="Yes"> Yes</label><br/>
+                        <input type="radio" id="No" name="answer" value={false}/>
+                        <label htmlFor="No"> No</label>
+                    </div>
                     <Slider
                     id = "timeVal"
+                    min={0}
+                    max={17}
                     getAriaLabel={() => "Always visible"}
                     marks={timeMarks}
                     step={1}
