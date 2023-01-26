@@ -10,20 +10,20 @@ const StyledSignupForm = styled(SignupForm)({})
 
 function SignupForm({className, eventID})
 {
-    const [canwork, setCanwork] = useState(0);
-    const [start_time, setStartTime] = useState(0);
-    const [end_time, setEndTime] = useState(0);
+    const timeMarks = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00",
+                    "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "00:00", "00:30", "01:00",
+                    "01:30", "02:00", "02:30", "03:00"];
+
+    const [canwork, setCanwork] = useState(false);
+    const [time, setTime] = useState([0,35]);
     //SKAPA RÄTT FUNKTIONER
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         if (id === "canWork") {
             setCanwork(value);
         }
-        if (id === "startTime") {
-            setStartTime(value);
-        }
-        if (id === "endTime") {
-            setEndTime(value);
+        if (id === "timeVal") {
+            setTime(value);
         }
       };
 
@@ -42,6 +42,7 @@ function SignupForm({className, eventID})
     //ÄNDRA DET HÄR ASAP, VI SKA INTE SKICKA WEIRD DATA : D
 
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
+    /*
         const signUp = new XMLHttpRequest();
         signUp.open("POST", "/api/v1/work_signup/" + String(eventID));
         signUp.setRequestHeader("Content-Type", "application/json");
@@ -69,13 +70,39 @@ function SignupForm({className, eventID})
         signUp.onerror = function () {
         alert("Request has failed, try again or contact web masters");
         };
+    */
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
         }
     }
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
+    return(
+        <div className={className}>
+            <h2>Work signup for event: *INSERT EVENT IDENTIFIER*</h2>
+            <Box component="form" onSubmit={submit} sx={{ mt: 3}}>
+                <Grid container spacing={3}>
+                    <label htmlFor="canWork">Can you work this event?</label>
+                    <input 
+                    type="checkbox" 
+                    id="canWork" 
+                    onChange={(e) => handleInputChange(e)}
+                    />
+                    <Slider
+                    id = "timeVal"
+                    getAriaLabel={() => "Always visible"}
+                    marks={timeMarks}
+                    step={1}
+                    disabled={!canwork}
+                    onChange={(e) => handleInputChange(e)}
+                    value={time}
+                    />
+                </Grid>
+            </Box>
+        </div>
+    );
+    /*
     return (
         <div className={className}>
-          <h2>PRAO Signup</h2>
+          <h2>Work signup for event:</h2>
           <Box component="form" onSubmit={submit} sx={{ mt: 3 }}>
               <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
@@ -168,7 +195,7 @@ function SignupForm({className, eventID})
                 />
               </div>
               <div className="submit">
-                <input type="submit" value="Register" />
+                <input type="submit" value="Save" />
               </div>
           </Box>
         <div className="errorMessage">
@@ -197,6 +224,7 @@ function SignupForm({className, eventID})
         </div>
       </div>
     );
+    */
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
 }
 
