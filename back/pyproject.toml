@@ -11,7 +11,7 @@ fastapi = "^0.85.1"
 pydantic = {extras = ["email"], version = "^1.10.2"}
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 uvicorn = {extras = ["standard"], version = "^0.18.3"}
-sqlalchemy = {version = "2.0.0b2", extras = ["postgresql_asyncpg"]}
+sqlalchemy = {version = "2.0.0", extras = ["postgresql_asyncpg"]}
 asyncpg = "0.27.0"
 argon2-cffi = "^21.3.0"
 python-multipart = "^0.0.5"
@@ -29,7 +29,7 @@ asyncmy = "^0.2.5"
 
 [tool.poetry.group.arq-worker.dependencies]
 pydantic = {extras = ["email"], version = "^1.10.2"}
-sqlalchemy = {version = "2.0.0b2", extras = ["postgresql_asyncpg"]}
+sqlalchemy = {version = "2.0.0", extras = ["postgresql_asyncpg"]}
 asyncpg = "0.27.0"
 python-multipart = "^0.0.5"
 arq = "^0.24.0"
