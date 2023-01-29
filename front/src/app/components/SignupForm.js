@@ -5,10 +5,11 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Slider from '@mui/material/Slider';
+import { kisel_blue_dark } from "../palette";
 
 const StyledSignupForm = styled(SignupForm)({})
 
-function SignupForm({className, eventID})
+function SignupForm({className, eventID = "Friday pub"})
 {
     const timeMarks = [{value: 0, label:"10"}, {value: 1, label:"11"}, {value: 2, label:"12"}, {value: 3, label:"13"}, {value: 4, label: "14"}, 
                 {value: 5, label:"15"}, {value: 6, label:"16"}, {value: 7, label: "17"}, {value: 8, label: "18"}, {value: 9, label: "19"}, 
@@ -17,16 +18,38 @@ function SignupForm({className, eventID})
 
     const [canwork, setCanwork] = useState(false);
     const [time, setTime] = useState([0,17]);
+    const [start_time, setStarttime] = useState("10");
+    const [end_time, setEndtime] = useState("03");
+
+    const [willBreak, setBreak] = useState(false);
+    const [awaytime, setAwaytime] = useState(time);
+    const [startAway, setStartaway] = useState("13");
+    const [endAway, setEndaway] = useState("15");
+
     //SKAPA RÄTT FUNKTIONER
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        if (id === "canWork") {
-            setCanwork(value);
+        if (id === "Yes") {
+            setCanwork(true);
         }
-        if (id === "timeVal") {
-            setTime(value);
+        if (id === "No") {
+            setCanwork(false);
         }
-      };
+        if (id === "breakYes") {
+            setBreak(true);
+        }
+        if (id === "breakNo") {
+            setBreak(false);
+        }
+    };
+
+    const worksliderInputChange = (e, val) => {
+            setTime(val);
+    }
+
+    const breaksliderInputChange = (e, val) => {
+        setAwaytime(val);
+    }
 
     //ÄNDRA DET HÄR ASAP, VI SKA INTE SKICKA WEIRD DATA : D
     const submit = (event) => {
@@ -78,14 +101,14 @@ function SignupForm({className, eventID})
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
     return(
         <div className={className}>
-            <h2>Work signup for event: *INSERT EVENT IDENTIFIER*</h2>
+            <h2>Work signup for event: {eventID} </h2>
             <Box component="form" onSubmit={submit} sx={{ mt: 3}}>
-                <Grid container spacing={1}>
-                    <p>Can you work this event?</p><br/>
-                    <div id="canWork" name="answer" onChange={(e) => handleInputChange(e)}>
-                        <input type="radio" id="Yes" name="answer" value={true}/>
+                <p>Can you work this event?</p>
+                <Grid container spacing={0}>
+                    <div>
+                        <input type="radio" id="Yes" name="answer" onChange={(e) => handleInputChange(e)}/>
                         <label htmlFor="Yes"> Yes</label><br/>
-                        <input type="radio" id="No" name="answer" value={false}/>
+                        <input type="radio" id="No" name="answer" onChange={(e) => handleInputChange(e)}/>
                         <label htmlFor="No"> No</label>
                     </div>
                     <Slider
@@ -96,8 +119,28 @@ function SignupForm({className, eventID})
                     marks={timeMarks}
                     step={1}
                     disabled={!canwork}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={worksliderInputChange}
                     value={time}
+                    />
+                </Grid>
+                <p>Will you have to take a break to, for example, go to a lecture?</p>
+                <Grid>
+                    <div>
+                        <input type="radio" id="breakYes" name="breakAnswer" onChange={(e) => handleInputChange(e)}/>
+                        <label htmlFor="breakYes"> Yes</label><br/>
+                        <input type="radio" id="breakNo" name="breakAnswer" onChange={(e) => handleInputChange(e)}/>
+                        <label htmlFor="breakNo"> No</label>
+                    </div>
+                    <Slider
+                    id = "breaktimeVal"
+                    min={3}
+                    max={5}
+                    getAriaLabel={() => "Always visible"}
+                    marks={timeMarks}
+                    step={1}
+                    disabled={!willBreak}
+                    onChange={breaksliderInputChange}
+                    value={awaytime}
                     />
                 </Grid>
             </Box>

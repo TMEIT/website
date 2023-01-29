@@ -23,7 +23,6 @@ function Events({className}) {
             </TextSummary>
             <>{hasLoginCookie()? 
             <TextSummary>
-                <h1>Work signup form for event:</h1>
                 <SignupForm/>
             </TextSummary>
              : <></>}
