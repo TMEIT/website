@@ -57,8 +57,6 @@ function SignupForm({className, eventID = "Friday pub"})
         }
         if (id === "breakNo") {
             setBreak(false);
-            setStartaway(null);
-            setEndaway(null);
         }
         if (id === "comment") {
             setComment(value);
@@ -85,17 +83,37 @@ function SignupForm({className, eventID = "Friday pub"})
           setErrorMessage(2);
         }
         else {
-          const data = { 
-            user_uuid       : userUuid,
-            event_uuid      : eventID,
-            can_work        : canwork,      //data for whether user can work or not
-            work_start      : start_time,   //data for start time
-            work_end        : end_time,     //data for end time
-            will_break      : willBreak,    //data for whether user will have to take a break during the shift or not
-            break_start     : startAway,    //data for when break starts
-            break_end       : endAway,      //data for when break ends
-            comment         : comment,      //data for comment
-          };
+            if (canwork == false) {     
+                const data = {
+                    user_uuid       : userUuid,
+                    event_uuid      : eventID,
+                    can_work        : canwork,      //data for whether user can work or not
+                    comment         : comment,      //data for comment
+                };
+            }
+            else if (canwork == true && willBreak == false) {
+                const data = {
+                    user_uuid       : userUuid,
+                    event_uuid      : eventID,
+                    can_work        : canwork,      //data for whether user can work or not
+                    work_start      : start_time,   //data for start time
+                    work_end        : end_time,     //data for end time
+                    will_break      : willBreak,    //data for whether user will have to take a break during the shift or not
+                    comment         : comment,      //data for comment
+                };
+            }
+            else {
+                const data = { 
+                    user_uuid       : userUuid,
+                    event_uuid      : eventID,
+                    can_work        : canwork,      //data for whether user can work or not
+                    work_start      : start_time,   //data for start time
+                    work_end        : end_time,     //data for end time
+                    will_break      : willBreak,    //data for whether user will have to take a break during the shift or not
+                    break_start     : startAway,    //data for when break starts
+                    break_end       : endAway,      //data for when break ends
+                    comment         : comment,      //data for comment
+                };
 
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
     /*
@@ -128,6 +146,7 @@ function SignupForm({className, eventID = "Friday pub"})
         };
     */
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
+            }
         }
     }
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
