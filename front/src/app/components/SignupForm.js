@@ -177,7 +177,7 @@ function SignupForm({className, eventID = "Friday pub"})
                         />
                     </Grid>
                     <br/>
-                    <p>Will you need to leave during the event?</p>
+                    <p>Will you need to leave during the event? {"(e.g to attend a lecture or appointment)"}</p>
                     <Grid>
                         <div required>
                             <input type="radio" id="breakYes" name="breakAnswer" disabled={!canwork} onChange={(e) => handleInputChange(e)}/>
