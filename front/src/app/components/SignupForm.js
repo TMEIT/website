@@ -32,7 +32,7 @@ function SignupForm({className, eventID = "Friday pub"})
                 {value: 10, label:"20"}, {value: 11, label:"21"}, {value: 12, label:"22"}, {value: 13, label:"23"}, {value: 14, label: "00"}, 
                 {value: 15, label: "01"}, {value: 16, label: "02"}, {value: 17, label: "03"}];
 
-    const [comment, setComment] = useState("");
+    const [userMessage, setUserMessage] = useState(0);
 
     const [canwork, setCanwork] = useState(false);
     const [time, setTime] = useState([0,17]);
@@ -43,6 +43,8 @@ function SignupForm({className, eventID = "Friday pub"})
     const [awaytime, setAwaytime] = useState(time);
     const [startAway, setStartaway] = useState("10");
     const [endAway, setEndaway] = useState("03");
+
+    const [comment, setComment] = useState("");
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -77,44 +79,25 @@ function SignupForm({className, eventID = "Friday pub"})
 
     const submit = (event) => {
         if (start_time == end_time) {
-          setErrorMessage(1);
+          setUserMessage(1);
         } 
         if (startAway == endAway) {
-          setErrorMessage(2);
+          setUserMessage(2);
         }
         else {
-            if (canwork == false) {     
-                const data = {
-                    user_uuid       : userUuid,
-                    event_uuid      : eventID,
-                    can_work        : canwork,      //data for whether user can work or not
-                    comment         : comment,      //data for comment
-                };
-            }
-            else if (canwork == true && willBreak == false) {
-                const data = {
-                    user_uuid       : userUuid,
-                    event_uuid      : eventID,
-                    can_work        : canwork,      //data for whether user can work or not
-                    work_start      : start_time,   //data for start time
-                    work_end        : end_time,     //data for end time
-                    will_break      : willBreak,    //data for whether user will have to take a break during the shift or not
-                    comment         : comment,      //data for comment
-                };
-            }
-            else {
-                const data = { 
-                    user_uuid       : userUuid,
-                    event_uuid      : eventID,
-                    can_work        : canwork,      //data for whether user can work or not
-                    work_start      : start_time,   //data for start time
-                    work_end        : end_time,     //data for end time
-                    will_break      : willBreak,    //data for whether user will have to take a break during the shift or not
-                    break_start     : startAway,    //data for when break starts
-                    break_end       : endAway,      //data for when break ends
-                    comment         : comment,      //data for comment
-                };
-
+            const data = { 
+                user_uuid       : userUuid,
+                event_uuid      : eventID,
+                can_work        : canwork,      //data for whether user can work or not
+                work_start      : start_time,   //data for start time
+                work_end        : end_time,     //data for end time
+                will_break      : willBreak,    //data for whether user will have to take a break during the shift or not
+                break_start     : startAway,    //data for when break starts
+                break_end       : endAway,      //data for when break ends
+                comment         : comment,      //data for comment
+            };
+        console.log(data);
+        setUserMessage(3);
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
     /*
         const signUp = new XMLHttpRequest();
@@ -146,7 +129,6 @@ function SignupForm({className, eventID = "Friday pub"})
         };
     */
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
-            }
         }
     }
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
@@ -213,6 +195,26 @@ function SignupForm({className, eventID = "Friday pub"})
                 <br/>
                 <div className="submit">
                     <input type="submit" value="save"/>
+                </div>
+                <div className="errorMessage">
+                    {(() => {
+                    switch (userMessage) {
+                        case 0:
+                        return <></>;
+
+                        case 1:
+                        return <>You cannot start and end your working shift at the same time</>;
+
+                        case 2:
+                        return <>You cannot leave from and come back to your working shift at the same time</>;
+
+                        case 3:
+                        return <>Saved!</>;
+
+                        case 4:
+                        return <p>{errorSpec}</p>;
+                    }
+                    })()}
                 </div>
             </div>
         </div>

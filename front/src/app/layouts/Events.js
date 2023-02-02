@@ -2,8 +2,7 @@ import styled from "@emotion/styled";
 
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
-import hasLoginCookie from "../hasLoginCookie.js";
-import SignupForm from "../components/SignupForm.js";
+import EventView from "../components/EventView.js";
 
 const StyledEvents = styled(Events)({
     [TextSummary]: {
@@ -15,16 +14,8 @@ const StyledEvents = styled(Events)({
 function Events({className}) {
     return(
         <Centered className={className}>
-            <TextSummary>
-                <h1>Events - Coming soon!</h1>
-                <p>The events page is under construction.</p>
-                <p>TMEIT.SE GEN 3 is very new and we're still re-implementing the event pages.</p>
-                <p>Check out our <a href="https://www.facebook.com/TMEIT/events" target="_blank">Facebook events</a> in the meantime!</p>
-            </TextSummary>
-            <>{hasLoginCookie()? 
-                <SignupForm/>
-             : <></>}
-             </>
+            <EventView eventID={"Friday Pub 30:th Feb 2420"}>
+            </EventView>
         </Centered>
     );
     /*
