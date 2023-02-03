@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
@@ -6,6 +7,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Slider from '@mui/material/Slider';
 import { kisel_blue_dark, primary_lighter } from "../palette";
+import { getApiFetcher } from "../api.js";
 
 const StyledSignupForm = styled(SignupForm)({
     ".signupForm": {
@@ -24,9 +26,11 @@ const StyledSignupForm = styled(SignupForm)({
 function SignupForm({className, eventID})
 {
 
-    //IMPLEMENT FUNCTION THAT RETREIVES ME-DATA FROM API
+    const [userData, setMeData] = useState(null);
+ 
+    const loadMeData = async () => {setMeData(await getApiFetcher().get("/me").json())} // Load user information when dropdown is opened
+    useEffect(() => { loadMeData() }, []); // Load user information when component is mounted, only once
 
-    //IMPLEMENT FUNCTION THAT RETREIVES ME-DATA FROM API
     const timeMarks = [{value: 0, label:"10"}, {value: 1, label:"11"}, {value: 2, label:"12"}, {value: 3, label:"13"}, {value: 4, label: "14"}, 
                 {value: 5, label:"15"}, {value: 6, label:"16"}, {value: 7, label: "17"}, {value: 8, label: "18"}, {value: 9, label: "19"}, 
                 {value: 10, label:"20"}, {value: 11, label:"21"}, {value: 12, label:"22"}, {value: 13, label:"23"}, {value: 14, label: "00"}, 
@@ -86,7 +90,7 @@ function SignupForm({className, eventID})
         }
         else {
             const data = { 
-                user_uuid       : userUuid,
+                user_uuid       : userData.short_uuid,
                 event_uuid      : eventID,
                 can_work        : canwork,      //data for whether user can work or not
                 work_start      : start_time,   //data for start time
@@ -97,6 +101,7 @@ function SignupForm({className, eventID})
                 comment         : comment,      //data for comment
             };
             setUserMessage(3);
+            console.log(data);
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
     /*
         const signUp = new XMLHttpRequest();
