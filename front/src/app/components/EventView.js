@@ -7,6 +7,7 @@ import { me_and_in_teal, kisel_blue, kisel_blue_dark, kisel_blue_light, primary_
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
 import SignupForm from "../components/SignupForm.js";
 import hasLoginCookie from "../hasLoginCookie.js";
+import TextSummary from "../components/TextSummary.js";
 import {Button} from "@mui/material";
 
 const StyledEventView = styled(EventView)({
@@ -54,7 +55,7 @@ function EventView({className, eventID})
                     </Grid>
                     <br></br>
                     <Grid>
-                        <p>Come and enjoy our Friday pub that we are for the first time ever hosting on a 30:th of February!</p>
+                        <p>Come and enjoy our Friday pub, for the first time ever on a 30:th of February!</p>
                     </Grid>
                     <br></br>
                     <Grid>
