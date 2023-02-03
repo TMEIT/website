@@ -55,7 +55,7 @@ function EventView({className, eventID})
                     </Grid>
                     <br></br>
                     <Grid>
-                        <p>Come and enjoy our Friday pub, for the first time ever on a 30:th of February!</p>
+                        <p>Come and enjoy our Friday pub we are, for the first time ever, hosting on a 30:th of February!</p>
                     </Grid>
                     <br></br>
                     <Grid>

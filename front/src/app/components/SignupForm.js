@@ -21,7 +21,7 @@ const StyledSignupForm = styled(SignupForm)({
     }
 })
 
-function SignupForm({className, eventID = "Friday pub"})
+function SignupForm({className, eventID})
 {
 
     //IMPLEMENT FUNCTION THAT RETREIVES ME-DATA FROM API
@@ -48,10 +48,10 @@ function SignupForm({className, eventID = "Friday pub"})
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        if (id === "Yes") {
+        if (id === "workYes") {
             setCanwork(true);
         }
-        if (id === "No") {
+        if (id === "workNo") {
             setCanwork(false);
         }
         if (id === "breakYes") {
@@ -78,10 +78,10 @@ function SignupForm({className, eventID = "Friday pub"})
     }
 
     const submit = (event) => {
-        if (start_time == end_time) {
+        if (canwork && (start_time === end_time)) {
           setUserMessage(1);
         } 
-        if (startAway == endAway) {
+        if (willBreak && (startAway === endAway)) {
           setUserMessage(2);
         }
         else {
@@ -96,8 +96,7 @@ function SignupForm({className, eventID = "Friday pub"})
                 break_end       : endAway,      //data for when break ends
                 comment         : comment,      //data for comment
             };
-        console.log(data);
-        setUserMessage(3);
+            setUserMessage(3);
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
     /*
         const signUp = new XMLHttpRequest();
@@ -130,72 +129,75 @@ function SignupForm({className, eventID = "Friday pub"})
     */
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
         }
-    }
+        event.preventDefault();
+    };
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
     return(
         <div className={className}>
             <div className="signupForm">
                 <h2>Work signup for event: {eventID} </h2>
-                <Box component="form" onSubmit={submit} sx={{ mt: 3}}>
-                    <p>Can you work this event?</p>
-                    <Grid container spacing={0}>
-                        <div required>
-                            <input type="radio" id="Yes" name="answer" onChange={(e) => handleInputChange(e)}/>
-                            <label htmlFor="Yes"> Yes</label><br/>
-                            <input type="radio" id="No" name="answer" onChange={(e) => handleInputChange(e)}/>
-                            <label htmlFor="No"> No</label>
-                        </div>
-                        <Slider
-                        className="formFont"
-                        id = "timeVal"
-                        min={0}
-                        max={17}
-                        getAriaLabel={() => "Always visible"}
-                        marks={timeMarks}
-                        step={1}
-                        disabled={!canwork}
-                        onChange={worksliderInputChange}
-                        value={time}
-                        />
-                    </Grid>
-                    <br/>
-                    <p>Will you need to leave during the event? {"(e.g to attend a lecture or appointment)"}</p>
+                <Box component="form" onSubmit={(e) => {e.preventDefault(); submit(e);}} sx={{ mt: 3}}>
                     <Grid>
-                        <div required>
-                            <input type="radio" id="breakYes" name="breakAnswer" disabled={!canwork} onChange={(e) => handleInputChange(e)}/>
-                            <label htmlFor="breakYes"> Yes</label><br/>
-                            <input type="radio" id="breakNo" name="breakAnswer" disabled={!canwork} onChange={(e) => handleInputChange(e)}/>
-                            <label htmlFor="breakNo"> No</label>
+                        <p>Can you work this event?</p>
+                        <Grid container spacing={0}>
+                            <div required>
+                                <input type="radio" id="workYes" name="answer" onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="workYes"> Yes</label><br/>
+                                <input type="radio" id="workNo" name="answer" onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="workNo"> No</label>
+                            </div>
+                            <Slider
+                            className="formFont"
+                            id = "timeVal"
+                            min={0}
+                            max={17}
+                            getAriaLabel={() => "Always visible"}
+                            marks={timeMarks}
+                            step={1}
+                            disabled={!canwork}
+                            onChange={worksliderInputChange}
+                            value={time}
+                            />
+                        </Grid>
+                        <br/>
+                        <p>Will you need to leave during the event? {"(e.g to attend a lecture or appointment)"}</p>
+                        <Grid>
+                            <div required>
+                                <input type="radio" id="breakYes" name="breakAnswer" disabled={!canwork} onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="breakYes"> Yes</label><br/>
+                                <input type="radio" id="breakNo" name="breakAnswer" disabled={!canwork} onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="breakNo"> No</label>
+                            </div>
+                            <Slider
+                            className = "formFont"
+                            id = "breaktimeVal"
+                            min={time[0]}
+                            max={time[1]}
+                            getAriaLabel={() => "Always visible"}
+                            marks={timeMarks}
+                            step={1}
+                            disabled={!(willBreak & canwork)}
+                            onChange={breaksliderInputChange}
+                            value={awaytime}
+                            />
+                        </Grid>
+                        <br/>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="filled"
+                                fullWidth
+                                id="comment"
+                                label="Comment"
+                                placeholder="Comment.."
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <br/>
+                        <div className="submit">
+                            <input type="submit" value="save"/>
                         </div>
-                        <Slider
-                        className = "formFont"
-                        id = "breaktimeVal"
-                        min={time[0]}
-                        max={time[1]}
-                        getAriaLabel={() => "Always visible"}
-                        marks={timeMarks}
-                        step={1}
-                        disabled={!(willBreak & canwork)}
-                        onChange={breaksliderInputChange}
-                        value={awaytime}
-                        />
-                    </Grid>
-                    <br/>
-                    <Grid item xs={12}>
-                        <TextField
-                            variant="filled"
-                            fullWidth
-                            id="comment"
-                            label="Comment"
-                            placeholder="Comment.."
-                            onChange={handleInputChange}
-                        />
                     </Grid>
                 </Box>
-                <br/>
-                <div className="submit">
-                    <input type="submit" value="save"/>
-                </div>
                 <div className="errorMessage">
                     {(() => {
                     switch (userMessage) {
