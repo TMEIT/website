@@ -14,7 +14,9 @@ const StyledEvents = styled(Events)({
 function Events({className}) {
     return(
         <Centered className={className}>
-            <EventView eventID={"Friday Pub 30:th Feb 2420"}>
+            <EventView eventID={"Friday Pub"}>
+            </EventView>
+            <EventView eventID={"WTF-pub"}>
             </EventView>
         </Centered>
     );
