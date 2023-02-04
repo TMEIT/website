@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
 import EventView from "../components/EventView.js";
@@ -12,6 +11,7 @@ const StyledEvents = styled(Events)({
 });
 
 function Events({className}) {
+
     return(
         <Centered className={className}>
             <EventView eventID={"Friday Pub"}>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -7,7 +6,6 @@ import { me_and_in_teal, kisel_blue, kisel_blue_dark, kisel_blue_light, primary_
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
 import SignupForm from "../components/SignupForm.js";
 import hasLoginCookie from "../hasLoginCookie.js";
-import TextSummary from "../components/TextSummary.js";
 import {Button} from "@mui/material";
 
 const StyledEventView = styled(EventView)({
