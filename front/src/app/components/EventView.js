@@ -7,6 +7,7 @@ import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.
 import SignupForm from "../components/SignupForm.js";
 import hasLoginCookie from "../hasLoginCookie.js";
 import {Button} from "@mui/material";
+import ViewSignups from "../components/ViewSignups.js";
 
 const StyledEventView = styled(EventView)({
     ".eventView": {
@@ -62,7 +63,7 @@ function EventView({className, eventID})
                     </Grid>
                     <Grid>
                         {hasLoginCookie()? (listHidden? <Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>View work signups</Button> : 
-                        <><Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>Close</Button></>) : <></>}
+                        <><ViewSignups eventID={eventID}/><Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>Close</Button></>) : <></>}
                     </Grid>
                 </Box>
             </div>

@@ -8,7 +8,12 @@ import Slider from '@mui/material/Slider';
 import { kisel_blue, kisel_blue_dark, primary_lighter } from "../palette";
 import { getApiFetcher } from "../api.js";
 
-const StyledSignupList = styled(SignupList) ({});
+const StyledSignupList = styled(SignupList) ({ 
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    alignItems: "center",
+})
 
 function SignupList({className, children}) {
     return (
@@ -18,15 +23,12 @@ function SignupList({className, children}) {
     );
 }
 
-function listSignupItem({className})
-{
-return (
-    <p>This is a listing</p>
-);
-}
-
 const render_signups = (data, role) =>
-    data.filter(data => data.role === role).map(data => <listSignupItem></listSignupItem>);
+    data.filter(data => data.role === role).map(data => <h3>Name: {data.short_uuid}  Role: {data.role} Can work: {data.canwork? <>Yes</> : <>No</>}
+                                                        {data.canwork? <>From: {data.work_start} To: {data.work_end}</>:<></>}
+                                                        Has to leave during event: {data.willBreak? <>Yes</> : <>No</>}
+                                                        {data.willbreak? <>From: {data.break_start} To: {data.break_end}</> : <></>}
+                                                        Comment: {data.comment}</h3>);
 
 const StyledViewSignups = styled(ViewSignups)({});
 
@@ -58,13 +60,13 @@ function ViewSignups({className, eventID})
                 </Grid>
                 <br></br>
                 <Grid>
-                    <SignupList>{masterList}</SignupList>
+                    <StyledSignupList>{masterList}</StyledSignupList>
                 </Grid>
                 <Grid>
-                    <SignupList>{marshalList}</SignupList>
+                    <StyledSignupList>{marshalList}</StyledSignupList>
                 </Grid>
                 <Grid>
-                    <SignupList>{praoList}</SignupList>
+                    <StyledSignupList>{praoList}</StyledSignupList>
                 </Grid>
             </Box>
         </div>
