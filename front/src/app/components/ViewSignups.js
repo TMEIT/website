@@ -24,7 +24,7 @@ function SignupList({className, children}) {
 }
 
 const render_signups = (data, role) =>
-    data.filter(data => data.role === role).map(data => <h3>Name: {data.short_uuid}  Role: {data.role} Can work: {data.canwork? <>Yes</> : <>No</>}
+    Object.values(data).filter(data => data.role === role).map(data => <h3>Name: {data.short_uuid}  Role: {data.role} Can work: {data.canwork? <>Yes</> : <>No</>}
                                                         {data.canwork? <>From: {data.work_start} To: {data.work_end}</>:<></>}
                                                         Has to leave during event: {data.willBreak? <>Yes</> : <>No</>}
                                                         {data.willbreak? <>From: {data.break_start} To: {data.break_end}</> : <></>}
