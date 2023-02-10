@@ -30,7 +30,13 @@ const render_signups = (data, role) =>
                                                         {data.willbreak? <>From: {data.break_start} To: {data.break_end}</> : <></>}
                                                         Comment: {data.comment}</h3>);
 
-const StyledViewSignups = styled(ViewSignups)({});
+const StyledViewSignups = styled(ViewSignups)({
+    ".viewSignups": {
+        padding: "1em",
+        borderRadius: "1em",
+        background: primary_lighter,
+    },
+});
 
 function ViewSignups({className, eventID})
 {
@@ -54,21 +60,23 @@ function ViewSignups({className, eventID})
 
     return(
         <div className={className}>
-            <Box component="table" sx={{margin: 3}}>
-                <Grid>
-                    <h1>Signups for event: {eventID} </h1>
-                </Grid>
-                <br></br>
-                <Grid>
-                    <StyledSignupList>{masterList}</StyledSignupList>
-                </Grid>
-                <Grid>
-                    <StyledSignupList>{marshalList}</StyledSignupList>
-                </Grid>
-                <Grid>
-                    <StyledSignupList>{praoList}</StyledSignupList>
-                </Grid>
-            </Box>
+            <div className="viewSignups">
+                <Box component="table" sx={{margin: 3}}>
+                    <Grid>
+                        <h1>Signups for event: {eventID} </h1>
+                    </Grid>
+                    <br></br>
+                    <Grid>
+                        <StyledSignupList>{masterList}</StyledSignupList>
+                    </Grid>
+                    <Grid>
+                        <StyledSignupList>{marshalList}</StyledSignupList>
+                    </Grid>
+                    <Grid>
+                        <StyledSignupList>{praoList}</StyledSignupList>
+                    </Grid>
+                </Box>
+            </div>
         </div>
     );
 }
