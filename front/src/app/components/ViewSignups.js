@@ -23,12 +23,12 @@ function SignupList({className, children}) {
     );
 }
 
-const render_signups = (data, role) =>
-    Object.values(data).filter(data => data.role === role).map(data => <h3>Name: {data.short_uuid}  Role: {data.role} Can work: {data.canwork? <>Yes</> : <>No</>}
+const render_signups = (data, role) => 
+    Object.values(data).filter(data => data.role === role).map(data => <h2>Name: {data.short_uuid}  Role: {data.role} Can work: {data.canwork? <>Yes</> : <>No</>}
                                                         {data.canwork? <>From: {data.work_start} To: {data.work_end}</>:<></>}
                                                         Has to leave during event: {data.willBreak? <>Yes</> : <>No</>}
                                                         {data.willbreak? <>From: {data.break_start} To: {data.break_end}</> : <></>}
-                                                        Comment: {data.comment}</h3>);
+                                                        Comment: {data.comment}</h2>)
 
 const StyledViewSignups = styled(ViewSignups)({
     ".viewSignups": {
@@ -40,10 +40,9 @@ const StyledViewSignups = styled(ViewSignups)({
 
 function ViewSignups({className, eventID})
 {
-    const [signupList, setSignupList] = useState(null);
 
     /*
-    const loadSignupData = async () => {setSignupList(await getApiFetcher().get(//set path to get signup-data from API with the hlep of eventID).json())}
+    const loadSignupData = async () => {setSignupList(await getApiFetcher().get(//set path to get signup-data from API with the help of eventID).json())}
     useEffect(() => { loadSignupData() }, []); // Load list of signups when component is mounted, only once
     */
 
@@ -51,7 +50,7 @@ function ViewSignups({className, eventID})
         signups : [{short_uuid: "derbys", role: "Marshal", canwork: true, work_start: "10", work_end: "03", willBreak: true, break_start: null, break_end: null, comment: ""},
                     {short_uuid: "cdhrYe", role: "Prao", canwork: false, work_start: null, work_end: null, willBreak: false, break_start: null, break_end: null, comment: "Have to watch the kids today"},
                     {short_uuid: "grjsaY", role: "Prao", canwork: true, work_start: "14", work_end: "22", willBreak: true, break_start: "16", break_end: "17", comment: "Have to attend a lecture at 16 to 17. Will have to leave early"}
-                ],
+                ]
     };
 
     const masterList = render_signups(dummySignupList, "Master");
@@ -61,7 +60,7 @@ function ViewSignups({className, eventID})
     return(
         <div className={className}>
             <div className="viewSignups">
-                <Box component="table" sx={{margin: 3}}>
+                <Box sx={{margin: 3}}>
                     <Grid>
                         <h1>Signups for event: {eventID} </h1>
                     </Grid>
