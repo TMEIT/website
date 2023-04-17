@@ -120,7 +120,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
     // Error message for logins
     const [errorMessage, setError] = useState(0);
 
-    const [forgot, setForgot] = useState(false);
+    const [forgot, setForgot] = useState(true);
 
     const ScreenIsWide = useIsScreenWide(950);
 
@@ -164,7 +164,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
     {   return (
             <div className={className}>
                 {forgot?
-                    <dialog>
+                    (<dialog>
                         <header className="modalHeader">
                             <h2>Forgot your password?</h2>
                             <button
@@ -199,7 +199,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                 })()}
                             </div>
                         </div>
-                    </dialog>
+                    </dialog>)
                     :
                     <dialog>
                         <header className="modalHeader">
@@ -276,17 +276,17 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                 <input type="submit" value="send"></input>
                         </form>
                         <div className="errorMessage">
-                                {(() => {
-                                    switch (errorMessage) {
-                                        case 0:
-                                            return <></>;
-                                        case 1:
-                                            return <>Password reset-link has been sent!</>;
-                                        case 2:
-                                            return <>Could not find email</>;
+                            {(() => {
+                                switch (errorMessage) {
+                                    case 0:
+                                        return <></>;
+                                    case 1:
+                                        return <>Password reset-link has been sent!</>;
+                                    case 2:
+                                        return <>Could not find email</>;
                                     }
-                                })()}
-                            </div>
+                            })()}
+                        </div>
                     </div>
                 </div>
                 :
