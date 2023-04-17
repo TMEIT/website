@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import {getApiFetcher} from "../api";
 import useIsScreenWide from "../useIsScreenWide";
+import {Link} from "react-router-dom";
 
 const StyledLoginModal = styled(LoginModal)({
 
@@ -54,7 +55,7 @@ const StyledLoginModal = styled(LoginModal)({
     },
 
     //Mobile/thinscreen-headers
-    dialogMobile: {
+    ".dialogMobile": {
         position: "relative",
         zIndex: 20,
         background: "#fff",
@@ -119,6 +120,8 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
     // Error message for logins
     const [errorMessage, setError] = useState(0);
 
+    const [forgot, setForgot] = useState(false);
+
     const ScreenIsWide = useIsScreenWide(950);
 
     function handleLogin(e) {
@@ -151,20 +154,153 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
         };
     }
 
+    function handleForgot(e) {
+        e.preventDefault();
+
+        setError(1);
+    }
+
     if(ScreenIsWide)  //Make a big LoginModal for desktops/wider screens
     {   return (
             <div className={className}>
-                <dialog open>
-                    <header className="modalHeader">
-                        <h2>Login</h2>
+                {forgot?
+                    <dialog>
+                        <header className="modalHeader">
+                            <h2>Forgot your password?</h2>
+                            <button
+                                onClick={() => setLoginModalOpen(false)}
+                                className="closeButton"
+                                >
+                                &times;
+                            </button>
+                        </header>
+                        <div className="modalMain">
+                            <form onSubmit={handleForgot}>
+                                <label htmlFor="email">Please input the mail-address of your account, a password reset-link will be sent to it</label>
+                                    <input
+                                        type="text"
+                                        id="email"
+                                        name="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        ></input>
+                                    <input type="submit" value="send"></input>
+                            </form>
+                            <div className="errorMessage">
+                                {(() => {
+                                    switch (errorMessage) {
+                                        case 0:
+                                            return <></>;
+                                        case 1:
+                                            return <>Password reset-link has been sent!</>;
+                                        case 2:
+                                            return <>Could not find email</>;
+                                    }
+                                })()}
+                            </div>
+                        </div>
+                    </dialog>
+                    :
+                    <dialog>
+                        <header className="modalHeader">
+                            <h2>Login</h2>
+                            <button
+                                onClick={() => setLoginModalOpen(false)}
+                                className="closeButton"
+                                >
+                                &times;
+                            </button>
+                        </header>
+                        <div className="modalMain">
+                            <form onSubmit={handleLogin}>
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    ></input>
+                                <label htmlFor="pswrd">Password</label>
+                                <input
+                                    type="password"
+                                    id="pswrd"
+                                    name="password"
+                                    value={pswrd}
+                                    onChange={(e) => setPswrd(e.target.value)}
+                                    ></input>
+                                <input type="submit" value="login"></input>
+                            </form> 
+                            <Link onClick={setForgot(true)}>forgot your password?</Link>
+                            <div className="errorMessage">
+                                {(() => {
+                                    switch (errorMessage) {
+                                        case 0:
+                                            return <></>;
+                                        case 1:
+                                            return <>Incorrect email or password</>;
+                                        case 2:
+                                            return <>Validation error</>;
+                                    }
+                                })()}
+                            </div>
+                        </div>
+                    </dialog>
+                }           
+            </div>
+        )}
+    else            //Make a small LoginModal for mobiles/thinner screens
+    {return (
+        <div className={className}>
+            {forgot?
+                <div className="dialogMobile">
+                    <header className="modalHeaderMobile">
+                        <h2>Forgot your password?</h2>
                         <button
                             onClick={() => setLoginModalOpen(false)}
-                            className="closeButton"
+                            className="closeButtonMobile"
                             >
                             &times;
                         </button>
                     </header>
-                    <div className="modalMain">
+                    <div className="modalMainMobile">
+                        <form onSubmit={handleForgot}>
+                            <label htmlFor="email">Please input the mail-address of your account, a password reset-link will be sent to it</label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    ></input>
+                                <input type="submit" value="send"></input>
+                        </form>
+                        <div className="errorMessage">
+                                {(() => {
+                                    switch (errorMessage) {
+                                        case 0:
+                                            return <></>;
+                                        case 1:
+                                            return <>Password reset-link has been sent!</>;
+                                        case 2:
+                                            return <>Could not find email</>;
+                                    }
+                                })()}
+                            </div>
+                    </div>
+                </div>
+                :
+                <div className="dialogMobile">
+                    <header className="modalHeaderMobile">
+                        <h2>Login</h2>
+                        <button
+                            onClick={() => setLoginModalOpen(false)}
+                            className="closeButtonMobile"
+                            >
+                            &times;
+                        </button>
+                    </header>
+                    <div className="modalMainMobile">
                         <form onSubmit={handleLogin}>
                             <label htmlFor="email">Email</label>
                             <input
@@ -184,6 +320,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                 ></input>
                             <input type="submit" value="login"></input>
                         </form>
+                        <Link onClick={setForgot(true)}>forgot your password?</Link>
                         <div className="errorMessage">
                             {(() => {
                                 switch (errorMessage) {
@@ -197,56 +334,8 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                             })()}
                         </div>
                     </div>
-                </dialog>
-            </div>
-        )}
-    else            //Make a small LoginModal for mobiles/thinner screens
-    {return (
-        <div className={className}>
-            <dialogMobile open>
-                <header className="modalHeaderMobile">
-                    <h2>Login</h2>
-                    <button
-                        onClick={() => setLoginModalOpen(false)}
-                        className="closeButtonMobile"
-                        >
-                        &times;
-                    </button>
-                </header>
-                <div className="modalMainMobile">
-                    <form onSubmit={handleLogin}>
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="text"
-                            id="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            ></input>
-                        <label htmlFor="pswrd">Password</label>
-                        <input
-                            type="password"
-                            id="pswrd"
-                            name="password"
-                            value={pswrd}
-                            onChange={(e) => setPswrd(e.target.value)}
-                            ></input>
-                        <input type="submit" value="login"></input>
-                    </form>
-                    <div className="errorMessage">
-                        {(() => {
-                            switch (errorMessage) {
-                                case 0:
-                                    return <></>;
-                                case 1:
-                                    return <>Incorrect email or password</>;
-                                case 2:
-                                    return <>Validation error</>;
-                            }
-                        })()}
-                    </div>
                 </div>
-            </dialogMobile>
+            }
         </div>
     )}
 }
