@@ -99,7 +99,13 @@ const router = createBrowserRouter([{
                 return await getApiFetcher().get("/migrations/members/").json();
             }
         },
-        {path: "/passwordreset", element: <routes.PasswordReset.component />, loader: routes.PasswordReset.loader},
+        { path: "/passres", element: <routes.PasswordReset.component />, 
+            loader: async () => {
+                await routes.PasswordReset.loader();
+                let searchParams = new URLSearchParams(document.location.search)
+                return reset_token = searchParams.get('token');
+            }
+        },
     ]
 }]);
 
