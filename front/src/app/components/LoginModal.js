@@ -119,6 +119,8 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
 
     const ScreenIsWide = useIsScreenWide(950);
 
+    const setMessg = () => {setError(3);}
+
     function handleLogin(e) {
         e.preventDefault();
 
@@ -228,7 +230,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                 ></input>
                             <input type="submit" value="login"></input>
                         </form> 
-                        <Link onClick={setForgot}>forgot your password?</Link>
+                        <Link onClick={setMessg}>forgot your password?</Link>
                         <div className="errorMessage">
                             {(() => {
                                 switch (errorMessage) {
@@ -238,6 +240,8 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                         return <>Incorrect email or password</>;
                                     case 2:
                                         return <>Validation error</>;
+                                    case 3:
+                                        return <>Sorry, this is just a placeholder for the upcoming reset password-feature</>
                                 }
                             })()}
                         </div>
@@ -317,7 +321,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                             ></input>
                         <input type="submit" value="login"></input>
                     </form>
-                    <Link onClick={setForgot}>forgot your password?</Link>
+                    <Link onClick={setMessg}>forgot your password?</Link>
                     <div className="errorMessage">
                         {(() => {
                             switch (errorMessage) {
@@ -327,6 +331,8 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                     return <>Incorrect email or password</>;
                                 case 2:
                                     return <>Validation error</>;
+                                case 3:
+                                    return <>Sorry, this is just a placeholder for the upcoming reset password-feature</>
                             }
                         })()}
                     </div>
