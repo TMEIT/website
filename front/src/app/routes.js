@@ -48,6 +48,10 @@ const routes = {
         "component": lazy(() => import("./layouts/WebsiteMigrations")),
         "loader": async () => await import("./layouts/WebsiteMigrations"),
     },
+    "PasswordReset": {
+        "component": lazy(() => import("./layouts/PasswordReset")),
+        "loader": async () => await import("./layouts/PasswordReset"),
+    },
 }
 
 export default routes;
