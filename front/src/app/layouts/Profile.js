@@ -28,6 +28,7 @@ function Profile({className}) {
   }
   const nickname = data.nickname;
   const fullName = data.first_name + " " + data.last_name;
+  const phonenum = data.phone;
   // const currentWorkteam = data.workteams[0].name; // TODO: Change this to choose all the workteams that are active
   const role = ((current_role) => {
     let role_data = currentRolesEN.get(current_role).toString();
@@ -47,6 +48,7 @@ function Profile({className}) {
             <h1>{nickname}</h1>
             <h2>{fullName}</h2>
             <h3>{role}</h3>
+            <h3>{phonenum}</h3>
             {/*<DetailsBox data={data} />*/}
         </TextSummary>
     </Centered>

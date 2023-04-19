@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import {getApiFetcher} from "../api";
 import useIsScreenWide from "../useIsScreenWide";
+import {Link} from "react-router-dom";
 
 const StyledLoginModal = styled(LoginModal)({
 
@@ -54,19 +55,14 @@ const StyledLoginModal = styled(LoginModal)({
     },
 
     //Mobile/thinscreen-headers
-    dialogMobile: {
-        position: "relative",
-        zIndex: 20,
-        background: "#fff",
-        width: "250px",
-        marginTop: "10%",
-        marginLeft: "auto",
-        marginRight: "auto",
-
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-around",
-    },
+    "@media (max-width: 949px)" : {
+        dialog: {
+            width: "250px",
+            marginTop: "10%",
+            marginLeft: "auto",
+            marginRight: "auto",
+        }
+    }, 
 
     ".modalHeaderMobile": {
         background:" #44687d",
@@ -119,7 +115,11 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
     // Error message for logins
     const [errorMessage, setError] = useState(0);
 
+    const [forgot, setForgot] = useState(false);
+
     const ScreenIsWide = useIsScreenWide(950);
+
+    const setMessg = () => {setError(3);}
 
     function handleLogin(e) {
         e.preventDefault();
@@ -151,9 +151,55 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
         };
     }
 
+    function handleForgot(e) {
+        e.preventDefault();
+
+        setError(1);
+    }
+
+    console.log(forgot);
+
     if(ScreenIsWide)  //Make a big LoginModal for desktops/wider screens
     {   return (
             <div className={className}>
+                {forgot?
+                <dialog open>
+                    <header className="modalHeader">
+                        <h2>Forgot your password?</h2>
+                        <button
+                            onClick={() => setLoginModalOpen(false)}
+                            className="closeButton"
+                            >
+                            &times;
+                        </button>
+                    </header>
+                    <div className="modalMain">
+                        <form onSubmit={handleForgot}>
+                            <label htmlFor="email">Please input the mail-address of your account, a password reset-link will be sent to it</label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    ></input>
+                                <input type="submit" value="send"></input>
+                        </form>
+                        <div className="errorMessage">
+                            {(() => {
+                                switch (errorMessage) {
+                                    case 0:
+                                        return <></>;
+                                    case 1:
+                                        return <>Password reset-link has been sent! You may now close this pop-up</>;
+                                    case 2:
+                                        return <>Could not find email</>;
+                                }
+                            })()}
+                        </div>
+                    </div>
+                </dialog>
+                :
                 <dialog open>
                     <header className="modalHeader">
                         <h2>Login</h2>
@@ -183,7 +229,8 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                 onChange={(e) => setPswrd(e.target.value)}
                                 ></input>
                             <input type="submit" value="login"></input>
-                        </form>
+                        </form> 
+                        <Link onClick={setMessg}>forgot your password?</Link>
                         <div className="errorMessage">
                             {(() => {
                                 switch (errorMessage) {
@@ -193,17 +240,58 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                         return <>Incorrect email or password</>;
                                     case 2:
                                         return <>Validation error</>;
+                                    case 3:
+                                        return <>Sorry, this is just a placeholder for the upcoming reset password-feature</>
                                 }
                             })()}
                         </div>
                     </div>
                 </dialog>
-            </div>
+                }
+            </div>      
         )}
     else            //Make a small LoginModal for mobiles/thinner screens
     {return (
         <div className={className}>
-            <dialogMobile open>
+            {forgot?
+            <dialog open>
+                <header className="modalHeaderMobile">
+                    <h2>Forgot your password?</h2>
+                    <button
+                        onClick={() => setLoginModalOpen(false)}
+                        className="closeButtonMobile"
+                        >
+                        &times;
+                    </button>
+                </header>
+                <div className="modalMainMobile">
+                    <form onSubmit={handleForgot}>
+                        <label htmlFor="email">Please input the mail-address of your account, a password reset-link will be sent to it</label>
+                            <input
+                                type="text"
+                                id="email"
+                                name="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                ></input>
+                            <input type="submit" value="send"></input>
+                    </form>
+                    <div className="errorMessage">
+                        {(() => {
+                            switch (errorMessage) {
+                                case 0:
+                                    return <></>;
+                                case 1:
+                                    return <>Password reset-link has been sent! You may now close this pop-up</>;
+                                case 2:
+                                    return <>Could not find email</>;
+                                }
+                        })()}
+                    </div>
+                </div>
+            </dialog>
+            :
+            <dialog open>
                 <header className="modalHeaderMobile">
                     <h2>Login</h2>
                     <button
@@ -233,6 +321,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                             ></input>
                         <input type="submit" value="login"></input>
                     </form>
+                    <Link onClick={setMessg}>forgot your password?</Link>
                     <div className="errorMessage">
                         {(() => {
                             switch (errorMessage) {
@@ -242,11 +331,14 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                     return <>Incorrect email or password</>;
                                 case 2:
                                     return <>Validation error</>;
+                                case 3:
+                                    return <>Sorry, this is just a placeholder for the upcoming reset password-feature</>
                             }
                         })()}
                     </div>
                 </div>
-            </dialogMobile>
+            </dialog>
+            }
         </div>
     )}
 }
