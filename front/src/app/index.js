@@ -103,7 +103,8 @@ const router = createBrowserRouter([{
             loader: async () => {
                 await routes.PasswordReset.loader();
                 let searchParams = new URLSearchParams(document.location.search)
-                return reset_token = searchParams.get('token');
+                const reset_token = searchParams.get('token');
+                return reset_token;
             }
         },
     ]
