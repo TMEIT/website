@@ -22,8 +22,9 @@ function SignupList({className, children}) {
     );
 }
 
+//Render-method seems to be the current problem
 const render_signups = (data, role) => 
-    Object.values(data).filter(data => data.role === role).map(data => {console.log(data); return(<SignupListItem worker={data}/>)})
+    Object.values(data).filter(data => data.role === role).map(data => {console.log(data.signups); return(<SignupListItem worker={data}/>)})
 
 const StyledViewSignups = styled(ViewSignups)({});
 
@@ -47,7 +48,7 @@ function ViewSignups({className, eventID})
                 ]
     };
 
-    const masterList = render_signups(dummySignupList, "Master");
+    const masterList = render_signups(dummySignupList, "Master"); //Render-method seems to be the problem
     const marshalList = render_signups(dummySignupList, "Marshal");
     const praoList = render_signups(dummySignupList, "Prao");
     
