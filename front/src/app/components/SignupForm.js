@@ -20,7 +20,17 @@ const StyledSignupForm = styled(SignupForm)({
     ".submit": {
         display : "flex",
         justifyContent: "flex-end"
-    }
+    },
+
+    "@media (max-width: 950px)": {
+        ".signupForm": {
+            fontSize: "10px",
+        },
+
+        ".formFont": {
+            fontSize: "10px",
+        },
+    },
 })
 
 function SignupForm({className, eventID})

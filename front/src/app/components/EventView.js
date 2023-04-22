@@ -23,7 +23,14 @@ const StyledEventView = styled(EventView)({
     "#banner": {
         width: "100%",
         height: "20%"
-    }
+    },
+
+    "@media (max-width: 950px)" : {
+        ".eventView": {
+            maxWidth: "30em",
+        }
+    },
+
 })
 
 function EventView({className, eventID})

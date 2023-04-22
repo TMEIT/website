@@ -1,10 +1,6 @@
-import { useState } from "react";
-import {useEffect} from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
 import { kisel_blue, kisel_blue_dark, primary_lighter } from "../palette";
 import { getApiFetcher } from "../api.js";
 
