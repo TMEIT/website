@@ -22,14 +22,10 @@ const StyledSignupForm = styled(SignupForm)({
         justifyContent: "flex-end"
     },
 
-    "@media (max-width: 950px)": {
-        ".signupForm": {
-            fontSize: "10px",
-        },
-
-        ".formFont": {
-            fontSize: "10px",
-        },
+    "@media (max-width: 600px)": {
+        ".MuiSlider-markLabel": {
+            fontSize: "0.6rem",
+        }
     },
 })
 
@@ -184,7 +180,7 @@ function SignupForm({className, eventID})
                                 <label htmlFor="breakNo"> No</label>
                             </div>
                             <Slider
-                            className = "formFont"
+                            className="formFont"
                             id = "breaktimeVal"
                             min={time[0]}
                             max={time[1]}
