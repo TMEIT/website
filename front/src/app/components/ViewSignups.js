@@ -8,8 +8,7 @@ import { kisel_blue, kisel_blue_dark, primary_lighter } from "../palette";
 import { getApiFetcher } from "../api.js";
 
 const StyledSignupList = styled(SignupList) ({ 
-    display: "flex",
-    flexWrap: "wrap",
+    display: "grid",
     justifyContent: "space-around",
     alignItems: "center",
 })
@@ -24,7 +23,7 @@ function SignupList({className, children}) {
 
 //Render-method seems to be the current problem
 const render_signups = (data, role) => 
-    Object.values(data).filter(data => data.role === role).map(data => {console.log(data.signups); return(<SignupListItem worker={data}/>)})
+    Object.values(data).filter(data => data.role === role).map(data => {console.log(data); return(<SignupListItem worker={data}/>)})
 
 const StyledViewSignups = styled(ViewSignups)({});
 
@@ -48,13 +47,13 @@ function ViewSignups({className, eventID})
                 ]
     };
 
-    const masterList = render_signups(dummySignupList, "Master"); //Render-method seems to be the problem
-    const marshalList = render_signups(dummySignupList, "Marshal");
-    const praoList = render_signups(dummySignupList, "Prao");
+    const masterList = render_signups(dummySignupList.signups, "Master"); //Render-method seems to be the problem
+    const marshalList = render_signups(dummySignupList.signups, "Marshal");
+    const praoList = render_signups(dummySignupList.signups, "Prao");
     
     return(
         <div className={className}>
-            <Box sx={{marginTop: 2, marginBottom: 2, padding: "1em", borderRadius: "1em", bgcolor: primary_lighter}}>
+            <Box sx={{display: "grid", marginTop: 2, marginBottom: 2, padding: "1em", borderRadius: "1em", bgcolor: primary_lighter}}>
                 <Grid>
                     <h1>Signups for event: {eventID} </h1>
                 </Grid>
