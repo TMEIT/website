@@ -80,12 +80,11 @@ Tilt is owned by Docker, inc. and is very useful for doing development in contai
 In order for Tilt to upload Docker images to the Kind Kubernetes (k8s) cluster, we use ctlptl to set up a local image registry on k8s.
 
 ### Installing
-1. Install Docker, Tilt, Kubectl, Kind, and ctlptl. (It's a lot of tools, but they all are quite small and they help us run everything in a very automated way)
+1. Install Docker, Tilt, Kubectl, and Kind.
    1. [Docker install instructions](https://www.docker.com/)
    2. [Tilt install instructions](https://docs.tilt.dev/)
    3. [Kubectl install instructions](https://kubernetes.io/docs/tasks/tools/)
    4. [Kind install instructions](https://kind.sigs.k8s.io/docs/user/quick-start)
-   5. [ctlptl install instructions](https://github.com/tilt-dev/ctlptl#how-do-i-install-it) On Linux, you need to install Go. (e.g. `sudo apt install go` or `sudo dnf install go`)
 2. Start your Kubernetes cluster
    1. Run `kind create-cluster --wait 5m` to create your Kubernetes cluster. It should take a minute or two to download everything and start the cluster.
    2. Verify that your cluster is working by running `kubectl version`. You can also run `kubectl get pods -A` to see all containers running in Kubernetes. (Note that all of Kubernetes and its running containers are all running in a Docker container named kindest/node)
