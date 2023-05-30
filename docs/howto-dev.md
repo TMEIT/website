@@ -75,9 +75,7 @@ Both environments use similar Kubernetes YAML files to define the containers.
 
 For rapid rebuilding and hot reloading, we use Tilt, 
 which automatically rebuilds the development environment when the code changes.
-Tilt is owned by Docker, inc. and is very useful for doing development in containers.
-
-In order for Tilt to upload Docker images to the Kind Kubernetes (k8s) cluster, we use ctlptl to set up a local image registry on k8s.
+Tilt is made by Docker, inc. and is very useful for doing development in containers.
 
 ### Installing
 1. Install Docker, Tilt, Kubectl, and Kind.
