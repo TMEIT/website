@@ -28,10 +28,7 @@ we use Github Actions and a number of scripts to enable this.
 * The Github Actions workflow that runs on every push to the master branch is located in [`publish-master.yaml`](/.github/workflows/publish-master.yaml).
 * The Github Actions workflow that validates and tests incoming Pull Requests is located in [`test-pr.yaml`](/.github/workflows/test-pr.yaml).
 * Helper scripts for Github actions and coordinating component versions are located in [`release_utils/`](/release_utils).
-* The Tiltfiles for spinning up a developer environment are located at [Tiltfile](/Tiltfile) 
-and [Tiltfile-docker](/Tiltfile-docker), 
-depending on if you use Podman or Docker on your local computer. 
-* [tilt_options.json](/tilt_options.json) is used to configure Tilt after you have cloned this repository onto your local computer.
+* The Tiltfile for spinning up the developer environment is located at [Tiltfile](/Tiltfile).
 
 ### Infrastructure
 
