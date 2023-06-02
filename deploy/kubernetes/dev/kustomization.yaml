@@ -5,7 +5,6 @@ bases:
   - ../base
 
 resources:
-- tmeit-app/regcred.yaml
 - tmeit-app/test-job.yaml
 - create-test-db/job.yaml
 

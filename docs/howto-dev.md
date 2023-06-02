@@ -63,27 +63,39 @@
 
 ## Local development environment
 
-- Local requirements: kubectl, Tilt and Podman
-  - Works on Linux
-  - On macOS and Windows, you will probably need to use Tilt and Docker Desktop instead
-- Live testing is done on a Kubernetes cluster by deploying with Tilt
-- Container building is done with Podman on your local machine
-  - I am biased against the Docker daemon and do not have it installed.
-- You will need a local Kubernetes cluster to run the app for testing
-  - The cluster also needs [kubegres](https://www.kubegres.io/) installed to manage the database
-  - Try microkube or ask @JustinLex for access to his home cluster
-  - Testing could be done on the production cluster as well, but would be expensive
-- Tilt does hot reloads when code is updated, compiling your containers and pushing them to the Kubernetes cluster
+The development environment is designed to be identical to the production environment. 
 
-### Configuring Tilt
+The app runs in a Docker container that is similar to the production container,
+and the database and helper services also run in containers alongside the main app.
 
-- Tilt is configured with the Tiltfile
-- cluster and repository specific variables are defined in tilt_options.json
-  - You shouldn't have to change anything in Tiltfile, just tilt_options
+As with the production environment, these containers are managed with Kubernetes (k8s). 
+While the production k8s cluster runs on a Hetzner Cloud instance, 
+the development k8s cluster runs on your own computer using Kind.
+Both environments use similar Kubernetes YAML files to define the containers.
 
-# Starting local environment
+For rapid rebuilding and hot reloading, we use Tilt, 
+which automatically rebuilds the development environment when the code changes.
+Tilt is made by Docker, inc. and is very useful for doing development in containers.
 
-Run `tilt up`, if you're running Docker Desktop, run `tilt up -f Tiltfile-docker`.
+### Installing
+1. Install Docker, Tilt, Kubectl, and Kind.
+   1. [Docker install instructions](https://www.docker.com/)
+   2. [Tilt install instructions](https://docs.tilt.dev/)
+   3. [Kubectl install instructions](https://kubernetes.io/docs/tasks/tools/)
+   4. [Kind install instructions](https://kind.sigs.k8s.io/docs/user/quick-start)
+2. Start your Kubernetes cluster
+   1. Run `kind create-cluster --wait 5m` to create your Kubernetes cluster. It should take a minute or two to download everything and start the cluster.
+   2. Verify that your cluster is working by running `kubectl version`. You can also run `kubectl get pods -A` to see all containers running in Kubernetes. (Note that all of Kubernetes and its running containers are all running in a Docker container named kindest/node)
+3. Start your development environment
+   1. cd into the root directory for this git repo (e.g. `cd ~/IdeaProjects/tmeit-website`)
+   2. Run `./startdev.sh`. This will build all the containers and start up the tmeit website in your k8s cluster. (Potential issue: If you are running Fedora Linux, Docker buildkit doesn't play nice with SELinux. We could use Podman, but I think it's just easier if we disable SELinux temporarily. Run `sudo setenforce 0` to temporarily disable the SELinux security system.)
+   3. Click the link that tilt gives you to see the website containers starting
+   4. (Optional) Disable any containers you don't need for your testing, such as the mailserver, the worker, or redis, in order to speed up redployments.
+   5. (Optional) If you get errors like `failed to create fsnotify watcher: too many open files` on Linux, increase your file limits with `ulimit -n 8192`, `sudo sysctl -w fs.inotify.max_user_instances=1024`, and `sudo sysctl -w fs.inotify.max_user_watches=12288`. Note that these new limits are reset when your computer is restarted.
+   6. Once the containers have started, open your development website at localhost:8080
+4. Tear down your development environment
+   1. (Optional) Stop the development containers with `tilt down`
+   2. Delete your Kubernetes cluster with `kind delete cluster` (Kubernetes will run in the background otherwise, eating your CPU and RAM)
 
 ## Creating a new release
 
