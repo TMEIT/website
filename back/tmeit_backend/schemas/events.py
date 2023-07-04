@@ -1,6 +1,9 @@
 import datetime
 from uuid import UUID
-from ..members.enums import CurrentRoleEnum
+from typing import TypedDict, Any, Literal, Union, Optional, NamedTuple
+from .members.enums import CurrentRoleEnum
+from .access_levels import APIAccessLevelsEnum
+from pydantic import constr, Field, BaseConfig, create_model, Extra
 
 # permission level aliases
 edit = APIAccessLevelsEnum.edit
@@ -21,39 +24,41 @@ class FieldDescription(TypedDict):
 
 FieldDict = dict[str, FieldDescription]
 
+class FieldTuple(NamedTuple):
+    field_type: Any
+    default_value: Optional[Any]
+
+
 event_fields: FieldDict = {
     # Fields that are visible to everyone and can be edited by any TMEIT member
-    "event_time":       FieldDescription(master=edit,  member=edit,    public=read,    type=datetime.date),
-    "sign_up_end_time":       FieldDescription(master=edit,  member=edit,    public=read,    type=datetime.date),
-    "title":       FieldDescription(master=edit,  member=edit,    public=read,    type=str),
-    "description":       FieldDescription(master=edit,  member=edit,    public=read,    type=str),
-    "location":       FieldDescription(master=edit,  member=edit,    public=read,    type=str),
-    "attending":       FieldDescription(master=edit,  member=edit,    public=read,    type=list[UUID]),
+    "event_time":           FieldDescription(master=edit,  member=edit,    prao=read,    public=read,    type=datetime.date),
+    "sign_up_end_time":     FieldDescription(master=edit,  member=edit,    prao=read,    public=read,    type=datetime.date),
+    "title":                FieldDescription(master=edit,  member=edit,    prao=read,    public=read,    type=str),
+    "description":          FieldDescription(master=edit,  member=edit,    prao=read,    public=read,    type=str),
+    "location":             FieldDescription(master=edit,  member=edit,    prao=read,    public=read,    type=str),
+    "attending":            FieldDescription(master=edit,  member=edit,    prao=read,    public=read,    type=list[UUID]),
 
     # Fields that only are to visible and can be edited by any TMEIT member
-    "location":       FieldDescription(master=edit,  member=edit,    public=read,    type=CurrentRoleEnum),
+    "visibility":             FieldDescription(master=edit,  member=edit,    prao=read,    public=denied,    type=CurrentRoleEnum),
     # Fields that can not be edited
-    "time_created":       FieldDescription(master=read,  member=read,    public=read,    type=datetime.date),
-    "time_updated":       FieldDescription(master=read,  member=read,    public=read,    type=datetime.date),
+    "time_created":         FieldDescription(master=read,  member=read,    prao=read,    public=denied,    type=datetime.date),
+    "time_updated":         FieldDescription(master=read,  member=read,    prao=read,    public=denied,   type=datetime.date),
 }
 
 def build_events_schema_dict(
-        permission_role: Literal["master"] | Literal["member"] | Literal["public"],
-        api_access_level: APIAccessLevelsEnum,
+        permission_role: Literal["master"] | Literal["member"] | Literal["prao"] | Literal["public"],
+        api_access_level: APIAccessLevelsEnum) -> dict[str, FieldTuple]:
 
     schema_dict: dict[str, FieldTuple] = {}
 
-    for field_name, fd in member_fields.items():
+
+    for field_name, fd in event_fields.items():
         field_name: str
         fd: FieldDescription
 
         if fd[permission_role] >= api_access_level:  # Check permission level
 
-            # Make all fields optional for patch schemas, since our PATCH endpoints only take 1 field
-            if all_fields_optional is True:
-                type = Optional[fd['type']]
-            else:
-                type = fd['type']
+            type = fd['type']
 
             # Add field to schema dict
             schema_dict[field_name] = FieldTuple(type, None)
@@ -79,15 +84,15 @@ class PatchSchemaConfig(BaseConfig):
     extra = Extra.forbid
 
 # View schemas
-EventPublicView = create_model('EventPublicView', **database_fields_schema_dict, **build_member_schema_dict("public", read))
-EventPraoView = create_model('EventPraoView', **database_fields_schema_dict, **build_member_schema_dict("prao", read))
-EventMemberView = create_model('EventMemberView', **database_fields_schema_dict, **build_member_schema_dict("member", read))
+EventPublicView = create_model('EventPublicView', **database_fields_schema_dict, **build_events_schema_dict("public", read))
+EventPraoView = create_model('EventPraoView', **database_fields_schema_dict, **build_events_schema_dict("prao", read))
+EventMemberView = create_model('EventMemberView', **database_fields_schema_dict, **build_events_schema_dict("member", read))
 
 # Patch schemas
-EventMemberPatch = create_model('EventMemberPatch',   __config__=PatchSchemaConfig, **build_member_schema_dict("member", edit, all_fields_optional=True))
+EventMemberPatch = create_model('EventMemberPatch',   __config__=PatchSchemaConfig, **build_events_schema_dict("member", edit))
 
 # Create schemas
-EventMemberCreate = create_model('EventMemberCreate', **build_member_schema_dict("member", edit)
+EventMemberCreate = create_model('EventMemberCreate', **build_events_schema_dict("member", edit))
 
 # Union type for the read schemas
 EventViewResponse = Union[EventMemberView, EventPraoView, EventPublicView]

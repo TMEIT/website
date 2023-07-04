@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from .. import models
-from ..models import Event
+from ..models.events import Event
 from ..schemas.events import EventMemberCreate, EventMemberView, EventMemberPatch
 
 S = TypeVar('S', bound=BaseModel)
@@ -39,8 +39,7 @@ async def get_event_by_short_uuid(db: AsyncSession, short_uuid: str, response_sc
     return response_schema.parse_obj(sql_member)
 
 async def get_event_by_timespan(db: AsyncSession, start_time: datetime, end_time: datetime, response_schema: Type[S]) -> S:
-    stmt = select(models.Event)
-    .filter(models.Event.event_time.between(start_time, end_time))
+    stmt = select(models.Event).filter(models.Event.event_time.between(start_time, end_time))
     result = (await db.execute(stmt)).fetchone()
     if result is None:
         raise KeyError()
