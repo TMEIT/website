@@ -78,21 +78,19 @@ resource "cloudflare_record" "node1-aaaa" {
   proxied = false
 }
 
-// MX
-resource "cloudflare_record" "mx-1" {
-  zone_id = var.zone_id
-  name = "@"
-  type = "MX"
-  value = "node1.tmeit.se."
-  priority = 10
-}
-
 // SPF
 resource "cloudflare_record" "spf" {
   zone_id = var.zone_id
   name    = "@"
   type    = "TXT"
-    value   = "v=spf1 +mx -all"
+    value   = "v=spf1 include:_spf.mx.cloudflare.net include:${cloudflare_record.spf-website.hostname} ~all"
+  proxied = false
+}
+resource "cloudflare_record" "spf-website" { // Include node1.tmeit.se A and AAAA in allowed IPs for SPF
+  zone_id = var.zone_id
+  name    = "node1"
+  type    = "TXT"
+    value   = "v=spf1 a -all"
   proxied = false
 }
 
