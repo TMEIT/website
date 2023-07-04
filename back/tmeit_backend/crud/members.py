@@ -95,11 +95,15 @@ async def update_member(db: AsyncSession,
                         short_uuid: str,
                         patch_data: MemberSelfPatch | MemberMasterPatch,
                         response_schema: Type[S]) -> S:
+    
+    # Make sure that there are no 'None' values in the dict
+    patch_data_dict = {k: v for k, v in patch_data.dict().items() if v} 
+
     async with db.begin():
         await db.execute(
             update(models.Member)
             .where(models.Member.short_uuid == short_uuid)
-            .values(patch_data.dict())
+            .values(**patch_data_dict)
         )
 
         result = (await db.execute(
