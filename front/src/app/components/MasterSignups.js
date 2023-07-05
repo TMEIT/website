@@ -17,7 +17,7 @@ function MasterSignups() {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", address, true);
     xhr.setRequestHeader("Authorization", tokenText);
-    xhr.send("") 
+    xhr.send(); 
     xhr.responseType = "json";
 
     xhr.onload = function () {
@@ -124,8 +124,8 @@ function MasterSignups() {
         <p>
           Signup submitted at {e.time_created} from ip address {e.ip_address}
         </p>
-        <button onClick={() => handleAdd(e.uuid, currentData)}>Add to members</button>
-        <button onClick={() => handleDelete(e.uuid, currentData)}>Delete</button>
+        <button onClick={() => handleAdd(e.uuid)}>Add to members</button>
+        <button onClick={() => handleDelete(e.uuid)}>Delete</button>
       </>
     ))
   }
