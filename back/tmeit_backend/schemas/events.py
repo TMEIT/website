@@ -30,7 +30,8 @@ class FieldTuple(NamedTuple):
 
 event_fields: FieldDict = {
     # Fields that are visible to everyone and can be edited by any TMEIT member
-    "event_time":           FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
+    "event_start_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
+    "event_end_time":       FieldDescription(member=edit,    prao=read,    public=read,    type=Optional(datetime.date)),
     "sign_up_end_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
     "title":                FieldDescription(member=edit,    prao=read,    public=read,    type=str),
     "description":          FieldDescription(member=edit,    prao=read,    public=read,    type=str),
