@@ -28,8 +28,10 @@ and run Alembic outside of a container on your local computer.
 I have made a bash script to do this, which port-forwards the database in the dev environment to localhost and runs Alembic.
 In order to run this script, you must have the dev environment running, 
 and you need to have the poetry and the backend installed in a virtual environment on your local machine, 
-This can be done by running `poetry install` with `back/` as your working directory and then activating the venv it creates.
-To run the script, run `scripts/autogen_migrations.sh` with `back/db_migrations` as your working directory.
+This can be done by running `poetry install` with `back/` as your working directory,
+and then activating the venv in your shell with `poetry shell`.
+Then, once you're in the poetry shell,
+you can run the script by running `scripts/autogen_migrations.sh` with `back/db_migrations` as your working directory.
 
 If you are creating a new model, make sure that the model is imported in the module file models/__init__.py,
 so that the model is initialized when running Alembic
