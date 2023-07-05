@@ -12,5 +12,5 @@ export SQLALCHEMY_DATABASE_URL='postgresql+asyncpg://tmeit_backend:HBXOHEc6Tpkqu
 echo "Enter a short comment about what you're changing in this migration"
 read -r COMMENT
 
-VENV_PATH=$(cd .. && ~/.local/bin/poetry env info --path)
+VENV_PATH=$(. cd .. && poetry env info --path)
 "$VENV_PATH"/bin/alembic -c alembic.ini revision --autogenerate -m "$COMMENT"
