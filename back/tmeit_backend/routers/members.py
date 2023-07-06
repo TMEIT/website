@@ -126,9 +126,20 @@ async def patch_member(short_uuid: base64url_length_8,
                             content={"error": f"No member with the {short_uuid=} was found."})
     return member
 
+@router.patch("/reset/{uuid}",
+                responsemodel=MemberSelfView,
+                responses = {400: {"model": BadPatchResponse},
+                             404: {"model": NotFoundResponse}})
+async def reset_pw():
+    try:
+        await reset_pw(db=db, uuid=uuid, data=data)
+    except NotFoundError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"error": 'Invalid authorization link.'})
 
 # TODO: clear password
 # TODO: reset password
+
 
 
 class InvalidPasswordResponse(BaseModel):
