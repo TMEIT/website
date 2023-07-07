@@ -2,8 +2,35 @@ import { Fragment, useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import { useFetch } from "../FetchHooks";
 import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+import TextSummary from "../components/TextSummary.js";
+import { primary_light } from "../palette";
+import useIsScreenWide from "../useIsScreenWide";
+
 
 function MasterSignups() {
+
+  let screenWide = useIsScreenWide(949);
+
+  const style ={
+    signups :{
+      background: primary_light, 
+      bordeStyle: "solid",
+      maxWidth: "50vw",
+      margin: "2em",
+      borderRadius: "1em",
+      padding: "1em",
+    },
+
+    signupsMobile :{
+      background: primary_light, 
+      bordeStyle: "solid",
+      margin: "2em",
+      maxWidth: "80vw",
+      borderRadius: "1em",
+      padding: "1em",
+    }
+  };
   const { loading, data } = useFetch("/api/v1/sign_up/");
 
   let signups;
@@ -115,18 +142,20 @@ function MasterSignups() {
     // ));
     
     signups = data.map((e) => (
-      <>
-        <p>{e.login_email}</p>
-        <p>
-          {e.first_name} {e.last_name}
-        </p>
-        <p>Phone: {e.phone}</p>
-        <p>
-          Signup submitted at {e.time_created} from ip address {e.ip_address}
-        </p>
-        <button onClick={() => handleAdd(e.uuid)}>Add to members</button>
-        <button onClick={() => handleDelete(e.uuid)}>Delete</button>
-      </>
+      <div>
+        <div style={screenWide? style.signups : style.signupsMobile}>
+          <p>{e.login_email}</p>
+          <p>
+            {e.first_name} {e.last_name}
+          </p>
+          <p>Phone: {e.phone}</p>
+          <p>
+            Signup submitted at {e.time_created} from ip address {e.ip_address}
+          </p>
+          <Button variant="contained" onClick={() => handleAdd(e.uuid)}>Add to members</Button>
+          <Button variant="contained"onClick={() => handleDelete(e.uuid)}>Delete</Button>
+        </div>
+      </div>
     ))
   }
 
