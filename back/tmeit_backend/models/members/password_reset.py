@@ -4,7 +4,9 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from ...database import Base
 
-class PW_reset(Base):
+#TODO: Add functionality to remove records older than 24h
+
+class PWReset(Base):
     """
     Table for storing users that have received a password change request"
     Each entry is contains a UUID. If this UUID is provided in the API a password can be changed.

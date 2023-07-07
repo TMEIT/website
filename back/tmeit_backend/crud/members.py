@@ -47,7 +47,6 @@ async def get_member_by_short_uuid(db: AsyncSession, short_uuid: str, response_s
     sql_member['workteams_leading'] = []
     return response_schema.parse_obj(sql_member)
 
-
 async def get_member_by_login_email(db: AsyncSession, login_email: str, response_schema: Type[S]) -> S:
     stmt = select(models.Member).where(models.Member.login_email == login_email)
     result = (await db.execute(stmt)).fetchone()

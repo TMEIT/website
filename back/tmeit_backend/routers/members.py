@@ -11,10 +11,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
 from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member, change_password
+from ..crud.password_reset import reset_password_change, reset_password_request
 from ..deps import get_worker_pool
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
-    MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch, ChangePassword
-
+    MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch, ChangePassword, \
+    ResetPasswordChange, ResetPasswordRequest
 router = APIRouter()
 me_router = APIRouter()
 
@@ -126,21 +127,28 @@ async def patch_member(short_uuid: base64url_length_8,
                             content={"error": f"No member with the {short_uuid=} was found."})
     return member
 
-@router.patch("/reset/{uuid}",
+# Request to request password reset mail
+# Always return 200 OK
+@router.patch("/reset/request/{request_email}")
+async def reset_pw_request(db: AsyncSession = Depends(get_db), request_email: str):
+    await reset_password_request(db=db, request_email=request_email)
+
+# Request to change password
+@router.patch("/reset/{pw_uuid}",
                 responsemodel=MemberSelfView,
                 responses = {400: {"model": BadPatchResponse},
                              404: {"model": NotFoundResponse}})
-async def reset_pw():
+async def reset_pw_perform(
+                        patch_data: ResetPasswordChange,
+                        pw_uuid = pw_uuid,
+                        db: AsyncSession = Depends(get_db)):
     try:
-        await reset_pw(db=db, uuid=uuid, data=data)
-    except NotFoundError:
+        await reset_password_change(db=db, pw_uuid=pw_uuid, data=patch_data)
+    except KeyError:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
                             content={"error": 'Invalid authorization link.'})
 
 # TODO: clear password
-# TODO: reset password
-
-
 
 class InvalidPasswordResponse(BaseModel):
     detail: Literal['"Current password" is incorrect.']
