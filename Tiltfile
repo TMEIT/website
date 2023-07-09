@@ -1,18 +1,13 @@
-# Load modules
-load('ext://podman', 'podman_build')
-
-# Load variables from tilt_options.json
-settings = read_json('tilt_options.json', default={})
-default_registry(settings.get("default_registry"))
-allow_k8s_contexts(settings.get("allow_k8s_contexts"))
+default_registry('ttl.sh/tmeit-website-f8eb929a359f')
+allow_k8s_contexts("kind-kind")
 
 # Watch files for hot-reload
 watch_file('deploy/kubernetes/base')
 watch_file('deploy/kubernetes/dev')
 
 # Build main app with live_update enabled
-podman_build('tmeit-app', '.',
-    extra_flags=["-f", "containerfiles/tmeit-app-dev.Containerfile"],
+docker_build('tmeit-app', '.',
+    dockerfile="containerfiles/tmeit-app-dev.Containerfile",
     live_update=[
         sync('./back', '/code/'),
         sync('./front/src', '/code/front'),
@@ -26,11 +21,9 @@ podman_build('tmeit-app', '.',
         run('npm run-script build'),
     ]
 )
-
-# Build, deploy, and port-forward
-podman_build('tmeit-app-test', '.', extra_flags=["-f", "containerfiles/tmeit-app-test.Containerfile"])
-podman_build('tmeit-worker', '.', extra_flags=["-f", "containerfiles/tmeit-worker.Containerfile"])
-podman_build('create-test-db', '.', extra_flags=["-f", "containerfiles/create-test-db.Containerfile"])
+docker_build('tmeit-app-test', '.', dockerfile="containerfiles/tmeit-app-test.Containerfile")
+docker_build('tmeit-worker', '.', dockerfile="containerfiles/tmeit-worker.Containerfile")
+docker_build('create-test-db', '.', dockerfile="containerfiles/create-test-db.Containerfile")
 k8s_yaml(kustomize('deploy/kubernetes/dev'))
 k8s_resource('tmeit-app', port_forwards="8080:8080")
 k8s_resource('tmeit-app-test')

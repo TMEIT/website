@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**.md' # Don't deploy when markdown files are edited
+      - 'deploy/kubernetes/dev'  # Ignore changes to dev environment
+      - 'Tiltfile'  # Ignore changes to dev environment
+      - 'startdev.sh'  # Ignore changes to dev environment
+      - 'old_website_migration/'  # Ignore changes to scripts
 
 jobs:
   deploy:
