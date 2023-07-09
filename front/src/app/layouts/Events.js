@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
 import EventView from "../components/EventView.js";
+import Button from "@mui/material/Button";
+import {Link} from "react-router-dom";
 
 const StyledEvents = styled(Events)({
     [TextSummary]: {
@@ -13,12 +15,16 @@ const StyledEvents = styled(Events)({
 function Events({className}) {
 
     return(
+        <>
+        <Button variant="contained" style={{marginTop: "2em"}}><Link to="/createEvent">+ Add new event</Link></Button>
+        <Button variant="contained" style={{marginTop: "2em"}}><Link to="/editEvent">Edit event</Link></Button>
         <Centered className={className}>
             <EventView eventID={"Friday Pub"}>
             </EventView>
             <EventView eventID={"WTF-pub"}>
             </EventView>
         </Centered>
+        </>
     );
     /*
     return(
