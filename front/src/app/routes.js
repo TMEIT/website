@@ -52,6 +52,14 @@ const routes = {
         "component": lazy(() => import("./layouts/PasswordReset")),
         "loader": async () => await import("./layouts/PasswordReset"),
     },
+    "CreateEvent": {
+        "component": lazy(() => import("./layouts/CreateEvent")),
+        "loader": async () => await import("./layouts/CreateEvent"),
+    },
+    "EditEvent": {
+        "component": lazy(() => import("./layouts/EditEvent")),
+        "loader": async () => await import("./layouts/EditEvent"),
+    },
 }
 
 export default routes;

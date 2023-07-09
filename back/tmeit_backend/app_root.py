@@ -42,6 +42,8 @@ app.include_router(health_router)
 @app.get("/about")
 @app.get("/documents")
 @app.get("/passres")
+@app.get("/createEvent")
+@app.get("/editEvent")
 async def load_js_app():
     return FileResponse('static/front/index.html')
 

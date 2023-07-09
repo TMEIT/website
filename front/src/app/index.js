@@ -106,6 +106,8 @@ const router = createBrowserRouter([{
                 return reset_token;
             }
         },
+        { path: "/createEvent", element: <routes.CreateEvent.component />, loader: routes.CreateEvent.loader },
+        { path: "/editEvent", element: <routes.EditEvent.component />, loader: routes.EditEvent.loader },
     ]
 }]);
 
