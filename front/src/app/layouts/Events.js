@@ -17,7 +17,6 @@ function Events({className}) {
     return(
         <>
         <Button variant="contained" style={{marginTop: "2em"}}><Link to="/createEvent">+ Add new event</Link></Button>
-        <Button variant="contained" style={{marginTop: "2em"}}><Link to="/editEvent">Edit event</Link></Button>
         <Centered className={className}>
             <EventView eventID={"Friday Pub"}>
             </EventView>
