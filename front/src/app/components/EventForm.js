@@ -4,14 +4,16 @@ import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { kisel_blue_dark, primary_lighter } from "../palette";
+import { kisel_blue_dark, kisel_blue, primary_lighter, kisel_blue_light, me_and_in_teal } from "../palette";
 import { getApiFetcher } from "../api.js";
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
+import Button from "@mui/material/Button";
+import {Link} from "react-router-dom";
 
 const StyledEventForm = styled(EventForm)({
     ".eventForm": {
         padding: "1em",
-        background: kisel_blue_dark,
+        background: me_and_in_teal,
         borderRadius: "1em",
         marginBottom: "1em",
     },
@@ -37,11 +39,12 @@ const StyledEventForm = styled(EventForm)({
 
 function EventForm({className})
 {
-
     const [userData, setMeData] = useState(null);
  
     const loadMeData = async () => {setMeData(await getApiFetcher().get("/me").json())} // Load user information when dropdown is opened
     useEffect(() => { loadMeData() }, []); // Load user information when component is mounted, only once
+
+    const [userMessage, setUserMessage] = useState(0);
 
     const [title, setTitle] = useState("");
     const [workteam, setWorkteam] = useState("");
@@ -79,12 +82,7 @@ function EventForm({className})
     };
 
     const submit = (event) => {
-        if (canwork && (start_time === end_time)) {
-          setUserMessage(1);
-        } 
-        if (willBreak && (startAway === endAway)) {
-          setUserMessage(2);
-        }
+       /* if(1 == 0) {}
         else {
             const data = { 
                 event_owner     : userData.short_uuid,  //assign the event-creator as the owner of the event
@@ -98,9 +96,9 @@ function EventForm({className})
                 event_foodprice : food_price,           //
                 event_location  : location,             //
                 event_descript  : description,          //
-            };
+            };*/
             setUserMessage(3);
-            console.log(data);
+            //console.log(data);
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
     /*
         const signUp = new XMLHttpRequest();
@@ -132,7 +130,7 @@ function EventForm({className})
         };
     */
     //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
-        }
+        //}
         event.preventDefault();
     };
     //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
@@ -142,39 +140,38 @@ function EventForm({className})
                 <Box component="form" onSubmit={(e) => {e.preventDefault(); submit(e);}} sx={{ mt: 3}}>
                     <Grid>
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="title" label="Event title" placeholder="Friday Pub" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="workteam" label="Workteam hosting the event" placeholder="α" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="date" label="Event takes place on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="start" label="Event starts at" placeholder="17:00" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="end" label="Event ends at" placeholder="03:00" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="signupLatest" label="Sign up at the latest" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="food" label="Food" placeholder="Tacos" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="food_price" label="Price for food" placeholder="20kr" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="location" label="Location" placeholder="Kistan 2.0" onChange={handleInputChange}/>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{marginTop: "1em", marginBottom: "1em"}}>
                             <TextField variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
                         </Grid>
-                        <div className="submit">
-                            <input type="submit" value="save"/>
-                        </div>
+                        <Button variant="contained"><Link to="/events">Cancel</Link></Button>
+                        <input type="submit" value="Create!"/>
                     </Grid>
                 </Box>
                 <div className="errorMessage">
@@ -190,7 +187,7 @@ function EventForm({className})
                         return <>You cannot leave from and come back to your working shift at the same time</>;
 
                         case 3:
-                        return <>Saved!</>;
+                        return <>Sorry, this event-form is only a preview of the upcoming Events-functionality!</>;
 
                         case 4:
                         return <p>{errorSpec}</p>;

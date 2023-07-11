@@ -35,13 +35,13 @@ const StyledViewSignups = styled(ViewSignups)({
         borderStyle: "solid",
         borderColor: "black",
         borderWidth: "thin",
-        overflow: "hidden",
+        overflow: "scroll",
         textOverflow: "ellipsis",
     },
 
     "@media (max-width: 950px)" :{
         h2: {
-            fontSize: "8px",
+            fontSize: "10px",
         },
 
         ".detailRow": {
@@ -59,13 +59,13 @@ function ViewSignups({className, eventID})
     */
 
     const dummySignupList = {
-        signups : [{first_name: "Sebastian", nickname: "Bänk", last_name: "Divander", phonenum: "num", mail: "sdiv@kth.se", role: "Marshal", 
+        signups : [{first_name: "Sebastian", last_name: "Divander", phonenum: "0723255711", mail: "sdiv@kth.se", role: "Marshal", 
                     canwork: true, work_start: "10", work_end: "03", willBreak: false, break_start: null, break_end: null, comment: ""},
 
-                    {first_name: "Edwin", nickname: null, last_name: "Ahlstrand", phonenum: "num", mail: "edah@kth.se", role: "Prao", 
+                    {first_name: "Edwin", last_name: "Ahlstrand", phonenum: "num", mail: "edah@kth.se", role: "Prao", 
                     canwork: false, work_start: null, work_end: null, willBreak: false, break_start: null, break_end: null, comment: "Have to watch the kids today"},
 
-                    {first_name: "Gustav", nickname: null, last_name: "Appelros", phonenum: "num", mail: "guap@kth.se", role: "Prao", 
+                    {first_name: "Gustav", last_name: "Appelros", phonenum: "num", mail: "guap@kth.se", role: "Prao", 
                     canwork: true, work_start: "14", work_end: "22", willBreak: true, break_start: "16", break_end: "17", comment: "Have to attend a lecture at 16 to 17. Will have to leave early"}
                 ]
     };
@@ -82,24 +82,25 @@ function ViewSignups({className, eventID})
                         <h1>Signups for event: {eventID} </h1>
                     </Grid>
                 </div>
-                <div className="detailRow">
-                    <Grid className="detailBox">  <h2>Name: </h2>                         </Grid>
-                    <Grid className="detailBox">  <h2>Nick: </h2>                         </Grid>
-                    <Grid className="detailBox">  <h2>Role: </h2>                         </Grid>
-                    <Grid className="detailBox">  <h2>Phone no.: </h2>                    </Grid>
-                    <Grid className="detailBox">  <h2>Can work?: </h2>                    </Grid>
-                    <Grid className="detailBox">  <h2>From: </h2>                         </Grid>
-                    <Grid className="detailBox">  <h2>To: </h2>                           </Grid>
-                    <Grid className="detailBox">  <h2>Will leave?: </h2>                  </Grid>
-                    <Grid className="detailBox">  <h2>From: </h2>                         </Grid>
-                    <Grid className="detailBox">  <h2>To: </h2>                           </Grid>
-                    <Grid className="detailBox">  <h2>Comment: </h2>                      </Grid>
-                </div>
-                <div>
-                    <StyledSignupList>{masterList}</StyledSignupList>
-                    <StyledSignupList>{marshalList}</StyledSignupList>
-                    <StyledSignupList>{praoList}</StyledSignupList>
-                </div>
+                <Box sx={{maxHeight: "24vw", overflow: "scroll"}}>
+                    <div className="detailRow">
+                        <Grid className="detailBox">  <h2>Name: </h2>                         </Grid>
+                        <Grid className="detailBox">  <h2>Role: </h2>                         </Grid>
+                        <Grid className="detailBox">  <h2>Phone no.: </h2>                    </Grid>
+                        <Grid className="detailBox">  <h2>Can work?: </h2>                    </Grid>
+                        <Grid className="detailBox">  <h2>From: </h2>                         </Grid>
+                        <Grid className="detailBox">  <h2>To: </h2>                           </Grid>
+                        <Grid className="detailBox">  <h2>Will leave?: </h2>                  </Grid>
+                        <Grid className="detailBox">  <h2>From: </h2>                         </Grid>
+                        <Grid className="detailBox">  <h2>To: </h2>                           </Grid>
+                        <Grid className="detailBox">  <h2>Cmt.: </h2>                      </Grid>
+                    </div>
+                    <div>
+                        <StyledSignupList>{masterList}</StyledSignupList>
+                        <StyledSignupList>{marshalList}</StyledSignupList>
+                        <StyledSignupList>{praoList}</StyledSignupList>
+                    </div>
+                </Box>
             </Box>
         </div>
     );

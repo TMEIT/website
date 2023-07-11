@@ -13,23 +13,27 @@ const StyledSignupListItem = styled(SignupListItem)({
     ".workerRow": {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(1.2em, 1fr))",
+        maxHeight: "50px",
+        overflow: "scroll",
     },
 
     ".workerDetail": {
         borderStyle: "dotted",
         borderColor: "black",
         borderWidth: "thin",
-        overflow: "hidden",
+        overflow: "scroll",
         textOverflow: "ellipsis",
     },
 
     "@media (max-width: 950px)": {
         h2: {
-            fontSize: "8px",
+            fontSize: "10px",
         },
 
         ".workerRow": {
-            gridTemplateColumns: "repeat(auto-fit, minmax(1.4em, 1fr))"
+            gridTemplateColumns: "repeat(auto-fit, minmax(1.4em, 1fr))",
+            maxHeight: "40px",
+            overflow: "scroll",
         },
     },
 
@@ -42,8 +46,6 @@ function SignupListItem({className, worker}) {
             <Box>
                 <div className="workerRow">
                     <Grid className="workerDetail">   <h2>{worker.first_name + " " + worker.last_name} </h2>      </Grid>  {/*display worker's full name*/}
-                    <></>
-                    {(worker.nickname !== null)? <Grid className="workerDetail"><h2>{worker.nickname}</h2></Grid>:<Grid className="workerDetail"><h2>--- </h2></Grid>}   {/*If worker has a nickname, display it. Otherwise don't*/}
                     <></>
                     <Grid className="workerDetail">   <h2>{worker.role} </h2>                                     </Grid>  {/*display worker's Role: Master, Marshal, Prao or Vraq*/}
                     <></>
