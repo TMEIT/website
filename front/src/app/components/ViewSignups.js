@@ -93,7 +93,7 @@ function ViewSignups({className, eventID})
                         <Grid className="detailBox">  <h2>Will leave?: </h2>                  </Grid>
                         <Grid className="detailBox">  <h2>From: </h2>                         </Grid>
                         <Grid className="detailBox">  <h2>To: </h2>                           </Grid>
-                        <Grid className="detailBox">  <h2>Cmt.: </h2>                      </Grid>
+                        <Grid className="detailBox">  <h2>Comment: </h2>                      </Grid>
                     </div>
                     <div>
                         <StyledSignupList>{masterList}</StyledSignupList>

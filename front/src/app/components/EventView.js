@@ -49,7 +49,7 @@ function EventView({className, eventID})
     return(
         <div className={className}>
             <div className="eventView">
-                <Box sx={{margin: 3}}>
+                <Box mx={1}>
                     <Grid>
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
                     </Grid>

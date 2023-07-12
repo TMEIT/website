@@ -76,15 +76,33 @@ function SignupForm({className, eventID})
     };
 
     const worksliderInputChange = (e, val) => {
+        if (time[1] - time[0] < 1)
+        {
+            setTime([0, 17]);
+            setStarttime("10");
+            setEndtime("03"); 
+        }
+        else
+        {
             setTime(val);
             setStarttime(timeMarks[val[0]].label);
-            setEndtime(timeMarks[val[1]].label);  
+            setEndtime(timeMarks[val[1]].label); 
+        }
     }
 
     const breaksliderInputChange = (e, val) => {
-        setAwaytime(val);
-        setStartaway(timeMarks[val[0]].label);
-        setEndaway(timeMarks[val[1]].label);
+        if (awaytime[1] - awaytime[0] <= 1)
+        {
+            setAwaytime(time);
+            setStartaway(timeMarks[time[0]].label);
+            setEndaway(timeMarks[time[1]].label);
+        }
+        else
+        {
+            setAwaytime(val);
+            setStartaway(timeMarks[val[0]].label);
+            setEndaway(timeMarks[val[1]].label);
+        }
     }
 
     const submit = (event) => {
@@ -187,7 +205,7 @@ function SignupForm({className, eventID})
                             getAriaLabel={() => "Always visible"}
                             marks={timeMarks}
                             step={1}
-                            disabled={!(willBreak & canwork)}
+                            disabled={(!(willBreak & canwork)) | (time[1] - time[0] <= 1)}
                             onChange={breaksliderInputChange}
                             value={awaytime}
                             />
