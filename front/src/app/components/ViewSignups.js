@@ -45,7 +45,7 @@ const StyledViewSignups = styled(ViewSignups)({
         },
 
         ".detailRow": {
-            gridTemplateColumns: "repeat(auto-fil, minmax(1.4em, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(1.4em, 1fr))",
         }
     }
 });

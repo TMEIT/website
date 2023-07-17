@@ -7,7 +7,7 @@ import { kisel_blue, kisel_blue_dark, primary_lighter } from "../palette";
 
 const StyledSignupListItem = styled(SignupListItem)({
     h2: {
-        fontSize: "12px",
+        fontSize: "10px",
     },
 
     ".workerRow": {
@@ -27,7 +27,7 @@ const StyledSignupListItem = styled(SignupListItem)({
 
     "@media (max-width: 950px)": {
         h2: {
-            fontSize: "10px",
+            fontSize: "9px",
         },
 
         ".workerRow": {
