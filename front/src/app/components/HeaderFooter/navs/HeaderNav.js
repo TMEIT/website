@@ -12,6 +12,7 @@ const getHeaderNavItems = (wrapInMenuItem) => {
         "/team": "Team",
         "/about": "About TMEIT",
         "/join_tmeit": "Join",
+        "/documents": "Documents",
     }
     if(wrapInMenuItem) {
         return Object.entries(links).map(([path, label]) => (

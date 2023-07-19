@@ -15,7 +15,7 @@ function Documents({className}){
         <Centered className={className}>
             <TextSummary>
                 <h1>Documents</h1>
-                <p>* Reglemente - for now you can find the reglemente in google drive, click "Meeting Protocols"</p>
+                <p>* <a>Regulations - for now you can find the regulations under "Meeting protocols"</a></p>
                 <p>* <a target="_blank" href="https://drive.google.com/drive/folders/16nr4Zem5E2HfjWQ135W_fiy7F58fCFDk?usp=share_link">Meeting protocols</a></p>
             </TextSummary>
         </Centered>

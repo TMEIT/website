@@ -73,7 +73,6 @@ const router = createBrowserRouter([{
             return await getApiFetcher().get("/members/").json();
         }
         },
-        { path: "/documents", element: <routes.Documents.component />, loader: routes.Documents.loader},
         { path: "/join_tmeit", element: <routes.Join.component />, loader: routes.Join.loader },
         { path: "/profile/:shortUuid", element: <routes.Profile.component />, loader: routes.Profile.loader },
         { path: "/profile/:shortUuid/:name", element: <routes.Profile.component />, loader: routes.Profile.loader },
