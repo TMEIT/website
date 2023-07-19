@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import styled from "@emotion/styled";
 
-import sjo_group from "../layout_photos/sjoslaget_group_2022_patch.webp";
+import ag_group from "../layout_photos/AG_group_photo.webp";
 
 import { kisel_blue, secondary_purp, secondary_purp_dark, me_green, data_pink, me_and_in_teal, primary_light, primary_lighter, accent_yellow, accent_maroon, accent_salmon } from "../palette.js";
 import JoinForm from "../components/JoinForm";
@@ -122,7 +122,7 @@ function Join({className}) {
             </div>
         </div>
         <h1> See you at the pub! </h1>
-        <img className="group-photo" src={sjo_group} alt="A group photo of TMEIT after Sjöslaget 2022" />
+        <img className="group-photo" src={ag_group} alt="A group photo of TMEIT during AG 2023" />
     </div>
   )
 }
