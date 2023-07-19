@@ -7,22 +7,30 @@ import { kisel_blue, kisel_blue_dark, primary_lighter } from "../palette";
 
 const StyledSignupListItem = styled(SignupListItem)({
     h2: {
-        fontSize: "10px",
+        fontSize: "12px",
     },
 
     ".workerRow": {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(1.2em, 1fr))",
-        maxHeight: "50px",
-        overflow: "scroll",
+        maxHeight: "5em",
     },
 
     ".workerDetail": {
         borderStyle: "dotted",
         borderColor: "black",
         borderWidth: "thin",
+        textOverflow: "ellipsis",
+        maxHeight: "2.5em",
+    },
+
+    ".comment": {
+        borderStyle: "dotted",
+        borderColor: "black",
+        borderWidth: "thin",
         overflow: "scroll",
         textOverflow: "ellipsis",
+        maxHeight: "2.5em",
     },
 
     "@media (max-width: 950px)": {
@@ -32,8 +40,15 @@ const StyledSignupListItem = styled(SignupListItem)({
 
         ".workerRow": {
             gridTemplateColumns: "repeat(auto-fit, minmax(1.4em, 1fr))",
-            maxHeight: "40px",
-            overflow: "scroll",
+            maxHeight: "4em",
+        },
+
+        ".workerDetail": {
+            maxHeight: "2em",
+        },
+
+        ".comment": {
+            maxHeight: "2em",
         },
     },
 
@@ -43,14 +58,30 @@ function SignupListItem({className, worker}) {
 
     return (
         <div className={className}>
-            <Box>
+            <Box my={2}>
                 <div className="workerRow">
-                    <Grid className="workerDetail">   <h2>{worker.first_name + " " + worker.last_name} </h2>      </Grid>  {/*display worker's full name*/}
+                    <Grid className="workerDetail">   <h2>{worker.first_name} </h2>                               </Grid>  {/*display worker's first name*/}
+                    <></>
+                    {(worker.nickname !== null)?
+                        <>
+                        <Grid className="workerDetail">  <h2>{worker.nickname} </h2>                              </Grid>   {/*Display worker's nickname*/}
+                        <></>
+                        </>
+                        :
+                        <>
+                        <Grid className="workerDetail">  <h2>---</h2>                                             </Grid>   {/*worker has no nickname, display dashes*/}
+                        <></>
+                        </>
+                    }
+                    <Grid className="workerDetail">   <h2>{worker.last_name} </h2>                                </Grid>  {/*display worker's last name*/}
                     <></>
                     <Grid className="workerDetail">   <h2>{worker.role} </h2>                                     </Grid>  {/*display worker's Role: Master, Marshal, Prao or Vraq*/}
                     <></>
                     <Grid className="workerDetail">   <h2>{worker.phonenum} </h2>                                 </Grid>  {/*Display worker's phone number*/}
                     <></>
+                    <Grid className="comment">        <h2>{worker.comment} </h2>                                  </Grid>    {/*Display any comments the worker might have*/}
+                </div>
+                <div className="workerRow">
                     {worker.canwork?                         //Check whether worker can work or not
                         <>
                         <></>
@@ -99,8 +130,6 @@ function SignupListItem({className, worker}) {
                         <></>
                         </>
                     }
-                    <></>
-                    <Grid className="workerDetail">   <h2>{worker.comment} </h2>                                  </Grid>    {/*Display any comments the worker might have*/}
                 </div>
             </Box>
         </div>
