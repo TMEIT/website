@@ -47,7 +47,7 @@ module.exports = {
                         maxSize: 16 * 1024 // inline images smaller than 16KiB
                     }
                 }
-            }
+            },
         ]
     },
     plugins: [
