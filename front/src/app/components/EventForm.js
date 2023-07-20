@@ -37,8 +37,26 @@ const StyledEventForm = styled(EventForm)({
     */
 })
 
-function EventForm({className, event_uuid = ""})
+function EventForm({className, edit, eventuuid = ""})
 {
+    /*const [eventData, setEventData] = useState(null);
+
+    const loadEventData = async() => {setEventData(await getApiFetcher().get("/event/" + {eventuuid}).json())}
+    useEffect(() => {loadEventData() }, []);*/
+
+    const eventData = {
+        title: "Friday pub",
+        workteam: "Eta",
+        date: "2023-02-30",
+        start: "17:00",
+        end: "03:00",
+        signupLatest: "2023-02-29",
+        food: "Tacos",
+        food_price: "20kr",
+        location: "Kistan 2.0",
+        description: "Welcome to our pub hosten on a 30:th of February!",
+    };
+
     const [userData, setMeData] = useState(null);
  
     const loadMeData = async () => {setMeData(await getApiFetcher().get("/me").json())} // Load user information when dropdown is opened
@@ -46,16 +64,17 @@ function EventForm({className, event_uuid = ""})
 
     const [userMessage, setUserMessage] = useState(0);
 
-    const [title, setTitle] = useState(event_uuid.title);
-    const [workteam, setWorkteam] = useState(event_uuid.workteam);
-    const [date, setDate] = useState(event_uuid.date);
-    const [start, setStart] = useState(event_uuid.start);
-    const [end, setEnd] = useState(event_uuid.end);
-    const [signupLatest, setSUL] = useState(event_uuid.signupLatest);
-    const [food, setFood] = useState(event_uuid.food);
-    const [food_price, setFoodPrice] = useState(event_uuid.food_price);
-    const [location, setLocation] = useState(event_uuid.location);
-    const [description, setDescription] = useState(event_uuid.description);
+    const [title, setTitle] = useState(edit? eventData.title : "");
+    const [workteam, setWorkteam] = useState(edit? eventData.workteam : "");
+    const [date, setDate] = useState(edit? eventData.date : "");
+    const [start, setStart] = useState(edit? eventData.start : "");
+    const [end, setEnd] = useState(edit? eventData.end : "");
+    const [signupLatest, setSUL] = useState(edit? eventData.signupLatest : "");
+    const [food, setFood] = useState(edit? eventData.food : "");
+    const [food_price, setFoodPrice] = useState(edit? eventData.food_price : "");
+    const [location, setLocation] = useState(edit? eventData.location : "");
+    const [description, setDescription] = useState(edit? eventData.description : "");
+    
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -98,8 +117,6 @@ function EventForm({className, event_uuid = ""})
                 event_descript  : description,          //
             };*/
             setUserMessage(3);
-            //console.log(data);
-    //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
     /*
         const signUp = new XMLHttpRequest();
         signUp.open("POST", "/api/v1/events");
@@ -115,28 +132,68 @@ function EventForm({className, event_uuid = ""})
                 });
 
         setErrorSpec(responseObj);
-        setErrorMessage(4);
+        setUserMessage(4);
         } 
         else if (signUp.status === 200) {
-            setErrorMessage(3);
-            navigate("/join_completed");
-            } 
-        else {
-            alert(`Error ${signUp.status}: ${signUp.statusText}`);
-            }
-        };
+            setUserMessage(3);
+        }
         signUp.onerror = function () {
         alert("Request has failed, try again or contact web masters");
         };
     */
-    //ÄNDRA DET HÄR ASAP, VI SKA FASEN INTE GÖRA EN API-CALL TILL PRAO-SIGNUP ;D
         //}
         event.preventDefault();
     };
+
+    const save = (event) => {
+        /* if(1 == 0) {}
+        else {
+            const data = { 
+                event_owner     : userData.short_uuid,  //assign the event-creator as the owner of the event
+                event_title     : title,                //data for whether user can work or not
+                event_workteam  : workteam,             //data for start time
+                event_date      : date,                 //data for end time
+                event_start     : start,                //data for whether user will have to take a break during the shift or not
+                event_end       : end,                  //data for when break starts
+                event_SUL       : signupLatest,         //data for when break ends
+                event_food      : food,                 //data for comment
+                event_foodprice : food_price,           //
+                event_location  : location,             //
+                event_descript  : description,          //
+            };*/
+            setUserMessage(3);
+    /*
+        const signUp = new XMLHttpRequest();
+        signUp.open("PATCH", "/api/v1/events/" + {eventuuid});
+        signUp.setRequestHeader("Content-Type", "application/json");
+        signUp.responseType = "json";
+        signUp.send(JSON.stringify(data));
+
+        signUp.onload = function () {
+        if (signUp.status === 422) {
+            let responseObj = "";
+            signUp.response["detail"].forEach((e) => {
+                responseObj += e.msg + "\n";
+                });
+
+        setErrorSpec(responseObj);
+        setUserMessage(4);
+        } 
+        else if (signUp.status === 200) {
+            setUserMessage(3);
+        }
+        signUp.onerror = function () {
+        alert("Request has failed, try again or contact web masters");
+        };
+    */
+        //}
+        event.preventDefault();
+    };
+
     return(
         <div className={className}>
             <div className="eventForm">
-                <Box component="form" onSubmit={(e) => {e.preventDefault(); submit(e);}} sx={{ mt: 3}}>
+                <Box component="form" onSubmit={(e) => {e.preventDefault(); (edit? save(e) : submit(e));}} sx={{ mt: 3}}>
                     <Grid>
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
@@ -170,7 +227,7 @@ function EventForm({className, event_uuid = ""})
                             <TextField variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
                         </Grid>
                         <Button variant="contained"><Link to="/events">Cancel</Link></Button>
-                        <input type="submit" value="Create!"/>
+                        <input type="submit" value="Save!"/>
                     </Grid>
                 </Box>
                 <div className="errorMessage">
@@ -180,10 +237,10 @@ function EventForm({className, event_uuid = ""})
                         return <></>;
 
                         case 1:
-                        return <>You cannot start and end your working shift at the same time</>;
+                        return <></>;
 
                         case 2:
-                        return <>You cannot leave from and come back to your working shift at the same time</>;
+                        return <></>;
 
                         case 3:
                         return <>Sorry, this event-form is only a preview of the upcoming Events-functionality!</>;

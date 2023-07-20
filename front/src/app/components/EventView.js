@@ -9,6 +9,7 @@ import SignupForm from "../components/SignupForm.js";
 import hasLoginCookie from "../hasLoginCookie.js";
 import {Button} from "@mui/material";
 import ViewSignups from "../components/ViewSignups.js";
+import {getApiFetcher} from "../api";
 
 const StyledEventView = styled(EventView)({
     ".eventView": {
@@ -40,8 +41,31 @@ const StyledEventView = styled(EventView)({
 
 })
 
-function EventView({className, eventID})
+function EventView({className, eventuuid})
 {
+    /*const [eventData, setEventData] = useState(null);
+
+    const loadEventData = async() => {setEventData(await getApiFetcher().get("/event/" + {eventuuid}).json())}
+    useEffect(() => {loadEventData() }, []);*/
+
+    const [meData, setMeData] = useState(null);
+
+    const loadMeData = async() => {setMeData(await getApiFetcher().get("/me").json())}
+    useEffect(() => {loadMeData() }, []);
+
+    const eventData = {
+        owner: "5xdbwe_1",
+        title: "Friday pub",
+        workteam: "Eta",
+        date: "2023-02-30",
+        start: "17:00",
+        end: "03:00",
+        signupLatest: "2023-02-29",
+        food: "Tacos",
+        food_price: "20kr",
+        location: "Kistan 2.0",
+        description: "Welcome to our pub that we are for the first time ever hosting on a 30:th of February!"
+    }
 
     const [formHidden, setFormHidden] = useState(true);
     const [listHidden, setListHidden] = useState(true);
@@ -54,21 +78,25 @@ function EventView({className, eventID})
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
                     </Grid>
                     <Grid>
-                        <h1> {eventID} </h1> 
-                    </Grid>
-                    <br></br>
-                    <Grid>
-                        <h3>Date and time: {"30:th Feb 2420, 17:00 - Late™" /*Get date-data from eventuuid*/}</h3>
-                    </Grid>
-                    <Grid>
-                        <h3>Food and price: {"Tacos" + " " + "69kr" /*Get food and Food price-data from eventuuid*/}</h3>
+                        <h1> {eventData.title} </h1> 
                     </Grid>
                     <Grid>
                         <h3>Workteam hosting the event: {"η"}</h3>
                     </Grid>
                     <br></br>
                     <Grid>
-                        <p>Come and enjoy our Friday pub we are, for the first time ever, hosting on a 30:th of February!</p>
+                        <h3>Date and time: {eventData.date + " " + eventData.start + " - " + eventData.end /*Get date-data from eventuuid*/}</h3>
+                    </Grid>
+                    <Grid>
+                        <h3>Food and price: {eventData.food + " " + eventData.food_price/*Get food and Food price-data from eventuuid*/}</h3>
+                    </Grid>
+                    <br></br>
+                    <Grid>
+                        <h3>Location: {eventData.location}</h3>
+                    </Grid>
+                    <br></br>
+                    <Grid>
+                        <p>{eventData.description}</p>
                     </Grid>
                     <br></br>
                     <Grid>

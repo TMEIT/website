@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import TextSummary from "../components/TextSummary.js";
 import { primary_light } from "../palette";
 import useIsScreenWide from "../useIsScreenWide";
+import EventForm from "../EventForm.js";
 
 
 function AdminEvents() {
@@ -38,6 +39,15 @@ function AdminEvents() {
 
   let events;
 
+  const [uuid, setUuid] = react.useState("");
+  const [view, setView] = react.useState(0);
+
+  function openEdit(event_uuid)
+  {
+    setUuid(event_uuid);
+    setView(1);
+  }
+
   function handleDelete(event) {
 
   }
@@ -63,7 +73,7 @@ function AdminEvents() {
   }
 
   // Loading
-  if (loading) signups = <Loading />;
+  if (loading) events = <Loading />;
   // API error
   else if (data === "error") signups = "Could not load API";
 
@@ -80,7 +90,7 @@ function AdminEvents() {
 
           <p>{event.date}</p>
           
-          <Button variant="contained"><a href="/editEvent">Edit Event</a></Button>
+          <Button variant="contained"onClick={() => openEdit(event.uuid)}>Edit Event</Button>
           <Button variant="contained"onClick={() => handleDelete(event.uuid)}>Delete</Button>
         </div>
       </div>
@@ -89,8 +99,21 @@ function AdminEvents() {
 
   return (
     <>
-      <Fragment>{signups}</Fragment>
-      {/* <button onClick={() => console.log(currentData)}>Cum</button> */}
+    {(() => {
+      switch (view) {
+        case 0:
+          return(
+            <>
+              <Fragment>{events}</Fragment>{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
+            </>);
+
+        case 1:
+          return (<>
+          <EventForm className={className} edit={true} uuid={uuid}></EventForm>
+          <Button variant="contained" onClick={() => setView(0)}>Close</Button>
+          </>);
+      }
+    })()}
     </>
   )
 }
