@@ -36,9 +36,9 @@ function MasterMenu() {
         
           <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(2)}>Signups menu</Button>
       
-          <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(4)}>Edit/Delete Events - ADMIN</Button>
+          <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(3)}>Edit/Delete Events - ADMIN</Button>
 
-          <Button hidden={menu==0} style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(0)}>Back</Button>
+          <Button hidden={menu==0} style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(0)}>Close</Button>
         </Box>
       </Centered>
       <div>
@@ -51,7 +51,7 @@ function MasterMenu() {
             case 2:
               return <MasterSignups></MasterSignups>;
             case 3:
-              return <></>;
+              return <AdminEvents></AdminEvents>;
             case 4:
               return <></>;
             case 5:

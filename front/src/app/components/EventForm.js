@@ -37,7 +37,7 @@ const StyledEventForm = styled(EventForm)({
     */
 })
 
-function EventForm({className})
+function EventForm({className, event_uuid = ""})
 {
     const [userData, setMeData] = useState(null);
  
@@ -46,16 +46,16 @@ function EventForm({className})
 
     const [userMessage, setUserMessage] = useState(0);
 
-    const [title, setTitle] = useState("");
-    const [workteam, setWorkteam] = useState("");
-    const [date, setDate] = useState("");
-    const [start, setStart] = useState("");
-    const [end, setEnd] = useState("");
-    const [signupLatest, setSUL] = useState("");
-    const [food, setFood] = useState("");
-    const [food_price, setFoodPrice] = useState("");
-    const [location, setLocation] = useState("");
-    const [description, setDescription] = useState("");
+    const [title, setTitle] = useState(event_uuid.title);
+    const [workteam, setWorkteam] = useState(event_uuid.workteam);
+    const [date, setDate] = useState(event_uuid.date);
+    const [start, setStart] = useState(event_uuid.start);
+    const [end, setEnd] = useState(event_uuid.end);
+    const [signupLatest, setSUL] = useState(event_uuid.signupLatest);
+    const [food, setFood] = useState(event_uuid.food);
+    const [food_price, setFoodPrice] = useState(event_uuid.food_price);
+    const [location, setLocation] = useState(event_uuid.location);
+    const [description, setDescription] = useState(event_uuid.description);
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -78,7 +78,7 @@ function EventForm({className})
 
         if (id === "location") {setLocation(value);}
 
-        if (id === "description") {setComment(value);}
+        if (id === "description") {setDescription(value);}
     };
 
     const submit = (event) => {
@@ -133,7 +133,6 @@ function EventForm({className})
         //}
         event.preventDefault();
     };
-    //ÄNDRA DESIGNEN, WE GONNA INCLUDE SOME SLIDERS BOII
     return(
         <div className={className}>
             <div className="eventForm">
