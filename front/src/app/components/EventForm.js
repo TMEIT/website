@@ -98,6 +98,8 @@ function EventForm({className, edit, eventuuid = ""})
         if (id === "location") {setLocation(value);}
 
         if (id === "description") {setDescription(value);}
+
+        if (id === "visibility") {setVisibility(value);}
     };
 
     const submit = (event) => {

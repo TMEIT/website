@@ -56,7 +56,7 @@ function EventView({className, eventuuid})
     const eventData = {
         owner: "5xdbwe_1",
         title: "Friday pub",
-        workteam: "Eta",
+        //workteam: "Eta",
         date: "2023-02-30",
         start: "17:00",
         end: "03:00",
