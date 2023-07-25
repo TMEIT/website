@@ -1,5 +1,5 @@
-import { useState } from "react";
-import {useEffect} from "react";
+import { useState, useEffect} from "react";
+import {Link} from "react-router-dom";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -8,7 +8,7 @@ import { kisel_blue_dark, kisel_blue, primary_lighter, kisel_blue_light, me_and_
 import { getApiFetcher } from "../api.js";
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom";
+
 
 const StyledEventForm = styled(EventForm)({
     ".eventForm": {
@@ -46,15 +46,13 @@ function EventForm({className, edit, eventuuid = ""})
 
     const eventData = {
         title: "Friday pub",
-        workteam: "Eta",
         date: "2023-02-30",
         start: "17:00",
         end: "03:00",
         signupLatest: "2023-02-29",
-        food: "Tacos",
-        food_price: "20kr",
         location: "Kistan 2.0",
         description: "Welcome to our pub hosten on a 30:th of February!",
+        visibility : "member",
     };
 
     const [userData, setMeData] = useState(null);
@@ -65,23 +63,19 @@ function EventForm({className, edit, eventuuid = ""})
     const [userMessage, setUserMessage] = useState(0);
 
     const [title, setTitle] = useState(edit? eventData.title : "");
-    const [workteam, setWorkteam] = useState(edit? eventData.workteam : "");
     const [date, setDate] = useState(edit? eventData.date : "");
     const [start, setStart] = useState(edit? eventData.start : "");
     const [end, setEnd] = useState(edit? eventData.end : "");
     const [signupLatest, setSUL] = useState(edit? eventData.signupLatest : "");
-    const [food, setFood] = useState(edit? eventData.food : "");
-    const [food_price, setFoodPrice] = useState(edit? eventData.food_price : "");
     const [location, setLocation] = useState(edit? eventData.location : "");
     const [description, setDescription] = useState(edit? eventData.description : "");
+    const [visibility, setVisibility] = useState(edit? eventData.visibility : "");
     
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
 
         if (id === "title") {setTitle(value);}
-        
-        if (id === "workteam") {setWorkteam(value);}
 
         if (id === "date") {setDate(value);}
 
@@ -91,60 +85,58 @@ function EventForm({className, edit, eventuuid = ""})
 
         if (id === "signupLatest") {setSUL(value);}
 
-        if (id === "food") {setFood(value);}
-
-        if (id === "food_price") {setFoodPrice(value);}
-
         if (id === "location") {setLocation(value);}
 
         if (id === "description") {setDescription(value);}
 
-        if (id === "visibility") {setVisibility(value);}
+        if (id === "visibilityPublic") {setVisibility("public");}
+
+        if (id === "visibilityInternal") {setVisibility("internal");}
+
+        if (id === "visibilityElected") {setVisibility("members");}
+
     };
 
     const submit = (event) => {
-       /* if(1 == 0) {}
+       if(1 == 0) {}
         else {
             const data = { 
-                event_owner     : userData.short_uuid,  //assign the event-creator as the owner of the event
-                event_title     : title,                //data for whether user can work or not
-                event_workteam  : workteam,             //data for start time
-                event_date      : date,                 //data for end time
-                event_start     : start,                //data for whether user will have to take a break during the shift or not
-                event_end       : end,                  //data for when break starts
-                event_SUL       : signupLatest,         //data for when break ends
-                event_food      : food,                 //data for comment
-                event_foodprice : food_price,           //
-                event_location  : location,             //
-                event_descript  : description,          //
-            };*/
-            setUserMessage(3);
-    /*
-        const signUp = new XMLHttpRequest();
-        signUp.open("POST", "/api/v1/events");
-        signUp.setRequestHeader("Content-Type", "application/json");
-        signUp.responseType = "json";
-        signUp.send(JSON.stringify(data));
+                event_owner         : userData.short_uuid,  //assign the event-creator as the owner of the event
+                event_title         : title,                //data for whether user can work or not
+                event_date          : date,                 //data for end time
+                event_start_time    : start,                //data for whether user will have to take a break during the shift or not
+                event_end_time      : end,                  //data for when break starts
+                signu_up_end_time   : signupLatest,         //data for when the
+                location            : location,             //
+                description         : description,          //
+                visibility          : visibility,
+            };
 
-        signUp.onload = function () {
-        if (signUp.status === 422) {
-            let responseObj = "";
-            signUp.response["detail"].forEach((e) => {
-                responseObj += e.msg + "\n";
-                });
+            const create = new XMLHttpRequest();
+            create.open("POST", "/api/v1/events/create");
+            create.setRequestHeader("Content-Type", "application/json");
+            create.responseType = "json";
+            create.send(JSON.stringify(data));
 
-        setErrorSpec(responseObj);
-        setUserMessage(4);
-        } 
-        else if (signUp.status === 200) {
-            setUserMessage(3);
+            create.onload = function () {
+            if (signUp.status === 422) {
+                let responseObj = "";
+                signUp.response["detail"].forEach((e) => {
+                    responseObj += e.msg + "\n";
+                    });
+
+            setErrorSpec(responseObj);
+            setUserMessage(4);
+            } 
+            else if (create.status === 200) {
+                setUserMessage(3);
+            }
+                create.onerror = function () {
+                alert("Request has failed, try again or contact web masters");
+            };
         }
-        signUp.onerror = function () {
-        alert("Request has failed, try again or contact web masters");
-        };
-    */
-        //}
         event.preventDefault();
+        }
     };
 
     const save = (event) => {
@@ -165,26 +157,26 @@ function EventForm({className, edit, eventuuid = ""})
             };*/
             setUserMessage(3);
     /*
-        const signUp = new XMLHttpRequest();
-        signUp.open("PATCH", "/api/v1/events/" + {eventuuid});
-        signUp.setRequestHeader("Content-Type", "application/json");
-        signUp.responseType = "json";
-        signUp.send(JSON.stringify(data));
+        const edit = new XMLHttpRequest();
+        edit.open("PATCH", "/api/v1/events/" + {eventuuid});
+        edit.setRequestHeader("Content-Type", "application/json");
+        edit.responseType = "json";
+        edit.send(JSON.stringify(data));
 
-        signUp.onload = function () {
-        if (signUp.status === 422) {
+        edit.onload = function () {
+        if (edit.status === 422) {
             let responseObj = "";
-            signUp.response["detail"].forEach((e) => {
+            edit.response["detail"].forEach((e) => {
                 responseObj += e.msg + "\n";
                 });
 
         setErrorSpec(responseObj);
         setUserMessage(4);
         } 
-        else if (signUp.status === 200) {
+        else if (edit.status === 200) {
             setUserMessage(3);
         }
-        signUp.onerror = function () {
+        edit.onerror = function () {
         alert("Request has failed, try again or contact web masters");
         };
     */
@@ -202,25 +194,16 @@ function EventForm({className, edit, eventuuid = ""})
                             <TextField variant="filled" fullWidth id="title" label="Event title" placeholder="Friday Pub" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="workteam" label="Workteam hosting the event" placeholder="α" onChange={handleInputChange}/>
-                        </Grid>
-                        <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="date" label="Event takes place on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="start" label="Event starts at" placeholder="17:00" onChange={handleInputChange}/>
+                            <TextField variant="filled" fullWidth id="start" label="Event starts at" placeholder="17:00:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="end" label="Event ends at" placeholder="03:00" onChange={handleInputChange}/>
+                            <TextField variant="filled" fullWidth id="end" label="Event ends at" placeholder="03:00:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="signupLatest" label="Sign up at the latest" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
-                        </Grid>
-                        <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="food" label="Food" placeholder="Tacos" onChange={handleInputChange}/>
-                        </Grid>
-                        <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="food_price" label="Price for food" placeholder="20kr" onChange={handleInputChange}/>
+                            <TextField variant="filled" fullWidth id="signupLatest" label="Sign up at the latest" placeholder="YYYY-MM-DD HH:MM:SS" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField variant="filled" fullWidth id="location" label="Location" placeholder="Kistan 2.0" onChange={handleInputChange}/>
@@ -228,8 +211,26 @@ function EventForm({className, edit, eventuuid = ""})
                         <Grid item xs={12} style={{marginTop: "1em", marginBottom: "1em"}}>
                             <TextField variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
                         </Grid>
+                        <div required>
+                            <Box my={1}>
+                                <h2>Visibility</h2>
+                            </Box>
+                            <Box>
+                                <input type="radio" id="visibilityPublic" name="visibility" onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="visibilityPublic">Public</label>
+                            </Box>
+                            <Box>
+                                <input type="radio" id="visibilityInternal" name="visibility" onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="visibilityInternal">Internal for TMEIT</label>
+                            </Box>
+                            <Box>
+                                <input type="radio" id="visibilityElected" name="visibility" onChange={(e) => handleInputChange(e)}/>
+                                <label htmlFor="visibilityElected">Internal for TMEIT - excluding Prao</label>
+                            </Box>
+                        </div>
+                        <br></br>
                         <Button variant="contained"><Link to="/events">Cancel</Link></Button>
-                        <input type="submit" value="Save!"/>
+                        <Button variant="contained" type="submit">Save</Button>
                     </Grid>
                 </Box>
                 <div className="errorMessage">

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -56,13 +55,10 @@ function EventView({className, eventuuid})
     const eventData = {
         owner: "5xdbwe_1",
         title: "Friday pub",
-        //workteam: "Eta",
         date: "2023-02-30",
         start: "17:00",
         end: "03:00",
         signupLatest: "2023-02-29",
-        food: "Tacos",
-        food_price: "20kr",
         location: "Kistan 2.0",
         description: "Welcome to our pub that we are for the first time ever hosting on a 30:th of February!"
     }
