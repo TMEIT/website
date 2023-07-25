@@ -4,6 +4,7 @@ import TextSummary from "../components/TextSummary.js";
 import EventView from "../components/EventView.js";
 import Button from "@mui/material/Button";
 import {Link} from "react-router-dom";
+import { getApiFetcher } from "../api.js";
 
 const StyledEvents = styled(Events)({
     [TextSummary]: {
@@ -12,38 +13,48 @@ const StyledEvents = styled(Events)({
     }
 });
 
+const render_eventlist = (eventArr) =>
+    Object.values(eventArr).map(eventData => <EventView className={className} event={eventData}/>);
+
 function Events({className}) {
+
+    /*const [eventArr, setEventData] = useState(null);
+
+    const loadEventData = async() => {setEventData(await getApiFetcher().get("/events).json())}
+    useEffect(() => {loadEventData() }, []);*/
+
+   const eventArr = {
+        event1 : {
+            owner: "5xdbwe_1",
+            title: "Friday pub",
+            date: "2023-02-30",
+            start: "17:00",
+            end: "03:00",
+            signupLatest: "2023-02-29",
+            location: "Kistan 2.0",
+            description: "Welcome to our pub that we are for the first time ever hosting on a 30:th of February! Food: Tacos, Price: 20kr"
+        },
+        event2 : {
+            owner: "1263gfrt",
+            title: "Tuesday pub",
+            date: "2023-03-31",
+            start: "17:00",
+            end: "03:00",
+            signupLates: "2023-03-30",
+            location: "Kistan 1.0",
+            description: "Ladies and gentlemen, we have been able to open the doors in old Kistan, Kistan 1.0!! Food: Billys, Price: 10kr"
+        },
+    }
+
+    let events = render_eventlist(eventArr);
 
     return(
         <>
-        <Button variant="contained" style={{marginTop: "2em"}}><Link to="/createEvent">+ Add new event</Link></Button>
-        <Centered className={className}>
-            <EventView eventID={"Friday Pub"}>
-            </EventView>
-            <EventView eventID={"WTF-pub"}>
-            </EventView>
-        </Centered>
+            <Button variant="contained" style={{marginTop: "2em"}}><Link to="/createEvent">+ Add new event</Link></Button>
+            <Centered className={className}>
+                {events}
+            </Centered>
         </>
     );
-    /*
-    return(
-        <Centered className={className}>
-            <TextSummary>
-                <h1>Events - Coming soon!</h1>
-                <p>The events page is under construction.</p>
-                <p>TMEIT.SE GEN 3 is very new and we're still re-implementing the event pages.</p>
-                <p>Check out our <a href="https://www.facebook.com/TMEIT/events" target="_blank">Facebook events</a> in the meantime!</p>
-            </TextSummary>
-            <>{hasLoginCookie()? 
-                <TextSummary>
-                <h1>Work signup</h1><p>Meanwhile the development of the events page is underway,</p>
-                <p>you can sign up to work on an event here: </p>
-                <a href="https://docs.google.com/spreadsheets/d/1XxQQKn0U0aYRtVvEvowolVkEkQn55XNmB1my1TOB3cc/edit?usp=sharing" target="_blank">Work sign-up</a>
-                </TextSummary>
-             : <></>}
-             </>
-        </Centered>
-    );
-    */
 }
 export default StyledEvents

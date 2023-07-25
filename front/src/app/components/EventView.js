@@ -8,7 +8,6 @@ import SignupForm from "../components/SignupForm.js";
 import hasLoginCookie from "../hasLoginCookie.js";
 import {Button} from "@mui/material";
 import ViewSignups from "../components/ViewSignups.js";
-import {getApiFetcher} from "../api";
 
 const StyledEventView = styled(EventView)({
     ".eventView": {
@@ -40,28 +39,12 @@ const StyledEventView = styled(EventView)({
 
 })
 
-function EventView({className, eventuuid})
+function EventView({className, event})
 {
-    /*const [eventData, setEventData] = useState(null);
-
-    const loadEventData = async() => {setEventData(await getApiFetcher().get("/event/" + {eventuuid}).json())}
-    useEffect(() => {loadEventData() }, []);*/
-
     const [meData, setMeData] = useState(null);
 
     const loadMeData = async() => {setMeData(await getApiFetcher().get("/me").json())}
     useEffect(() => {loadMeData() }, []);
-
-    const eventData = {
-        owner: "5xdbwe_1",
-        title: "Friday pub",
-        date: "2023-02-30",
-        start: "17:00",
-        end: "03:00",
-        signupLatest: "2023-02-29",
-        location: "Kistan 2.0",
-        description: "Welcome to our pub that we are for the first time ever hosting on a 30:th of February!"
-    }
 
     const [formHidden, setFormHidden] = useState(true);
     const [listHidden, setListHidden] = useState(true);
@@ -74,17 +57,15 @@ function EventView({className, eventuuid})
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
                     </Grid>
                     <Grid>
-                        <h1> {eventData.title} </h1> 
-                    </Grid>
-                    <Grid>
-                        <h3>Workteam hosting the event: {"η"}</h3>
+                        <h1> {event.title} </h1> 
                     </Grid>
                     <br></br>
                     <Grid>
-                        <h3>Date and time: {eventData.date + " " + eventData.start + " - " + eventData.end /*Get date-data from eventuuid*/}</h3>
+                        <h3>Date and time: {event.date + " " + event.start + " - " + event.end /*Get date-data from eventuuid*/}</h3>
                     </Grid>
+                    <br></br>
                     <Grid>
-                        <h3>Food and price: {eventData.food + " " + eventData.food_price/*Get food and Food price-data from eventuuid*/}</h3>
+                        <h3>Signup for event ends: {event.signupLatest} </h3>
                     </Grid>
                     <br></br>
                     <Grid>
