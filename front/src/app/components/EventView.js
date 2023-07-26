@@ -65,24 +65,20 @@ function EventView({className, event})
                     </Grid>
                     <br></br>
                     <Grid>
-                        <h3>Signup for event ends: {event.signupLatest} </h3>
+                        <h3>Location: {event.location}</h3>
                     </Grid>
                     <br></br>
                     <Grid>
-                        <h3>Location: {eventData.location}</h3>
-                    </Grid>
-                    <br></br>
-                    <Grid>
-                        <p>{eventData.description}</p>
+                        <p>{event.description}</p>
                     </Grid>
                     <br></br>
                     <Grid>
                         {hasLoginCookie()? (formHidden? <Button style={{color: kisel_blue_dark}} onClick={() => {setFormHidden(!formHidden)}}>Sign up to work this event</Button> 
-                        : <><SignupForm eventID={eventID}/> <Button style={{color: kisel_blue_dark}} onClick={() => {setFormHidden(!formHidden)}}>Close</Button></>) : <></>}
+                        : <><SignupForm event={event}/> <Button style={{color: kisel_blue_dark}} onClick={() => {setFormHidden(!formHidden)}}>Close</Button></>) : <></>}
                     </Grid>
                     <Grid>
                         {hasLoginCookie()? (listHidden? <Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>View work signups</Button> : 
-                        <><ViewSignups eventID={eventID}/><Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>Close</Button></>) : <></>}
+                        <><ViewSignups event={event}/><Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>Close</Button></>) : <></>}
                     </Grid>
                 </Box>
             </div>

@@ -29,7 +29,7 @@ const StyledSignupForm = styled(SignupForm)({
     },
 })
 
-function SignupForm({className, eventID})
+function SignupForm({className, event})
 {
 
     const [userData, setMeData] = useState(null);
@@ -164,7 +164,7 @@ function SignupForm({className, eventID})
     return(
         <div className={className}>
             <div className="signupForm">
-                <h2>Work signup for event: {eventID} </h2>
+                <h2>Work signup for event: {event.title} </h2>
                 <Box component="form" onSubmit={(e) => {e.preventDefault(); submit(e);}} sx={{ mt: 3}}>
                     <Grid>
                         <p>Can you work this event?</p>

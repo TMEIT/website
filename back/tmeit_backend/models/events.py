@@ -39,12 +39,16 @@ class Event(Base):
     # so it's totally fine to reduce UUID keyspace like this.
     # It has a uniqueness check, just in case a collision happens.
     short_uuid = Column(String, Computed(short_uuid_from_uuid(uuid)), unique=True, index=True)
+
+    event_owner = Column(String, nullable=False)
     # Created/Updated timestamps
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
-    event_time = Column(Date(), nullable=False)
-    sign_up_end_time = Column(DateTime(timezone=True), nullable=False)
+    event_time = Column(DateTime(timezone=True), nullable=False)
+    event_endtime = Column(DateTime(timezone=True))
+
+    # sign_up_end_time = Column(DateTime(timezone=True), nullable=False)
 
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)

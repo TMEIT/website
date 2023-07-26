@@ -30,16 +30,17 @@ class FieldTuple(NamedTuple):
 
 event_fields: FieldDict = {
     # Fields that are visible to everyone and can be edited by any TMEIT member
-    "event_start_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
-    "event_end_time":       FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[datetime.date]),
-    "sign_up_end_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
+    "event_owner":          FieldDescription(member=denied,  prao=denied,  public=denied,  type=str),
+    "event_time":           FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.datetime),
+    "event_endtime":        FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[datetime.datetime]),
+    # "sign_up_end_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
     "title":                FieldDescription(member=edit,    prao=read,    public=read,    type=str),
     "description":          FieldDescription(member=edit,    prao=read,    public=read,    type=str),
     "location":             FieldDescription(member=edit,    prao=read,    public=read,    type=str),
     #"attending":            FieldDescription(member=edit,    prao=read,    public=read,    type=list[UUID]),
 
     # Fields that only are to visible and can only be edited by any TMEIT member
-    "visibility":             FieldDescription(member=edit,    prao=read,    public=denied,    type=CurrentRoleEnum),
+    "visibility":             FieldDescription(member=edit,    prao=read,    public=denied,    type=str),
     # Fields that can not be edited
     "time_created":         FieldDescription(member=read,    prao=read,    public=denied,    type=datetime.date),
     "time_updated":         FieldDescription(member=read,    prao=read,    public=denied,   type=datetime.date),

@@ -49,7 +49,7 @@ const StyledViewSignups = styled(ViewSignups)({
     }
 });
 
-function ViewSignups({className, eventID})
+function ViewSignups({className, event})
 {
 
     /*
@@ -78,7 +78,7 @@ function ViewSignups({className, eventID})
             <Box sx={{display: "grid", gridTemplateRows: "repeat(auto-fit, minmax(20px, 1fr))", marginTop: 2, marginBottom: 2, padding: "1em", borderRadius: "1em", bgcolor: primary_lighter}}>
                 <div>
                     <Grid>
-                        <h1>Signups for event: {eventID} </h1>
+                        <h1>Signups for event: {event.title} </h1>
                     </Grid>
                 </div>
                 <Box sx={{maxHeight: "24vw", overflow: "scroll"}}>
