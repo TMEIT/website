@@ -10,9 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
-from ..crud.events import create_event, get_event_by_short_uuid
+from ..crud.events import create_event, get_event, get_events
 from ..deps import get_worker_pool
-from ..schemas.events import base64url_length_8, EventMemberView, EventPraoView, EventPublicView, \
+from ..schemas.events import UUID, EventMemberView, EventPraoView, EventPublicView, \
     EventMemberPatch, EventMemberCreate, EventViewResponse
 
 router = APIRouter()
@@ -21,23 +21,37 @@ class NotLoggedInResponse(BaseModel):
     detail: Literal["You are not logged in."]
 
 # Get event
-@router.get("/{short_uuid}", response_model=list[Union[EventMemberView, EventPraoView, EventPublicView]])
-async def read_event(short_uuid: base64url_length_8, 
-                     db: AsyncSession = Depends(get_db)):
-    current_user = Depends(get_current_user)
+@router.get("/{uuid}", response_model=list[Union[EventMemberView, EventPraoView, EventPublicView]])
+async def read_event(uuid: UUID, 
+                     db: AsyncSession = Depends(get_db),
+                     current_user: EventMemberView = Depends(get_current_user)):
+    
     # Check authentication level and set response level accordingly
     response_schema = EventPublicView
     if current_user.current_role == "prao":
         response_schema = EventPraoView
-    if current_user.current_role == "marsalk" | current_user.current_role == "master": # Add vraq etc here
+    if current_user is not None and current_user.current_role != "prao": # Add vraq etc here
         response_schema = EventMemberView
 
     try:
-        event = await get_event_by_short_uuid(db=db, short_uuid=short_uuid, response_schema=response_schema)
+        event = await get_event(db=db, uuid=uuid, response_schema=response_schema)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No event with id {short_uuid} was found."})
     return event
+
+@router.get("/", response_model=list[Union[EventMemberView, EventPraoView, EventPublicView]])
+async def read_events(db: AsyncSession = Depends(get_db),
+                        current_user: EventMemberView = Depends(get_current_user)):
+
+    # Check authentication level and set response level accordingly
+    response_schema = EventPublicView
+    if current_user.current_role == "prao":
+        response_schema = EventPraoView
+    if current_user is not None and current_user.current_role != "prao":
+        response_schema = EventMemberView
+
+    return await get_events(db=db, response_schema=response_schema)
 
 # Create event
 @router.post("/create", response_model=EventMemberCreate, responses={403: {"model": ForbiddenResponse}})

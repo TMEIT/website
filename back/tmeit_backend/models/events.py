@@ -33,20 +33,16 @@ class Event(Base):
     # Primary key, 128 bit ID
     uuid = Column(UUID, primary_key=True, index=True)
 
-    # Computed column/index with the first 48 bits of the UUID in the base64url format,
-    # used to look up the member with a given URL.
-    # There's less than a 1 in 1 trillion chance of collision with 1000 events,
-    # so it's totally fine to reduce UUID keyspace like this.
-    # It has a uniqueness check, just in case a collision happens.
-    short_uuid = Column(String, Computed(short_uuid_from_uuid(uuid)), unique=True, index=True)
-
     event_owner = Column(String, nullable=False)
     # Created/Updated timestamps
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
-    event_time = Column(DateTime(timezone=True), nullable=False)
-    event_endtime = Column(DateTime(timezone=True))
+    event_date_start = Column(Date, nullable=False)
+    event_time_start = Column(String, nullable=False)
+    
+    event_date_end   = Column(Date)
+    event_time_end   = Column(String)
 
     # sign_up_end_time = Column(DateTime(timezone=True), nullable=False)
 

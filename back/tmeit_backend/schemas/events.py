@@ -30,9 +30,13 @@ class FieldTuple(NamedTuple):
 
 event_fields: FieldDict = {
     # Fields that are visible to everyone and can be edited by any TMEIT member
-    "event_owner":          FieldDescription(member=denied,  prao=denied,  public=denied,  type=str),
-    "event_time":           FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.datetime),
-    "event_endtime":        FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[datetime.datetime]),
+    "event_owner":          FieldDescription(member=edit,    prao=read,    public=read,    type=str),
+
+    "event_date_start":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
+    "event_time_start":     FieldDescription(member=edit,    prao=read,    public=read,    type=str),
+    
+    "event_date_end":       FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[datetime.date]),
+    "event_time_end":       FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[str]),
     # "sign_up_end_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
     "title":                FieldDescription(member=edit,    prao=read,    public=read,    type=str),
     "description":          FieldDescription(member=edit,    prao=read,    public=read,    type=str),
@@ -66,13 +70,9 @@ def build_events_schema_dict(
 
     return schema_dict
         
-# 8 character base64url string
-base64url_length_8 = constr(min_length=8, max_length=8, regex=r'[A-Za-z0-9\-_]{8}')
-        
 # Always include uuid and short uuid in api requests/responses
 database_fields_schema_dict = {
     "uuid": (UUID, Field(...)),
-    "short_uuid": (base64url_length_8, Field(...)),
 }
 
 class PatchSchemaConfig(BaseConfig):
