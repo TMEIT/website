@@ -33,16 +33,12 @@ class Event(Base):
     # Primary key, 128 bit ID
     uuid = Column(UUID, primary_key=True, index=True)
 
-    event_owner = Column(String, nullable=False)
     # Created/Updated timestamps
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
-    event_date_start = Column(Date, nullable=False)
-    event_time_start = Column(String, nullable=False)
-    
-    event_date_end   = Column(Date)
-    event_time_end   = Column(String)
+    event_start = Column(DateTime(timezone=True), nullable=False)
+    event_end   = Column(DateTime(timezone=True))
 
     # sign_up_end_time = Column(DateTime(timezone=True), nullable=False)
 
