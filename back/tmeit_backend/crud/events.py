@@ -35,3 +35,11 @@ async def get_events(db: AsyncSession, response_schema: Type[S], skip: int = 0, 
     result = await db.execute(stmt)
     sql_events = [dict(e.__dict__) for e in result.scalars().all()]
     return [response_schema.parse_obj(sql_event) for sql_event in sql_events]
+
+async def delete_event(db: AsyncSession, uuid: UUID) -> None:
+    async with db.begin():
+        stmt = select(models.Event).where(models.Event.uuid == str(uuid))
+        result = (await db.execute(stmt)).fetchone()
+        if result is None:
+            raise KeyError()
+        await db.delete(result.Event)

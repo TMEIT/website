@@ -1,15 +1,20 @@
 import { Fragment, useEffect, useState } from "react";
 import Loading from "../components/Loading";
-import { useFetch } from "../FetchHooks";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
-import TextSummary from "../components/TextSummary.js";
 import { primary_light } from "../palette";
 import useIsScreenWide from "../useIsScreenWide";
 import EventForm from "../EventForm.js";
+import { getApiFetcher } from "../api";
 
 
 function AdminEvents() {
+
+  const loadEventData = async() => {setEventData(await getApiFetcher().get("/events/").json())}
+        useEffect(() => {loadEventData() }, []);
+
+  const [eventArr, setEventData] = useState(null);
+  const [event, setEvent] = useState(null);
 
   let navigate = useNavigate();
   let screenWide = useIsScreenWide(949);
@@ -34,17 +39,9 @@ function AdminEvents() {
     }
   };
 
-  const event = {uuid : "dcyad23d", title: "Friday Pub", workteam: "eta", date: "2023-02-30", start: "17:00", end: "03:00", 
-  signupLatest: "2023-02-29", food: "tacos", food_price: "30kr", location: "Kistan 2.0", decription: "Welcome to our pub on a 30:th of February!"};
-
-  let events;
-
-  const [uuid, setUuid] = react.useState("");
-  const [view, setView] = react.useState(0);
-
-  function openEdit(event_uuid)
+  function openEdit(event)
   {
-    setUuid(event_uuid);
+    setEvent(event);
     setView(1);
   }
 
@@ -78,7 +75,7 @@ function AdminEvents() {
   else if (data === "error") signups = "Could not load API";
 
   else {
-    events = data.map((event) => (
+    events = eventArr.map(event => {
       <div>
         <div style={screenWide? style.events : style.eventsMobile}>
 
@@ -86,15 +83,22 @@ function AdminEvents() {
 
           <p>{event.title}</p>
 
-          <p>{event.workteam} </p>
+          <p>{event.event_start}</p>
 
-          <p>{event.date}</p>
+          <p>{event.event_end}</p>
+
+          <p>{event.location}</p>
+
+          <p>{event.description}</p>
+
+          <p>{event.visibility}</p>
           
-          <Button variant="contained"onClick={() => openEdit(event.uuid)}>Edit Event</Button>
-          <Button variant="contained"onClick={() => handleDelete(event.uuid)}>Delete</Button>
+          <Button variant="contained"onClick={() => openEdit(event)}>Edit Event</Button>
+          <Button variant="contained"onClick={() => handleDelete(event)}>Delete</Button>
         </div>
       </div>
-    ))
+    }
+    )
   }
 
   return (
@@ -109,7 +113,7 @@ function AdminEvents() {
 
         case 1:
           return (<>
-          <EventForm className={className} edit={true} uuid={uuid}></EventForm>
+          <EventForm className={className} edit={true} event={event}></EventForm>
           <Button variant="contained" onClick={() => setView(0)}>Close</Button>
           </>);
       }

@@ -31,8 +31,8 @@ class FieldTuple(NamedTuple):
 event_fields: FieldDict = {
     # Fields that are visible to everyone and can be edited by any TMEIT member
 
-    "event_start":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
-    "event_end":       FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[datetime.date]),
+    "event_start":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.datetime),
+    "event_end":       FieldDescription(member=edit,    prao=read,    public=read,    type=Optional[datetime.datetime]),
     
     # "sign_up_end_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
 
@@ -92,6 +92,9 @@ EventMemberPatch = create_model('EventMemberPatch',   __config__=PatchSchemaConf
 
 # Create schemas
 EventMemberCreate = create_model('EventMemberCreate', **build_events_schema_dict("member", edit))
+
+# Delete schemas
+EventMemberDelete = create_model('EventMemberDelete', **build_events_schema_dict("member", edit))
 
 # Union type for the read schemas
 EventViewResponse = Union[EventMemberView, EventPraoView, EventPublicView]

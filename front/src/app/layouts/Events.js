@@ -1,3 +1,4 @@
+import {useState, useEffect } from 'react';
 import styled from "@emotion/styled";
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
@@ -5,6 +6,7 @@ import EventView from "../components/EventView.js";
 import Button from "@mui/material/Button";
 import {Link} from "react-router-dom";
 import { getApiFetcher } from "../api.js";
+import hasLoginCookie from '../hasLoginCookie.js';
 
 const StyledEvents = styled(Events)({
     [TextSummary]: {
@@ -13,40 +15,55 @@ const StyledEvents = styled(Events)({
     }
 });
 
-const render_eventlist = (eventArr) =>
+const render_eventPublicList = () => 
+    Object.values(eventArr).filter(eventData => eventData.visibility == "public")
+    .map(eventData => <EventView event={eventData}/>);
+
+const render_eventInternalList = () =>
+    Object.values(eventArr).filter(eventData => eventData.visibility != "elected")
+    .map(eventData => <EventView event={eventData}/>);
+
+const render_eventElectedList = () =>
     Object.values(eventArr).map(eventData => <EventView event={eventData}/>);
+
+const get_events = () => {
+    const loadEventData = async() => {setEventData(await getApiFetcher().get("/events/").json())}
+        useEffect(() => {loadEventData() }, []);
+
+    const [eventRes, setEventData] = useState(null);
+
+    return eventRes;
+}
 
 function Events({className}) {
 
-    /*const [eventArr, setEventData] = useState(null);
+    let loggedIn = hasLoginCookie();
 
-    const loadEventData = async() => {setEventData(await getApiFetcher().get("/events).json())}
-    useEffect(() => {loadEventData() }, []);*/
+    let events;
 
-   const eventArr = {
-        "Teyx_sge" : {
-            owner: "5xdbwe_1",
-            title: "Friday pub",
-            date: "2023-02-30 12:00",
-            start: "17:00",
-            end: "03:00",
-            //signupLatest: "2023-02-29",
-            location: "Kistan 2.0",
-            description: "Welcome to our pub that we are for the first time ever hosting on a 30:th of February! Food: Tacos, Price: 20kr"
-        },
-        "orsh43as" : {
-            owner: "1263gfrt",
-            title: "Tuesday pub",
-            date: "2023-03-31",
-            start: "17:00",
-            end: "03:00",
-            //signupLatest: "2023-03-30 13:00",
-            location: "Kistan 1.0",
-            description: "Ladies and gentlemen, we have been able to open the doors in old Kistan, Kistan 1.0!! Food: Billys, Price: 10kr"
-        },
+    if (loggedIn)
+    {
+        const loadMeData = async() => {setMeData(await getApiFetcher().get("/me").json())}
+        useEffect(() => {loadMeData() }, []);
+
+        const [meData, setMeData] = useState(null);
+        const currentUser = meData;
+
+        const eventArr = get_events();
+
+        if (currentUser.current_role == ("prao" | "exprao"))
+            events = render_eventInternalList(eventArr);
+        else
+            events = render_eventElectedList(eventArr);
+        
+    }
+    else
+    {
+        const eventArr = get_events();
+        events = render_eventPublicList(eventArr);
     }
 
-    let events = render_eventlist(eventArr);
+    
 
     return(
         <>

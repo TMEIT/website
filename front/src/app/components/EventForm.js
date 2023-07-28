@@ -37,23 +37,8 @@ const StyledEventForm = styled(EventForm)({
     */
 })
 
-function EventForm({className, edit, eventuuid = ""})
+function EventForm({className, edit, event = null})
 {
-    /*const [eventData, setEventData] = useState(null);
-
-    const loadEventData = async() => {setEventData(await getApiFetcher().get("/event/" + {eventuuid}).json())}
-    useEffect(() => {loadEventData() }, []);*/
-
-    const eventData = {
-        title: "Friday pub",
-        date: "2023-02-30",
-        start: "17:00",
-        end: "03:00",
-        signupLatest: "2023-02-29",
-        location: "Kistan 2.0",
-        description: "Welcome to our pub hosten on a 30:th of February!",
-        visibility : "member",
-    };
 
     const [userData, setMeData] = useState(null);
  
@@ -62,14 +47,14 @@ function EventForm({className, edit, eventuuid = ""})
 
     const [userMessage, setUserMessage] = useState(0);
 
-    const [title, setTitle] = useState(edit? eventData.title : "");
-    const [date, setDate] = useState(edit? eventData.date : "");
-    const [start, setStart] = useState(edit? eventData.start : "");
-    const [end, setEnd] = useState(edit? eventData.end : "");
-    const [signupLatest, setSUL] = useState(edit? eventData.signupLatest : "");
-    const [location, setLocation] = useState(edit? eventData.location : "");
-    const [description, setDescription] = useState(edit? eventData.description : "");
-    const [visibility, setVisibility] = useState(edit? eventData.visibility : "");
+    const [title, setTitle] = useState(edit? event.title : "");
+    const [startDate, setStartDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [location, setLocation] = useState(edit? event.location : "");
+    const [description, setDescription] = useState(edit? event.description : "");
+    const [visibility, setVisibility] = useState(edit? event.visibility : "");
     
 
     const handleInputChange = (e) => {
@@ -77,13 +62,13 @@ function EventForm({className, edit, eventuuid = ""})
 
         if (id === "title") {setTitle(value);}
 
-        if (id === "date") {setDate(value);}
+        if (id === "start_date") {setStartDate(value);}
 
-        if (id === "start") {setStart(value);}
+        if (id === "start_time") {setStartTime(value);}
 
-        if (id === "end") {setEnd(value);}
+        if (id === "end_date") {setEndDate(value);}
 
-        if (id === "signupLatest") {setSUL(value);}
+        if (id === "end_time") {setEndTime(value);}
 
         if (id === "location") {setLocation(value);}
 
@@ -98,15 +83,14 @@ function EventForm({className, edit, eventuuid = ""})
     };
 
     const submit = (event) => {
+        const start = startDate + "T" + startTime + "+01:00";
+        const end = endDate + "T" + endTime + "+01:00";
        if(1 == 0) {}
         else {
             const data = { 
-                event_owner         : userData.short_uuid,  //assign the event-creator as the owner of the event
                 event_title         : title,                //data for whether user can work or not
-                event_date          : date,                 //data for end time
-                event_start_time    : start,                //data for whether user will have to take a break during the shift or not
-                event_end_time      : end,                  //data for when break starts
-                signu_up_end_time   : signupLatest,         //data for when the
+                event_start         : start,                //data for whether user will have to take a break during the shift or not
+                event_end           : end,                  //data for when break starts
                 location            : location,             //
                 description         : description,          //
                 visibility          : visibility,
@@ -191,25 +175,25 @@ function EventForm({className, edit, eventuuid = ""})
                     <Grid>
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="title" label="Event title" placeholder="Friday Pub" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="title" label="Event title" placeholder="Friday Pub" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="date" label="Event takes place on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="start_date" label="Event takes place on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="start" label="Event starts at" placeholder="17:00:00" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="start_time" label="Event starts at" placeholder="17:00:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="end" label="Event ends at" placeholder="03:00:00" onChange={handleInputChange}/>
+                            <TextField variant="filled" fullWidth id="end_date" label="Event ends on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="signupLatest" label="Sign up at the latest" placeholder="YYYY-MM-DD HH:MM:SS" onChange={handleInputChange}/>
+                            <TextField variant="filled" fullWidth id="end_time" label="Event ends at" placeholder="03:00:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="location" label="Location" placeholder="Kistan 2.0" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="location" label="Location" placeholder="Kistan 2.0" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em", marginBottom: "1em"}}>
-                            <TextField variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
                         </Grid>
                         <div required>
                             <Box my={1}>

@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+//import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { me_and_in_teal, kisel_blue, kisel_blue_dark, kisel_blue_light, primary_lighter } from "../palette.js";
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
-import SignupForm from "../components/SignupForm.js";
+/*import SignupForm from "../components/SignupForm.js";
 import hasLoginCookie from "../hasLoginCookie.js";
 import {Button} from "@mui/material";
-import ViewSignups from "../components/ViewSignups.js";
+import ViewSignups from "../components/ViewSignups.js";*/
 
 const StyledEventView = styled(EventView)({
     ".eventView": {
@@ -41,13 +41,13 @@ const StyledEventView = styled(EventView)({
 
 function EventView({className, event})
 {
-    const [meData, setMeData] = useState(null);
+    /*const [meData, setMeData] = useState(null);
 
     const loadMeData = async() => {setMeData(await getApiFetcher().get("/me").json())}
     useEffect(() => {loadMeData() }, []);
 
     const [formHidden, setFormHidden] = useState(true);
-    const [listHidden, setListHidden] = useState(true);
+    const [listHidden, setListHidden] = useState(true);*/
 
     return(
         <div className={className}>
@@ -61,7 +61,11 @@ function EventView({className, event})
                     </Grid>
                     <br></br>
                     <Grid>
-                        <h3>Date and time: {event.date + " " + event.start + " - " + event.end /*Get date-data from eventuuid*/}</h3>
+                        <h3>Event starts: {event.event_start}</h3>
+                    </Grid>
+                    <br></br>
+                    <Grid>
+                        <h3>Event ends: {event.event_end}</h3>
                     </Grid>
                     <br></br>
                     <Grid>
@@ -72,14 +76,14 @@ function EventView({className, event})
                         <p>{event.description}</p>
                     </Grid>
                     <br></br>
-                    <Grid>
+                    {/*<Grid>
                         {hasLoginCookie()? (formHidden? <Button style={{color: kisel_blue_dark}} onClick={() => {setFormHidden(!formHidden)}}>Sign up to work this event</Button> 
                         : <><SignupForm event={event}/> <Button style={{color: kisel_blue_dark}} onClick={() => {setFormHidden(!formHidden)}}>Close</Button></>) : <></>}
                     </Grid>
                     <Grid>
                         {hasLoginCookie()? (listHidden? <Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>View work signups</Button> : 
                         <><ViewSignups event={event}/><Button style={{color: kisel_blue_dark}} onClick={() => {setListHidden(!listHidden)}}>Close</Button></>) : <></>}
-                    </Grid>
+                    </Grid>*/}
                 </Box>
             </div>
         </div>
