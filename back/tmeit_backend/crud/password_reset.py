@@ -3,13 +3,12 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
+from sqlalchemy.sql.functions import func
 
 from ..models import Member, PWReset, models
+from ..auth import ph
 from ..schemas.members.schemas import ResetPasswordRequest, ResetPasswordChange
 
-
-router = APIRouter()
 # Handle requets for reseting password: Create a record in the PW_reset table
 async def reset_password_request(db: AsyncSession, request_email: str) -> None:
     # Check if there is a user with the email address
@@ -20,8 +19,12 @@ async def reset_password_request(db: AsyncSession, request_email: str) -> None:
         ).fetchone()
     
     if result is None:
-        return
-    
+        return # Do not return a error message
+    # Remove previous reset entry for the user
+    async with db.begin():
+        db.delete(PWReset).where(models.PWReset.uuid == result.uuid)
+
+    # Add new entry
     uuid = uuid4()
     async with db.begin():
         db.add_all([
@@ -36,7 +39,10 @@ async def reset_password_change(db: AsyncSession, pw_uuid: str, data: ResetPassw
         
         if result is None:
             raise KeyError()
-        
+        # Check if reset request is too old
+        if func.now() - result.time_created > 1:
+            raise KeyError()
+
         # Change password
         user = (select(models.Member).where(models.Member.uuid == result.user_id)).fetchone
         if (user.uuid == result.uuid): # Sanity check that the uuids match
