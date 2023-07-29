@@ -51,8 +51,6 @@ function Events({className}) {
 
     if (loggedIn & (eventArr != null) & (meData != null))
     {
-       
-
         if (currentUser.current_role == ("prao" | "exprao"))
             events = render_eventInternalList(eventArr);
         else

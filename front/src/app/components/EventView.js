@@ -49,6 +49,11 @@ function EventView({className, event})
     const [formHidden, setFormHidden] = useState(true);
     const [listHidden, setListHidden] = useState(true);*/
 
+    const start = event.event_start.split(/[T+]+/);
+    console.log(start);
+    const end = event.event_end.split(/[T+]+/);
+    console.log(end);
+
     return(
         <div className={className}>
             <div className="eventView">
@@ -61,11 +66,11 @@ function EventView({className, event})
                     </Grid>
                     <br></br>
                     <Grid>
-                        <h3>Event starts: {event.event_start}</h3>
+                        <h3>Event starts: {start[0] + " " + start[1]}</h3>
                     </Grid>
                     <br></br>
                     <Grid>
-                        <h3>Event ends: {event.event_end}</h3>
+                        <h3>Event ends: {end[0] + " " + end[1]}</h3>
                     </Grid>
                     <br></br>
                     <Grid>

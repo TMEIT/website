@@ -13,7 +13,7 @@ from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchRespo
 from ..crud.events import create_event, get_event, get_events
 from ..deps import get_worker_pool
 from ..schemas.events import UUID, EventMemberView, EventPraoView, EventPublicView, \
-    EventMemberPatch, EventMemberCreate, EventViewResponse, EventMemberDelete
+    EventMemberPatch, EventMemberCreate, EventViewResponse, EventMasterDelete
 
 router = APIRouter()
 
@@ -28,7 +28,7 @@ async def read_event(uuid: UUID,
     
     # Check authentication level and set response level accordingly
     response_schema = EventPublicView
-    if current_user.current_role == "prao":
+    if current_user is not None and current_user.current_role == "prao":
         response_schema = EventPraoView
     if current_user is not None and current_user.current_role != "prao": # Add vraq etc here
         response_schema = EventMemberView
@@ -37,7 +37,7 @@ async def read_event(uuid: UUID,
         event = await get_event(db=db, uuid=uuid, response_schema=response_schema)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
-                            content={"error": f"No event with id {short_uuid} was found."})
+                            content={"error": f"No event with id {uuid} was found."})
     return event
 
 @router.get("/", response_model=list[Union[EventMemberView, EventPraoView, EventPublicView]])
@@ -46,7 +46,7 @@ async def read_events(db: AsyncSession = Depends(get_db),
 
     # Check authentication level and set response level accordingly
     response_schema = EventPublicView
-    if current_user.current_role == "prao":
+    if current_user is not None and current_user.current_role == "prao":
         response_schema = EventPraoView
     if current_user is not None and current_user.current_role != "prao":
         response_schema = EventMemberView
@@ -71,7 +71,7 @@ async def create_new_event(event_data: EventMemberCreate,
     event = await create_event(db=db, data=event_data)
     return event
 
-@router.delete("/delete/{uuid}", response_model=EventMemberDelete, responses={403: {"model": ForbiddenResponse}})
+@router.delete("/delete/{uuid}", response_model=EventMasterDelete, responses={403: {"model": ForbiddenResponse}})
 async def delete_event( uuid: UUID,
                         db: AsyncSession = Depends(get_db),
                         current_user: EventMemberView = Depends(get_current_user)):

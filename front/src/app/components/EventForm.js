@@ -1,11 +1,11 @@
-import { useState, useEffect} from "react";
+import { useState} from "react";
+import {useNavigate} from 'react-router-dom';
 import {Link} from "react-router-dom";
 import styled from "@emotion/styled";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { kisel_blue_dark, kisel_blue, primary_lighter, kisel_blue_light, me_and_in_teal } from "../palette";
-import { getApiFetcher } from "../api.js";
 import tmeit_logo_nogojan_mono from "../logos/LogoTMEIT_withoutGojan_monochrome.svg";
 import Button from "@mui/material/Button";
 
@@ -39,11 +39,7 @@ const StyledEventForm = styled(EventForm)({
 
 function EventForm({className, edit, event = null})
 {
-
-    const [userData, setMeData] = useState(null);
- 
-    const loadMeData = async () => {setMeData(await getApiFetcher().get("/me").json())} // Load user information when dropdown is opened
-    useEffect(() => { loadMeData() }, []); // Load user information when component is mounted, only once
+    let navigate = useNavigate();
 
     const [userMessage, setUserMessage] = useState(0);
 
@@ -78,50 +74,71 @@ function EventForm({className, edit, event = null})
 
         if (id === "visibilityInternal") {setVisibility("internal");}
 
-        if (id === "visibilityElected") {setVisibility("members");}
+        if (id === "visibilityElected") {setVisibility("elected");}
 
     };
 
     const submit = (event) => {
-        const start = startDate + "T" + startTime + "+01:00";
-        const end = endDate + "T" + endTime + "+01:00";
-       if(1 == 0) {}
-        else {
-            const data = { 
-                event_title         : title,                //data for whether user can work or not
-                event_start         : start,                //data for whether user will have to take a break during the shift or not
-                event_end           : end,                  //data for when break starts
-                location            : location,             //
-                description         : description,          //
-                visibility          : visibility,
-            };
 
-            const create = new XMLHttpRequest();
-            create.open("POST", "/api/v1/events/create");
-            create.setRequestHeader("Content-Type", "application/json");
-            create.responseType = "json";
-            create.send(JSON.stringify(data));
+        var tokenText = cookie();
 
-            create.onload = function () {
-            if (signUp.status === 422) {
-                let responseObj = "";
-                signUp.response["detail"].forEach((e) => {
-                    responseObj += e.msg + "\n";
-                    });
+        const start = startDate + "T" + startTime + "+00:00";
+        const end = endDate + "T" + endTime + "+00:00";
 
-            setErrorSpec(responseObj);
-            setUserMessage(4);
-            } 
-            else if (create.status === 200) {
-                setUserMessage(3);
-            }
-                create.onerror = function () {
-                alert("Request has failed, try again or contact web masters");
-            };
+        const data = { 
+            title               : title,                //data for whether user can work or not
+            event_start         : start,                //data for whether user will have to take a break during the shift or not
+            event_end           : end,                  //data for when break starts
+            location            : location,             //
+            description         : description,          //
+            visibility          : visibility,
+        };
+
+        const create = new XMLHttpRequest();
+        create.open("POST", "/api/v1/events/create");
+        create.setRequestHeader("Authorization", tokenText);
+        create.setRequestHeader("Content-Type", "application/json");
+        create.responseType = "json";
+        create.send(JSON.stringify(data));
+
+        create.onload = function () {
+        if (create.status === 422) {
+            setUserMessage(1);
+        } 
+        else if (create.status == 403) {
+            setUserMessage(2);
+            navigate("/events");
+        }
+        else if (create.status === 200) {
+            setUserMessage(3);
+            navigate("/events");
+        }
+            create.onerror = function () {
+            alert("Request has failed, try again or contact web masters");
+        };
         }
         event.preventDefault();
-        }
     };
+
+    function cookie(){
+        var name = "access_token";
+        var cookieArr = document.cookie.split(";");
+    
+        //Loop through array until token is found
+        for (var i = 0; i < cookieArr.length; i++) {
+          var cookiePair = cookieArr[i].split("=");
+    
+          if (name === cookiePair[0].trim()) {
+            if (decodeURIComponent(cookiePair[1]) === "") {
+              // If value for access_token is empty
+              navigate(0);
+            } else {
+              return "Bearer " + decodeURIComponent(cookiePair[1]);
+            }
+          }
+        }
+        navigate(0);
+      }
 
     const save = (event) => {
         /* if(1 == 0) {}
@@ -224,16 +241,13 @@ function EventForm({className, edit, event = null})
                         return <></>;
 
                         case 1:
-                        return <></>;
+                        return <p>Error: please make sure the event details are formatted correctly!</p>;
 
                         case 2:
-                        return <></>;
+                        return <p>Error: You do not have permission to create events!</p>;
 
                         case 3:
-                        return <>Sorry, this event-form is only a preview of the upcoming Events-functionality!</>;
-
-                        case 4:
-                        return <p>{errorSpec}</p>;
+                        return <p>Event Created!</p>;
                     }
                     })()}
                 </div>

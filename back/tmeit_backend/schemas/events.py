@@ -31,21 +31,21 @@ class FieldTuple(NamedTuple):
 event_fields: FieldDict = {
     # Fields that are visible to everyone and can be edited by any TMEIT member
 
-    "event_start":     FieldDescription(master=edit member=edit,    prao=read,    public=read,    type=datetime.datetime),
-    "event_end":       FieldDescription(master=edit member=edit,    prao=read,    public=read,    type=Optional[datetime.datetime]),
+    "event_start":     FieldDescription(master=edit,     member=edit,    prao=read,    public=read,    type=datetime.datetime),
+    "event_end":       FieldDescription(master=edit,     member=edit,    prao=read,    public=read,    type=Optional[datetime.datetime]),
     
     # "sign_up_end_time":     FieldDescription(member=edit,    prao=read,    public=read,    type=datetime.date),
 
-    "title":                FieldDescription(master=edit member=edit,    prao=read,    public=read,    type=str),
-    "description":          FieldDescription(master=edit member=edit,    prao=read,    public=read,    type=str),
-    "location":             FieldDescription(master=edit member=edit,    prao=read,    public=read,    type=str),
+    "title":                FieldDescription(master=edit,    member=edit,    prao=read,    public=read,    type=str),
+    "description":          FieldDescription(master=edit,    member=edit,    prao=read,    public=read,    type=str),
+    "location":             FieldDescription(master=edit,    member=edit,    prao=read,    public=read,    type=str),
     #"attending":            FieldDescription(member=edit,    prao=read,    public=read,    type=list[UUID]),
 
     # Fields that only are to visible and can only be edited by any TMEIT member
-    "visibility":             FieldDescription(master=edit member=edit,    prao=read,    public=denied,    type=str),
+    "visibility":             FieldDescription(master=edit,  member=edit,    prao=read,    public=denied,    type=str),
     # Fields that can not be edited
-    "time_created":         FieldDescription(master=edit member=read,    prao=read,    public=denied,    type=datetime.date),
-    "time_updated":         FieldDescription(master=edit member=read,    prao=read,    public=denied,   type=datetime.date),
+    "time_created":         FieldDescription(master=edit,    member=read,    prao=read,    public=denied,    type=datetime.date),
+    "time_updated":         FieldDescription(master=edit,    member=read,    prao=read,    public=denied,   type=datetime.date),
 }
 
 def build_events_schema_dict(
