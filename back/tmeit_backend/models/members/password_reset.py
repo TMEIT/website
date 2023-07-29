@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Date
+from sqlalchemy import Column, Date, DateTime
+from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -18,5 +19,7 @@ class PWReset(Base):
     # The user which this reset record is connected to
     user_id = relationship("Member")
 
-    time_created = Column(Date) # add so that it defaults to current date
-    time_expired = Column(Date) # should default to current_date + 1?
+    # Not sure how to implement expiration (or if it necessary).
+    # The best might be to only allow one reset entry per user, and that it is invalid if it is over 24h old.
+    # Then you would have to remove the entry for the user each time a new reset is requested, and check the creation date when performing the reset
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
