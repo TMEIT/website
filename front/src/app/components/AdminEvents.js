@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
-import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { primary_light } from "../palette";
 import useIsScreenWide from "../useIsScreenWide";
-import EventForm from "../EventForm.js";
+import EventForm from "../components/EventForm.js";
 import { getApiFetcher } from "../api";
+import Centered from "../components/Centered.js";
+import TextSummary from "../components/TextSummary.js";
 
 
 function AdminEvents() {
@@ -15,6 +16,7 @@ function AdminEvents() {
 
   const [eventArr, setEventData] = useState(null);
   const [event, setEvent] = useState(null);
+  const [view, setView] = useState(0);
 
   let navigate = useNavigate();
   let screenWide = useIsScreenWide(949);
@@ -69,37 +71,44 @@ function AdminEvents() {
     navigate(0);
   }
 
-  // Loading
-  if (loading) events = <Loading />;
-  // API error
-  else if (data === "error") signups = "Could not load API";
+  let events;
 
-  else {
-    events = eventArr.map(event => {
-      <div>
-        <div style={screenWide? style.events : style.eventsMobile}>
-
-          <p>{event.uuid}</p>
-
-          <p>{event.title}</p>
-
-          <p>{event.event_start}</p>
-
-          <p>{event.event_end}</p>
-
-          <p>{event.location}</p>
-
-          <p>{event.description}</p>
-
-          <p>{event.visibility}</p>
-          
-          <Button variant="contained"onClick={() => openEdit(event)}>Edit Event</Button>
-          <Button variant="contained"onClick={() => handleDelete(event)}>Delete</Button>
-        </div>
-      </div>
+    if (eventArr == null)
+    {
+      events = <Centered>
+                <TextSummary>
+                  <h1>No events</h1>
+                  <p>There are no published events</p>
+                </TextSummary>
+              </Centered>
     }
-    )
-  }
+    else
+    {
+      events = eventArr.map(event => {
+        <div>
+          <div style={screenWide? style.events : style.eventsMobile}>
+
+            <p>{event.uuid}</p>
+
+            <p>{event.title}</p>
+
+            <p>{event.event_start}</p>
+
+            <p>{event.event_end}</p>
+
+            <p>{event.location}</p>
+
+            <p>{event.description}</p>
+
+            <p>{event.visibility}</p>
+            
+            <Button variant="contained"onClick={() => openEdit(event)}>Edit Event</Button>
+            <Button variant="contained"onClick={() => handleDelete(event)}>Delete</Button>
+          </div>
+        </div>
+      })
+    }
+    
 
   return (
     <>

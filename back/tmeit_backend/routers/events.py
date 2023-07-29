@@ -72,8 +72,9 @@ async def create_new_event(event_data: EventMemberCreate,
     return event
 
 @router.delete("/delete/{uuid}", response_model=EventMemberDelete, responses={403: {"model": ForbiddenResponse}})
-async def delete_event(db: AsyncSession = Depends(get_db),
-                       current_user: EventMemberView = Depends(get_current_user)):
+async def delete_event( uuid: UUID,
+                        db: AsyncSession = Depends(get_db),
+                        current_user: EventMemberView = Depends(get_current_user)):
 
     if current_user is None or current_user.current_role != "master":
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,

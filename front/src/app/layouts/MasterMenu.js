@@ -6,6 +6,7 @@ import Centered from "../components/Centered.js";
 import useIsScreenWide from "../useIsScreenWide.js";
 
 import MasterSignups from "../components/MasterSignups";
+import AdminEvents from "../components/AdminEvents.js";
 
 function MasterMenu() {
 
