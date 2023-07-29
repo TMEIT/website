@@ -76,11 +76,11 @@ async def delete_event( uuid: UUID,
                         db: AsyncSession = Depends(get_db),
                         current_user: EventMemberView = Depends(get_current_user)):
 
-    if current_user is None or current_user.current_role != "master":
+    if current_user is None or (current_user.current_role != "master"):
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"error": f"Only masters have the permission to delete events."})
     try: 
         rem_event = await delete_event(db=db, uuid=uuid)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
-                            content={"error": f"No event with the {uuid=} was found."})
+                            content={"error": f"No event with the ID {uuid=} was found."})
