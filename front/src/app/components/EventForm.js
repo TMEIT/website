@@ -107,7 +107,6 @@ function EventForm({className, edit, event = null})
         } 
         else if (create.status == 403) {
             setUserMessage(2);
-            navigate("/events");
         }
         else if (create.status === 200) {
             setUserMessage(3);

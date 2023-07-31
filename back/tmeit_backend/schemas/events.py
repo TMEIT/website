@@ -42,9 +42,9 @@ event_fields: FieldDict = {
     #"attending":            FieldDescription(member=edit,    prao=read,    public=read,    type=list[UUID]),
 
     # Fields that only are to visible and can only be edited by any TMEIT member
-    "visibility":             FieldDescription(master=edit,  member=edit,    prao=read,    public=denied,    type=str),
+    "visibility":           FieldDescription(master=edit,    member=edit,    prao=read,    public=read,     type=str),
     # Fields that can not be edited
-    "time_created":         FieldDescription(master=edit,    member=read,    prao=read,    public=denied,    type=datetime.date),
+    "time_created":         FieldDescription(master=edit,    member=read,    prao=read,    public=denied,   type=datetime.date),
     "time_updated":         FieldDescription(master=edit,    member=read,    prao=read,    public=denied,   type=datetime.date),
 }
 

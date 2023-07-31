@@ -15,8 +15,11 @@ function AdminEvents() {
         useEffect(() => {loadEventData() }, []);
 
   const [eventArr, setEventData] = useState(null);
-  const [event, setEvent] = useState(null);
+
+  const [eventData, setEvent] = useState(null);
   const [view, setView] = useState(0);
+
+  const [userMessage, setUserMessage] = useState("");
 
   let navigate = useNavigate();
   let screenWide = useIsScreenWide(949);
@@ -41,14 +44,32 @@ function AdminEvents() {
     }
   };
 
-  function openEdit(event)
+  function openEdit(eventData)
   {
-    setEvent(event);
+    setEvent(eventData);
     setView(1);
   }
 
-  function handleDelete(event) {
+  function handleDelete(uuid) {
 
+    const tokenText = cookie();
+    const address = String("/api/v1/events/" + {uuid})
+
+    const remove = new XMLHttpRequest();
+    remove.open("DELETE", address);
+    remove.setRequestHeader("Authorization", tokenText);
+    remove.setRequestHeader("Content-Type", "application/json");
+    remove.send();
+
+    remove.onload = function () {
+    if (remove.status === 200) {
+      setUserMessage("Event has been deleted!");
+    }
+    else if (remove.status === 404) {
+      setUserMessage("Could not find event. Reload the page to update events")
+    }
+    }
+    uuid.preventDefault();
   }
 
   function cookie(){
@@ -71,11 +92,11 @@ function AdminEvents() {
     navigate(0);
   }
 
-  let events;
+  let eventsmap;
 
     if (eventArr == null)
     {
-      events = <Centered>
+      eventsmap = <Centered>
                 <TextSummary>
                   <h1>No events</h1>
                   <p>There are no published events</p>
@@ -84,26 +105,28 @@ function AdminEvents() {
     }
     else
     {
-      events = eventArr.map(event => {
+      eventsmap = eventArr.map(eventmap => {
         <div>
           <div style={screenWide? style.events : style.eventsMobile}>
 
-            <p>{event.uuid}</p>
+            <p>{eventmap.uuid}</p>
 
-            <p>{event.title}</p>
+            <p>{eventmap.title}</p>
 
-            <p>{event.event_start}</p>
+            <p>{eventmap.event_start}</p>
 
-            <p>{event.event_end}</p>
+            <p>{eventmap.event_end}</p>
 
-            <p>{event.location}</p>
+            <p>{eventmap.location}</p>
 
-            <p>{event.description}</p>
+            <p>{eventmap.description}</p>
 
-            <p>{event.visibility}</p>
+            <p>{eventmap.visibility}</p>
             
-            <Button variant="contained"onClick={() => openEdit(event)}>Edit Event</Button>
-            <Button variant="contained"onClick={() => handleDelete(event)}>Delete</Button>
+            <Button variant="contained"onClick={() => openEdit(eventmap)}>Edit Event</Button>
+            <Button variant="contained"onClick={() => handleDelete(eventmap.uuid)}>Delete</Button>
+
+            <p>{userMessage}</p>
           </div>
         </div>
       })
@@ -117,12 +140,12 @@ function AdminEvents() {
         case 0:
           return(
             <>
-              <Fragment>{events}</Fragment>{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
+              {eventsmap}{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
             </>);
 
         case 1:
           return (<>
-          <EventForm className={className} edit={true} event={event}></EventForm>
+          <EventForm className={className} edit={true} eventData={eventData}></EventForm>
           <Button variant="contained" onClick={() => setView(0)}>Close</Button>
           </>);
       }

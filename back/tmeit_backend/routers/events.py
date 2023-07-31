@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
-from ..crud.events import create_event, get_event, get_events
+from ..crud.events import create_event, get_event, get_events, remove_event
 from ..deps import get_worker_pool
 from ..schemas.events import UUID, EventMemberView, EventPraoView, EventPublicView, \
     EventMemberPatch, EventMemberCreate, EventViewResponse, EventMasterDelete
@@ -71,16 +71,18 @@ async def create_new_event(event_data: EventMemberCreate,
     event = await create_event(db=db, data=event_data)
     return event
 
-@router.delete("/delete/{uuid}", response_model=EventMasterDelete, responses={403: {"model": ForbiddenResponse}})
+@router.delete("/{uuid}", responses={403: {"model": ForbiddenResponse}})
 async def delete_event( uuid: UUID,
                         db: AsyncSession = Depends(get_db),
                         current_user: EventMemberView = Depends(get_current_user)):
 
-    if current_user is None or (current_user.current_role != "master"):
+    if current_user is None:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"error": f"Only masters have the permission to delete events."})
     try: 
-        rem_event = await delete_event(db=db, uuid=uuid)
+        await remove_event(db=db, uuid=uuid)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No event with the ID {uuid=} was found."})
+    return JSONResponse(status_code=status.HTTP_200_OK,
+                        content={"Success": f"event with ID {uuid} has been deleted"})
