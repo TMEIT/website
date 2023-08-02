@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
-from ..crud.events import create_event, get_event, get_events, remove_event
+from ..crud.events import create_event, get_event, get_events_publicuser, get_events_internaluser, get_events_electeduser, remove_event
 from ..deps import get_worker_pool
 from ..schemas.events import UUID, EventMemberView, EventPraoView, EventPublicView, \
     EventMemberPatch, EventMemberCreate, EventViewResponse, EventMasterDelete
@@ -45,18 +45,31 @@ async def read_events(db: AsyncSession = Depends(get_db),
                         current_user: EventMemberView = Depends(get_current_user)):
 
     # Check authentication level and set response level accordingly
-    response_schema = EventPublicView
+    # response_schema = EventPublicView
     if current_user is not None and current_user.current_role == "prao":
-        response_schema = EventPraoView
+        #response_schema = EventPraoView
+        try:
+            events = await get_events_internaluser(db=db, response_schema=EventPraoView)
+        except KeyError:
+            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                                content={"error": f"No events were found"})
+        return events
+        
     if current_user is not None and current_user.current_role != "prao":
-        response_schema = EventMemberView
+        try:
+            events = await get_events_electeduser(db=db, response_schema=EventMemberView)
+        except KeyError:
+            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                                content={"error": f"No events were found"})
+        return events
 
-    try:
-        events = await get_events(db=db, response_schema=response_schema)
-    except KeyError:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+    else:
+        try:
+            events = await get_events_publicuser(db=db, response_schema=EventPublicView)
+        except KeyError:
+            return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content={"error": f"No events were found"})
-    return events
+        return events
 
 # Create event
 @router.post("/create", response_model=EventMemberCreate, responses={403: {"model": ForbiddenResponse}})

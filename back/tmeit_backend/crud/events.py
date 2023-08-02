@@ -30,7 +30,19 @@ async def get_event(db: AsyncSession, uuid: UUID, response_schema: Type[S]) -> S
     sql_event = dict(result.Event.__dict__)
     return response_schema.parse_obj(sql_event)
 
-async def get_events(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 1000) -> list[S]:
+async def get_events_publicuser(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 1000) -> list[S]:
+    stmt = select(models.Event).where(models.Event.visibility == str("public")).offset(skip).limit(limit)
+    result = await db.execute(stmt)
+    sql_events = [dict(e.__dict__) for e in result.scalars().all()]
+    return [response_schema.parse_obj(sql_event) for sql_event in sql_events]
+
+async def get_events_internaluser(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 1000) -> list[S]:
+    stmt = select(models.Event).where(models.Event.visibility != str("elected")).offset(skip).limit(limit)
+    result = await db.execute(stmt)
+    sql_events = [dict(e.__dict__) for e in result.scalars().all()]
+    return [response_schema.parse_obj(sql_event) for sql_event in sql_events]
+
+async def get_events_electeduser(db: AsyncSession, response_schema: Type[S], skip: int = 0, limit: int = 1000) -> list[S]:
     stmt = select(models.Event).offset(skip).limit(limit)
     result = await db.execute(stmt)
     sql_events = [dict(e.__dict__) for e in result.scalars().all()]

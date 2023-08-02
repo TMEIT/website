@@ -6,7 +6,6 @@ import EventView from "../components/EventView.js";
 import Button from "@mui/material/Button";
 import {Link} from "react-router-dom";
 import { getApiFetcher } from "../api.js";
-import hasLoginCookie from '../hasLoginCookie.js';
 import Loading from '../components/Loading.js';
 
 const StyledEvents = styled(Events)({
@@ -16,15 +15,7 @@ const StyledEvents = styled(Events)({
     }
 });
 
-const render_eventPublicList = (eventArr) => 
-    Object.values(eventArr).filter(eventData => eventData.visibility == "public")
-    .map(eventData => <EventView event={eventData}/>);
-
-const render_eventInternalList = (eventArr) =>
-    Object.values(eventArr).filter(eventData => eventData.visibility != "elected")
-    .map(eventData => <EventView event={eventData}/>);
-
-const render_eventElectedList = (eventArr) =>
+const render_events = (eventArr) => 
     Object.values(eventArr).map(eventData => <EventView event={eventData}/>);
 
 function Events({className}) {
@@ -34,27 +25,13 @@ function Events({className}) {
 
     const [eventArr, setEventData] = useState(null);
 
-    const loadMeData = async() => {setMeData(await getApiFetcher().get("/me").json())}
-    useEffect(() => {loadMeData() }, []);
-
-    const [meData, setMeData] = useState(null);
-
-    let loggedIn = hasLoginCookie();
-
     let events;
 
     if (eventArr == null)
         return <Loading/>;
 
-    if (loggedIn & (eventArr.length != 0) & (meData != null))
-    {
-        if (meData.current_role == ("prao" | "exprao"))
-            events = render_eventInternalList(eventArr);
-        else
-            events = render_eventElectedList(eventArr);
-    }
-    else if (eventArr.length != 0 & meData == null)
-        events = render_eventPublicList(eventArr);
+    if (eventArr.length != 0)
+        events = render_events(eventArr);
     else
     {
         events = <></>;
