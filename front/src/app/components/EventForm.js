@@ -109,7 +109,7 @@ function EventForm({className, edit, event = null})
             setUserMessage(2);
         }
         else if (create.status === 200) {
-            setUserMessage(3);
+            alert("Event has successfully been created!");
             navigate("/events");
         }
             create.onerror = function () {
