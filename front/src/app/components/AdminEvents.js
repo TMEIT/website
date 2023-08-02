@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { primary_light } from "../palette";
 import useIsScreenWide from "../useIsScreenWide";
-import EventForm from "../components/EventForm.js";
+//import EventForm from "../components/EventForm.js";
 import { getApiFetcher } from "../api";
-import Centered from "../components/Centered.js";
-import TextSummary from "../components/TextSummary.js";
+import Loading from "./Loading";
 
 
 function AdminEvents() {
@@ -16,10 +15,8 @@ function AdminEvents() {
 
   const [eventArr, setEventData] = useState(null);
 
-  const [eventData, setEvent] = useState(null);
+  //const [eventData, setEvent] = useState(null);
   const [view, setView] = useState(0);
-
-  const [userMessage, setUserMessage] = useState("");
 
   let navigate = useNavigate();
   let screenWide = useIsScreenWide(949);
@@ -44,16 +41,18 @@ function AdminEvents() {
     }
   };
 
-  function openEdit(eventData)
+  if (eventArr == null)
+    return <Loading/>;
+  /*function openEdit(eventData)
   {
     setEvent(eventData);
     setView(1);
-  }
+  }*/
 
   function handleDelete(uuid) {
 
     const tokenText = cookie();
-    const address = String("/api/v1/events/" + {uuid})
+    const address = "/api/v1/events/" + String(uuid);
 
     const remove = new XMLHttpRequest();
     remove.open("DELETE", address);
@@ -62,14 +61,13 @@ function AdminEvents() {
     remove.send();
 
     remove.onload = function () {
-    if (remove.status === 200) {
-      setUserMessage("Event has been deleted!");
+      if (remove.status === 200) {
+        alert("Event has been deleted!");
+      }
+      else if (remove.status === 404) {
+        alert("Could not delete event, because it does not exist. Please reload the page to update available events");
+      }
     }
-    else if (remove.status === 404) {
-      setUserMessage("Could not find event. Reload the page to update events")
-    }
-    }
-    uuid.preventDefault();
   }
 
   function cookie(){
@@ -92,20 +90,16 @@ function AdminEvents() {
     navigate(0);
   }
 
-  let eventsmap;
+  var eventsmap;
 
-    if (eventArr == null)
+    if (eventArr.length == 0)
     {
-      eventsmap = <Centered>
-                <TextSummary>
-                  <h1>No events</h1>
-                  <p>There are no published events</p>
-                </TextSummary>
-              </Centered>
+      alert("There are currently no events");
+      eventsmap = <></>;
     }
     else
     {
-      eventsmap = eventArr.map(eventmap => {
+      eventsmap = eventArr.map(eventmap =>
         <div>
           <div style={screenWide? style.events : style.eventsMobile}>
 
@@ -123,35 +117,34 @@ function AdminEvents() {
 
             <p>{eventmap.visibility}</p>
             
-            <Button variant="contained"onClick={() => openEdit(eventmap)}>Edit Event</Button>
+            {/*<Button variant="contained"onClick={() => openEdit(eventmap)}>Edit Event</Button>*/}
             <Button variant="contained"onClick={() => handleDelete(eventmap.uuid)}>Delete</Button>
-
-            <p>{userMessage}</p>
           </div>
         </div>
-      })
+      )
     }
-    
 
   return (
     <>
     {(() => {
       switch (view) {
         case 0:
-          return(
+          return (
             <>
-              {eventsmap}{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
+              <Fragment>{eventsmap}</Fragment>{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
             </>);
 
-        case 1:
-          return (<>
-          <EventForm className={className} edit={true} eventData={eventData}></EventForm>
-          <Button variant="contained" onClick={() => setView(0)}>Close</Button>
-          </>);
+        case 2:
+          /*return (<>
+            <EventForm className={className} edit={true} eventData={eventData}></EventForm>
+            <Button variant="contained" onClick={() => setView(0)}>Close</Button>
+            </>);*/
+            return <></>;
       }
     })()}
     </>
   )
 }
+
 
 export default AdminEvents;

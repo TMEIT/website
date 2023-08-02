@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import {Link} from "react-router-dom";
 import { getApiFetcher } from "../api.js";
 import hasLoginCookie from '../hasLoginCookie.js';
+import Loading from '../components/Loading.js';
 
 const StyledEvents = styled(Events)({
     [TextSummary]: {
@@ -26,47 +27,38 @@ const render_eventInternalList = (eventArr) =>
 const render_eventElectedList = (eventArr) =>
     Object.values(eventArr).map(eventData => <EventView event={eventData}/>);
 
-const get_events = () => {
+function Events({className}) {
+
     const loadEventData = async() => {setEventData(await getApiFetcher().get("/events/").json())}
         useEffect(() => {loadEventData() }, []);
 
-    const [eventRes, setEventData] = useState(null);
-
-    return eventRes;
-}
-
-function Events({className}) {
-
-    let loggedIn = hasLoginCookie();
-
-    let events;
-
-    const eventArr = get_events();
+    const [eventArr, setEventData] = useState(null);
 
     const loadMeData = async() => {setMeData(await getApiFetcher().get("/me").json())}
     useEffect(() => {loadMeData() }, []);
 
     const [meData, setMeData] = useState(null);
-    const currentUser = meData;
 
-    if (loggedIn & (eventArr != null) & (meData != null))
+    let loggedIn = hasLoginCookie();
+
+    let events;
+
+    if (eventArr == null)
+        return <Loading/>;
+
+    if (loggedIn & (eventArr.length != 0) & (meData != null))
     {
-        if (currentUser.current_role == ("prao" | "exprao"))
+        if (meData.current_role == ("prao" | "exprao"))
             events = render_eventInternalList(eventArr);
         else
             events = render_eventElectedList(eventArr);
-        
     }
-    else if (eventArr != null & meData == null)
-    {
+    else if (eventArr.length != 0 & meData == null)
         events = render_eventPublicList(eventArr);
-    }
     else
     {
-        events = (<TextSummary>
-                  <h1>No published events</h1>
-                  <p>There are currently no planned events, please check back later!</p>
-                  </TextSummary>);
+        events = <></>;
+        alert("There are currently no events");
     }
 
     return(
