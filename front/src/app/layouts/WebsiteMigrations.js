@@ -1,4 +1,5 @@
 import {Link, useLoaderData} from "react-router-dom";
+import Button from "@mui/material/Button";
 
 function WebsiteMigrations() {
     let data = useLoaderData();
@@ -15,6 +16,7 @@ function WebsiteMigrations() {
     return (
         <>
             <h1>Members with a pending migration from old website</h1>
+            <Button style={{marginTop: "3em", marginBottom: "3em"}} variant="contained"><Link to="/master">Back to Master Menu</Link></Button>
             {memberList}
         </>
     )

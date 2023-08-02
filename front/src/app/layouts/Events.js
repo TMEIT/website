@@ -1,8 +1,12 @@
+import {useState, useEffect } from 'react';
 import styled from "@emotion/styled";
-
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
-import hasLoginCookie from "../hasLoginCookie.js";
+import EventView from "../components/EventView.js";
+import Button from "@mui/material/Button";
+import {Link} from "react-router-dom";
+import { getApiFetcher } from "../api.js";
+import Loading from '../components/Loading.js';
 
 const StyledEvents = styled(Events)({
     [TextSummary]: {
@@ -11,24 +15,36 @@ const StyledEvents = styled(Events)({
     }
 });
 
+const render_events = (eventArr) => 
+    Object.values(eventArr).map(eventData => <EventView event={eventData}/>);
+
 function Events({className}) {
+
+    const loadEventData = async() => {setEventData(await getApiFetcher().get("/events/").json())}
+        useEffect(() => {loadEventData() }, []);
+
+    const [eventArr, setEventData] = useState(null);
+
+    let events;
+
+    if (eventArr == null)
+        return <Loading/>;
+
+    if (eventArr.length != 0)
+        events = render_events(eventArr);
+    else
+    {
+        events = <></>;
+        alert("There are currently no events");
+    }
+
     return(
-        <Centered className={className}>
-            <TextSummary>
-                <h1>Events - Coming soon!</h1>
-                <p>The events page is under construction.</p>
-                <p>TMEIT.SE GEN 3 is very new and we're still re-implementing the event pages.</p>
-                <p>Check out our <a href="https://www.facebook.com/TMEIT/events" target="_blank">Facebook events</a> in the meantime!</p>
-            </TextSummary>
-            <>{hasLoginCookie()? 
-                <TextSummary>
-                <h1>Work signup</h1><p>Meanwhile the development of the events page is underway,</p>
-                <p>you can sign up to work on an event here: </p>
-                <a href="https://docs.google.com/spreadsheets/d/1XxQQKn0U0aYRtVvEvowolVkEkQn55XNmB1my1TOB3cc/edit?usp=sharing" target="_blank">Work sign-up</a>
-                </TextSummary>
-             : <></>}
-             </>
-        </Centered>
+        <>
+            <Button variant="contained" style={{marginTop: "2em"}}><Link to="/createEvent">+ Add new event</Link></Button>
+            <Centered className={className}>
+                {events}
+            </Centered>
+        </>
     );
 }
 export default StyledEvents

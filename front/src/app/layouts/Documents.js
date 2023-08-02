@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";  
+import styled from "@emotion/styled"; 
 
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";

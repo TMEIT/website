@@ -44,7 +44,7 @@ function MasterSignups() {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", address, true);
     xhr.setRequestHeader("Authorization", tokenText);
-    xhr.send("") 
+    xhr.send(); 
     xhr.responseType = "json";
 
     xhr.onload = function () {
