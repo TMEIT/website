@@ -62,10 +62,10 @@ function AdminEvents() {
 
     remove.onload = function () {
       if (remove.status === 200) {
-        alert("Event has been deleted!");
+        alert("Event has been deleted! Please reload the page to display available events");
       }
       else if (remove.status === 404) {
-        alert("Could not delete event, because it does not exist. Please reload the page to update available events");
+        alert("Could not delete event, because it does not exist. Please reload the page to display available events");
       }
     }
   }

@@ -50,9 +50,7 @@ function EventView({className, event})
     const [listHidden, setListHidden] = useState(true);*/
 
     const start = event.event_start.split(/[T+]+/);
-    console.log(start);
     const end = event.event_end.split(/[T+]+/);
-    console.log(end);
 
     return(
         <div className={className}>

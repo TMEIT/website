@@ -41,8 +41,6 @@ function EventForm({className, edit, event = null})
 {
     let navigate = useNavigate();
 
-    const [userMessage, setUserMessage] = useState(0);
-
     const [title, setTitle] = useState(edit? event.title : "");
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("");
@@ -50,7 +48,7 @@ function EventForm({className, edit, event = null})
     const [endTime, setEndTime] = useState("");
     const [location, setLocation] = useState(edit? event.location : "");
     const [description, setDescription] = useState(edit? event.description : "");
-    const [visibility, setVisibility] = useState(edit? event.visibility : "");
+    const [visibility, setVisibility] = useState(edit? event.visibility : "elected");
     
 
     const handleInputChange = (e) => {
@@ -103,10 +101,10 @@ function EventForm({className, edit, event = null})
 
         create.onload = function () {
         if (create.status === 422) {
-            setUserMessage(1);
+            alert("Could not add event: please make sure you have formatted your input data correctly");
         } 
         else if (create.status == 403) {
-            setUserMessage(2);
+            alert("You do not have the permission to create events");
         }
         else if (create.status === 200) {
             alert("Event has successfully been created!");
@@ -139,7 +137,7 @@ function EventForm({className, edit, event = null})
         navigate(0);
       }
 
-    const save = (event) => {
+    //const save = (event) => {
         /* if(1 == 0) {}
         else {
             const data = { 
@@ -155,7 +153,7 @@ function EventForm({className, edit, event = null})
                 event_location  : location,             //
                 event_descript  : description,          //
             };*/
-            setUserMessage(3);
+            //setUserMessage(3);
     /*
         const edit = new XMLHttpRequest();
         edit.open("PATCH", "/api/v1/events/" + {eventuuid});
@@ -181,13 +179,13 @@ function EventForm({className, edit, event = null})
         };
     */
         //}
-        event.preventDefault();
-    };
+        //event.preventDefault();
+    //};
 
     return(
         <div className={className}>
             <div className="eventForm">
-                <Box component="form" onSubmit={(e) => {e.preventDefault(); (edit? save(e) : submit(e));}} sx={{ mt: 3}}>
+                <Box component="form" onSubmit={(e) => {e.preventDefault(); submit(e); /*(edit? save(e) : submit(e));*/}} sx={{ mt: 3}}>
                     <Grid>
                         <img id="banner" src={tmeit_logo_nogojan_mono}/>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
@@ -200,21 +198,21 @@ function EventForm({className, edit, event = null})
                             <TextField required variant="filled" fullWidth id="start_time" label="Event starts at" placeholder="17:00:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="end_date" label="Event ends on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="end_date" label="Event ends on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField variant="filled" fullWidth id="end_time" label="Event ends at" placeholder="03:00:00" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="end_time" label="Event ends at" placeholder="03:00:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField required variant="filled" fullWidth id="location" label="Location" placeholder="Kistan 2.0" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em", marginBottom: "1em"}}>
-                            <TextField required variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
+                            <TextField required multiline variant="filled" fullWidth id="description" label="Description of the event" placeholder="Description.." onChange={handleInputChange}/>
                         </Grid>
-                        <div required>
-                            <Box my={1}>
-                                <h2>Visibility</h2>
-                            </Box>
+                        <Grid my={1}>
+                                <h2>Visibility - please select an option</h2>
+                        </Grid>
+                        <div>
                             <Box>
                                 <input type="radio" id="visibilityPublic" name="visibility" onChange={(e) => handleInputChange(e)}/>
                                 <label htmlFor="visibilityPublic">Public</label>
@@ -233,23 +231,6 @@ function EventForm({className, edit, event = null})
                         <Button variant="contained" type="submit">Save</Button>
                     </Grid>
                 </Box>
-                <div className="errorMessage">
-                    {(() => {
-                    switch (userMessage) {
-                        case 0:
-                        return <></>;
-
-                        case 1:
-                        return <p>Error: please make sure the event details are formatted correctly!</p>;
-
-                        case 2:
-                        return <p>Error: You do not have permission to create events!</p>;
-
-                        case 3:
-                        return <p>Event Created!</p>;
-                    }
-                    })()}
-                </div>
             </div>
         </div>
     );
