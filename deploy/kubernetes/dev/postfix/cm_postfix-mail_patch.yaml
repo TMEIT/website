@@ -3,6 +3,5 @@
 # https://hub.docker.com/r/boky/postfix/
 # https://kubectl.docs.kubernetes.io/guides/config_management/components/
 - op: add
-  path: /data
-  value:
-    RELAYHOST: mailhog:1025
+  path: /data/RELAYHOST
+  value: mailhog.default.svc.cluster.local:1025
