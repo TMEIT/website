@@ -1,0 +1,8 @@
+# Patches the Postfix config so that it redirects all outgoing mail to mailhog.
+# https://xy2z.io/posts/2018-setup-mailhog-inside-docker-through-postfix/
+# https://hub.docker.com/r/boky/postfix/
+# https://kubectl.docs.kubernetes.io/guides/config_management/components/
+- op: add
+  path: /data
+  value:
+    RELAYHOST: mailhog:1025
