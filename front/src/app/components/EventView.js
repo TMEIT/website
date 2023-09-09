@@ -39,6 +39,8 @@ const StyledEventView = styled(EventView)({
 
 })
 
+const mapdescript = (descript) => descript.map(descriptln => <><p>{descriptln}</p></>);
+
 function EventView({className, event})
 {
     /*const [meData, setMeData] = useState(null);
@@ -51,6 +53,9 @@ function EventView({className, event})
 
     const start = event.event_start.split(/[T+]+/);
     const end = event.event_end.split(/[T+]+/);
+    
+    let descriptsplit = event.description.split("\n");
+    const description = mapdescript(descriptsplit);
 
     return(
         <div className={className}>
@@ -76,7 +81,7 @@ function EventView({className, event})
                     </Grid>
                     <br></br>
                     <Grid>
-                        <p>{event.description}</p>
+                        <>{description}</>
                     </Grid>
                     <br></br>
                     {/*<Grid>

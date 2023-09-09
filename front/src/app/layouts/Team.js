@@ -48,7 +48,7 @@ function Team({className}) {
     // render memberlists
     //Hide master role hack, remove Lex from masters list
     let masterList = render_memberlist(data.filter(member => member.nickname !== "Lex"), "master");
-    const marshalList = render_memberlist(data.filter(member => member.nickname !== "Klepto"), "marshal");
+    const marshalList = render_memberlist(data, "marshal");
     const praoList = render_memberlist(data, "prao");
     const vraqList = render_memberlist(data, "vraq");
     const exList = render_memberlist(data, "ex");
