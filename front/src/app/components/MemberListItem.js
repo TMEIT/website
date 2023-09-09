@@ -123,7 +123,7 @@ function MemberListItem({ member, className, ExtraButtonsComponent }) {
     return (
         <Link className={className} to={`/profile/${member.short_uuid}/${member.first_name}_${member.last_name}` }>
             <img
-                src={"https://thispersondoesnotexist.com/image"}
+                src={"https://thispersondoesnotexist.com"}
                 alt={`Profile picture for ${full_name}`}
             />
             <StyledMemberNameLine member={member} />

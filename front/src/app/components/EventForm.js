@@ -80,16 +80,16 @@ function EventForm({className, edit, event = null})
 
         var tokenText = cookie();
 
-        const start = startDate + "T" + startTime + "+00:00";
-        const end = endDate + "T" + endTime + "+00:00";
+        const start = startDate + "T" + startTime + ":00+00:00";
+        const end = endDate + "T" + endTime + ":00+00:00";
 
         const data = { 
-            title               : title,                //data for whether user can work or not
-            event_start         : start,                //data for whether user will have to take a break during the shift or not
-            event_end           : end,                  //data for when break starts
-            location            : location,             //
-            description         : description,          //
-            visibility          : visibility,
+            title               : title,                //data for event title
+            event_start         : start,                //data for event start date and time
+            event_end           : end,                  //data for evend end date and time
+            location            : location,             //data for event location
+            description         : description,          //data for event description
+            visibility          : visibility,           //data for event visibility - who can see the event
         };
 
         const create = new XMLHttpRequest();
@@ -103,8 +103,12 @@ function EventForm({className, edit, event = null})
         if (create.status === 422) {
             alert("Could not add event: please make sure you have formatted your input data correctly");
         } 
+        if (create.status === 500) {
+            alert("Could not add event: please make sure that date and time are correctly formatted: YYYY-MM-DD, HH:MM");
+        }
         else if (create.status == 403) {
             alert("You do not have the permission to create events");
+            navigate("/events");
         }
         else if (create.status === 200) {
             alert("Event has successfully been created!");
@@ -195,13 +199,13 @@ function EventForm({className, edit, event = null})
                             <TextField required variant="filled" fullWidth id="start_date" label="Event takes place on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField required variant="filled" fullWidth id="start_time" label="Event starts at" placeholder="17:00:00" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="start_time" label="Event starts at" placeholder="17:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField required variant="filled" fullWidth id="end_date" label="Event ends on" placeholder="YYYY-MM-DD" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
-                            <TextField required variant="filled" fullWidth id="end_time" label="Event ends at" placeholder="03:00:00" onChange={handleInputChange}/>
+                            <TextField required variant="filled" fullWidth id="end_time" label="Event ends at" placeholder="03:00" onChange={handleInputChange}/>
                         </Grid>
                         <Grid item xs={12} style={{marginTop: "1em"}}>
                             <TextField required variant="filled" fullWidth id="location" label="Location" placeholder="Kistan 2.0" onChange={handleInputChange}/>
