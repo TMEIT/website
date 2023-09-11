@@ -78,7 +78,7 @@ async def create_new_event(event_data: EventMemberCreate,
                             current_user: EventMemberView = Depends(get_current_user)):
     
     # Make sure user is authenticated with member or master permissions
-    if current_user is None or (current_user.current_role != "marsalk" and current_user.current_role != "master"):
+    if current_user is None or (current_user.current_role != "marshal" and current_user.current_role != "master"):
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
                             content={"error": f"Only TMEIT marhsals or masters may create new events."})
     event = await create_event(db=db, data=event_data)

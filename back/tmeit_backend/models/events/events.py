@@ -5,9 +5,12 @@ from sqlalchemy.sql.functions import func
 
 from typing import TYPE_CHECKING, List
 
-from ._utils import short_uuid_from_uuid # reusing the functionality from the members module
-from ..database import Base
-from .members.members import Member
+from .._utils import short_uuid_from_uuid # reusing the functionality from the members module
+from ...database import Base
+from ..members.members import Member
+
+if TYPE_CHECKING:
+    from .event_signups import EventSignup
 
 """
 Table for creating a many-to-many relationship between useres and events
@@ -48,6 +51,8 @@ class Event(Base):
     location = Column(String, nullable=False)
 
     visibility = Column(String, nullable=False) # Who can see the event. (Public, prao or marsalk + masters + vrak)
+
+    signups: Mapped[Optional["EventSignup"]] = mapped_column(ForeignKey("event_signups.uuid"))
     # Following line should be line below in declarative form, not sure how to achieve that
     # children: Mapped[List[Child]] = relationship(secondary=association_table)
 #   attending = relationship("Member", secondary=attending)

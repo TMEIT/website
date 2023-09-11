@@ -115,7 +115,7 @@ function SignupForm({className, event})
         else {
             const data = { 
                 user_uuid       : userData.short_uuid,
-                event_uuid      : eventID,
+                event_uuid      : event.uuid,
                 can_work        : canwork,      //data for whether user can work or not
                 work_start      : start_time,   //data for start time
                 work_end        : end_time,     //data for end time
