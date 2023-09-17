@@ -84,7 +84,7 @@ Tilt is made by Docker, inc. and is very useful for doing development in contain
    3. [Kubectl install instructions](https://kubernetes.io/docs/tasks/tools/)
    4. [Kind install instructions](https://kind.sigs.k8s.io/docs/user/quick-start)
 2. Start your Kubernetes cluster
-   1. Run `kind create-cluster --wait 5m` to create your Kubernetes cluster. It should take a minute or two to download everything and start the cluster.
+   1. Run `kind create cluster --wait 5m` to create your Kubernetes cluster. It should take a minute or two to download everything and start the cluster.
    2. Verify that your cluster is working by running `kubectl version`. You can also run `kubectl get pods -A` to see all containers running in Kubernetes. (Note that all of Kubernetes and its running containers are all running in a Docker container named kindest/node)
 3. Start your development environment
    1. cd into the root directory for this git repo (e.g. `cd ~/IdeaProjects/tmeit-website`)
