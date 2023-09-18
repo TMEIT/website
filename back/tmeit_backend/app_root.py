@@ -41,7 +41,7 @@ app.include_router(health_router)
 @app.get("/migrating")
 @app.get("/about")
 @app.get("/documents")
-@app.get("/passres")
+@app.get("/reset/{reset_token}")
 @app.get("/createEvent")
 @app.get("/editEvent")
 async def load_js_app():

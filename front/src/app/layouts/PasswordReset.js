@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
 
-import {useLoaderData, useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useState} from "react";
 
 import { light_background_light } from "../palette.js";
@@ -32,7 +32,7 @@ const StyledPasswordReset = styled(PasswordReset)({
 
 function PasswordReset({className}) {
     const navigate = useNavigate();
-    const reset_token = useLoaderData();
+    const reset_token = useParams();
 
     const [newPass, setNewPass] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
@@ -47,12 +47,28 @@ function PasswordReset({className}) {
         else
         {
             const data = {
-                New_Password        : newPass,
-                Confirm_Password    : confirmPass,
-                Reset_Token         : reset_token,
+                password        : newPass
             }
-            setErrorMessage(1);
-            navigate("/");
+
+            const address = "/api/v1/reset/" + reset_token;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", address, true);
+            xhr.send(data); 
+            xhr.responseType = "json";
+
+            xhr.onload = function () {
+            if(xhr.status = 200){
+                setErrorMessage(1);
+                navigate(0);
+            }
+            else{
+                alert(`error: ${xhr.status}: ${xhr.statusText}`);
+            }
+            };
+            xhr.onerror = function (){
+            console.log("Request failed");
+            }
         }
     };
 
