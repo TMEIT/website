@@ -148,8 +148,6 @@ class ChangePassword(BaseModel):
     def check_password(cls, v):
         return is_password_strong(v)
 
-class 
-
 class ResetPasswordChange(BaseModel):
     new_password: str
     @validator('new_password')
