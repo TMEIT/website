@@ -26,9 +26,12 @@ async def reset_password_request(
                                 db: AsyncSession = Depends(get_db),
                                 pool: ArqRedis = Depends(get_worker_pool)
                                 ):
-    # Create reset token & store in database & send email to user
-    create_reset_token(db = db, pool=pool, email=data.email)
- 
+    # Create reset token & store in database
+    reset_token = await create_reset_token(db = db, pool=pool, email=data.email)
+    if reset_token == None:
+        return
+    # Send email to user
+    await pool.enqueue_job('send_password_reset_email', email=data.email, reset_token=reset_token)
 
 # Enter new password
 @router.put("/reset/{token}")
