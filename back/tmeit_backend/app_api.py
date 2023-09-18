@@ -8,7 +8,7 @@ from .routers.login import router as login_router
 from .routers.sign_up import router as sign_up_router
 from .routers.test_email import router as test_email_router
 from .routers.events import router as event_router
-
+from .routers.password_reset import router as password_reset_router
 
 # Our FastAPI sub-app for the v1 API
 app = FastAPI()
@@ -22,3 +22,4 @@ app.include_router(version_router)
 app.include_router(sign_up_router, prefix="/sign_up")
 app.include_router(test_email_router)
 app.include_router(event_router, prefix="/events")
+app.include_router(password_reset_router)
