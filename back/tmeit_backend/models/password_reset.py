@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, DateTime
+from sqlalchemy import Column, Date, DateTime, String
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -15,7 +15,7 @@ class PasswordReset(Base):
     """
     __tablename__ = "password_reset"
     # Key which is shared in email
-    hashed_reset_token = Column(UUID, primary_key=True, index=True)
+    hashed_reset_token = Column(String, primary_key=True, index=True)
     # The user which this reset record is connected to
-    user_id = Column(UUID)
+    user_id = Column(UUID, nullable=False)
     time_created = Column(DateTime(timezone=True), server_default=func.now())

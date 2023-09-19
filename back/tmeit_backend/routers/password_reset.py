@@ -6,8 +6,7 @@ from fastapi import Depends, status, APIRouter
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..crud.password_reset import create_reset_token, check_reset_token
-from ..crud.members import change_password
+from ..crud.password_reset import create_reset_token, check_reset_token, change_password_without_old_pw
 from ._database_deps import get_db
 from ..deps import get_worker_pool
 
@@ -41,13 +40,16 @@ async def reset_password_change_password(
                                         db: AsyncSession = Depends(get_db)
                                          ):
     # Check if token exists
-    user_uuid = check_reset_token(token)
+    user_uuid = await check_reset_token(db = db, reset_token=token)
     # Change password
     try:
-        change_password(user_uuid, ChangePassword.password)
+        await change_password_without_old_pw(db=db, uuid=user_uuid, password=data.password)
         return JSONResponse(status_code=status.HTTP_200_OK,
-            content="Password for user {user_uuid} changed")
-    except ValueError:
-        return JSONResponse(status_code =status.HTTP_404_NOT_FOUND,
+            content=f'Password for user {user_uuid} changed')
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                             content="No matching reset token found")
+    except ValueError:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content=ValueError) # Password is not strong enough
 
