@@ -37,19 +37,20 @@ async def reset_password_request(
 async def reset_password_change_password(
                                         data: ChangePassword,
                                         token: str,
+                                        email: str,
                                         db: AsyncSession = Depends(get_db)
                                          ):
-    # Check if token exists
-    user_uuid = await check_reset_token(db = db, reset_token=token)
-    # Change password
     try:
+        # Check if token exists
+        user_uuid = await check_reset_token(db = db, reset_token=token, email=email)
+        # Change password
         await change_password_without_old_pw(db=db, uuid=user_uuid, password=data.password)
         return JSONResponse(status_code=status.HTTP_200_OK,
             content=f'Password for user {user_uuid} changed')
-    except KeyError:
+    except KeyError as e:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
-                            content="No matching reset token found")
-    except ValueError:
+                            content=str(e)) # No matching token found
+    except ValueError as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
-                            content=ValueError) # Password is not strong enough
+                            content=str(e)) # Password is not strong enough
 
