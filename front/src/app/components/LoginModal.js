@@ -155,13 +155,14 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
         e.preventDefault();
 
         const data = {
-            mail : email
+            email : email
         };
 
         const xhr = new XMLHttpRequest();
         xhr.open("PUT", "/api/v1/reset");
+        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.responseType = "json";
-        xhr.send(data);
+        xhr.send(JSON.stringify(data));
 
         xhr.onload = function () {
             if (xhr.status == 200)

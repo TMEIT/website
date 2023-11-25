@@ -34,6 +34,7 @@ function PasswordReset({className}) {
     const navigate = useNavigate();
     const reset_token = useParams();
 
+    const [email, setEmail] = useState("");
     const [newPass, setNewPass] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
 
@@ -47,14 +48,14 @@ function PasswordReset({className}) {
         else
         {
             const data = {
-                password        : newPass
+                password : newPass
             }
 
-            const address = "/api/v1/reset/" + reset_token;
+            const address = "/api/v1/reset/" + reset_token + "?" + email;
 
             const xhr = new XMLHttpRequest();
             xhr.open("PUT", address, true);
-            xhr.send(data); 
+            xhr.send(JSON.stringify(data)); 
             xhr.responseType = "json";
 
             xhr.onload = function () {
@@ -74,6 +75,9 @@ function PasswordReset({className}) {
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
+        if (id === "email") {
+        setEmail(value);
+        }
         if (id === "newPass") {
         setNewPass(value);
         }
@@ -87,6 +91,17 @@ function PasswordReset({className}) {
                 <h1>Password Reset</h1>
                 <Box component="form" onSubmit={submit} sx={{ mt: 3 }}>
                     <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center">
+                    <Grid item xs={12} sm={6} mb={2}>
+                            <TextField
+                                variant="filled"
+                                fullWidth
+                                id="email"
+                                label="Email"
+                                name="email"
+                                required
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
                         <Grid item xs={12} sm={6} mb={2}>
                             <TextField
                                 type="password"

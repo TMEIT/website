@@ -19,7 +19,7 @@ class ChangePassword(BaseModel):
     password: str
 
 # User requests password reset
-@router.put("/reset/")
+@router.put("/reset")
 async def reset_password_request(
                                 data: RequestReset,
                                 db: AsyncSession = Depends(get_db),
