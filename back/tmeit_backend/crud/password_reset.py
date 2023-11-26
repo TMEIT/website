@@ -26,10 +26,10 @@ async def create_reset_token(db: AsyncSession, email: str, pool: ArqRedis = Depe
         reset_token = str(uuid4())
         hashed_reset_token = ph.hash(str(reset_token))
         # Stored hashed token and uuid
-        db.add(
+        db.add_all([
             PasswordReset(hashed_reset_token=str(hashed_reset_token), 
                           user_id=str(result_member.Member.uuid)),
-        )
+        ])
         return reset_token
     
 # Check for existing reset token, return uuid of matching user if a token exists
@@ -46,7 +46,7 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
     stmt = select(models.PasswordReset).where(str(models.PasswordReset.user_id) == member_uuid)
     reset_db_entries = (await db.execute(stmt)).fetchall()
     if reset_db_entries == []:
-        raise KeyError(f'Invalid reset token')
+        raise KeyError(f'Invalid reset token1')
 
     # Check if any entries match the given reset_token
     reset_db_entry = None
@@ -55,7 +55,7 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
         if ph.verify(password=reset_token, hash=entry.PasswordReset.hashed_reset_token):
             reset_db_entry = entry
     if reset_db_entry == None:
-        raise KeyError(f'Invalid reset token') # No matching hash
+        raise KeyError(f'Invalid reset token2') # No matching hash
     
     # Check if the time limit of the token is exceeded (24 h)
     if (func.now() - reset_db_entry.PasswordReset.time_created) < datetime.timedelta(days = 1):

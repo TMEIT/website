@@ -98,7 +98,7 @@ const router = createBrowserRouter([{
                 return await getApiFetcher().get("/migrations/members/").json();
             }
         },
-        { path: "/reset/:reset_token", element: <routes.PasswordReset.component />, loader: routes.PasswordReset.loader()},
+        { path: "/reset/:reset_token", element: <routes.PasswordReset.component />, loader: routes.PasswordReset.loader},
         { path: "/createEvent", element: <routes.CreateEvent.component />, loader: routes.CreateEvent.loader },
         { path: "/editEvent", element: <routes.EditEvent.component />, loader: routes.EditEvent.loader },
     ]

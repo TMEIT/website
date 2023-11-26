@@ -32,7 +32,8 @@ const StyledPasswordReset = styled(PasswordReset)({
 
 function PasswordReset({className}) {
     const navigate = useNavigate();
-    const reset_token = useParams();
+    const parameters = useParams();
+    const reset_token = parameters.reset_token;
 
     const [email, setEmail] = useState("");
     const [newPass, setNewPass] = useState("");
@@ -51,15 +52,16 @@ function PasswordReset({className}) {
                 password : newPass
             }
 
-            const address = "/api/v1/reset/" + reset_token + "?" + email;
+            const address = "/api/v1/reset/" + reset_token + "?email=" + email;
 
             const xhr = new XMLHttpRequest();
             xhr.open("PUT", address, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify(data)); 
             xhr.responseType = "json";
 
             xhr.onload = function () {
-            if(xhr.status = 200){
+            if(xhr.status === 200){
                 setErrorMessage(1);
                 navigate(0);
             }
