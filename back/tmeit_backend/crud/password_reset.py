@@ -2,7 +2,7 @@
 from uuid import UUID, uuid4
 from arq import ArqRedis
 from fastapi import Depends
-import datetime
+import datetime, os, base64
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -23,12 +23,11 @@ async def create_reset_token(db: AsyncSession, email: str, pool: ArqRedis = Depe
         return None
     else:
         # Generate token & hash it
-        reset_token = str(uuid4())
-        hashed_reset_token = ph.hash(str(reset_token))
+        reset_token = base64.urlsafe_b64encode(os.urandom(30)).decode()
         # Stored hashed token and uuid
         db.add_all([
-            PasswordReset(hashed_reset_token=str(hashed_reset_token), 
-                          user_id=str(result_member.Member.uuid)),
+            PasswordReset(hashed_reset_token=reset_token, 
+                          user_id=result_member.Member.uuid),
         ])
         return reset_token
     
@@ -40,10 +39,9 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
     if result_member == None:
         raise KeyError('Invalid email address')
     member_uuid = result_member.Member.uuid
-
     # Find hashed token. A user can create several tokens, fetch & check all of them
 
-    stmt = select(models.PasswordReset).where(str(models.PasswordReset.user_id) == member_uuid)
+    stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == member_uuid)
     reset_db_entries = (await db.execute(stmt)).fetchall()
     if reset_db_entries == []:
         raise KeyError(f'Invalid reset token1')
@@ -51,8 +49,7 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
     # Check if any entries match the given reset_token
     reset_db_entry = None
     for entry in reset_db_entries:
-        res += f'\t{ph.verify(password=reset_token, hash=entry.PasswordReset.hashed_reset_token)}'
-        if ph.verify(password=reset_token, hash=entry.PasswordReset.hashed_reset_token):
+        if (entry.hashed_reset_token == reset_token):
             reset_db_entry = entry
     if reset_db_entry == None:
         raise KeyError(f'Invalid reset token2') # No matching hash
