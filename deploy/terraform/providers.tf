@@ -9,7 +9,10 @@ terraform {
     bucket = "tmeit-terraform-state"
     key    = "terraform.tfstate"
     region = "eu-central"
-    endpoint = "s3.eu-central-003.backblazeb2.com"
+
+    endpoints = {
+      s3 = "https://s3.eu-central-003.backblazeb2.com"
+    }
 
     // Options needed to use Backblaze B2
     skip_credentials_validation = true
