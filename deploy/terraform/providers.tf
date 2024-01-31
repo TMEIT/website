@@ -19,6 +19,7 @@ terraform {
     skip_region_validation = true
     skip_metadata_api_check = true
     skip_requesting_account_id = true
+    skip_s3_checksum = true
 
     // Credentials to reach the backend state bucket are pulled from $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY environment variables
   }
