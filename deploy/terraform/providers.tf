@@ -8,7 +8,7 @@ terraform {
 
     bucket = "tmeit-terraform-state"
     key    = "terraform.tfstate"
-    region = "eu-central"
+    region = "eu-central-003"
 
     endpoints = {
       s3 = "https://s3.eu-central-003.backblazeb2.com"
@@ -18,6 +18,7 @@ terraform {
     skip_credentials_validation = true
     skip_region_validation = true
     skip_metadata_api_check = true
+    skip_requesting_account_id = true
 
     // Credentials to reach the backend state bucket are pulled from $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY environment variables
   }
