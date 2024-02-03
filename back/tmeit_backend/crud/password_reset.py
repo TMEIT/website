@@ -45,25 +45,30 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
     stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == member_uuid)
     reset_db_entries = (await db.execute(stmt)).fetchall()
     if reset_db_entries == []:
-        raise KeyError(f'Invalid reset token1')
+        raise KeyError(f'Invalid reset token')
 
     # Check if any entries match the given reset_token
     reset_db_entry = None
     for entry in reset_db_entries:
-        if (entry.hashed_reset_token == reset_token):
+        if (entry.PasswordReset.hashed_reset_token == reset_token):
             reset_db_entry = entry
     if reset_db_entry == None:
-        raise KeyError(f'Invalid reset token2') # No matching hash
+        raise KeyError(f'Invalid reset token') # No matching hash
     
     # Check if the time limit of the token is exceeded (24 h)
-    if (func.now() - reset_db_entry.PasswordReset.time_created) < datetime.timedelta(days = 1):
+    if (datetime.timedelta(func.now() - reset_db_entry.PasswordReset.time_created)) < datetime.timedelta(days = 1):
         # Delete all reset tokens for this user
         stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == reset_db_entry.PasswordReset.uuid)
         await db.execute(stmt).delete()
         # Return userid
         return member_uuid
     else:
-        raise KeyError('Reset token expired') # No valid reset key
+        # Delete any remaining reset tokens
+        stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == reset_db_entry.PasswordReset.uuid)
+        await db.execute(stmt).delete()
+        # No valid reset key
+        raise KeyError('Reset token expired') 
+    
     
 # Copied from crud/memberse changed so that old password isn't required
 async def change_password_without_old_pw(db: AsyncSession, password: str, uuid: UUID) -> None:
