@@ -3,6 +3,8 @@ from uuid import UUID, uuid4
 from arq import ArqRedis
 from fastapi import Depends
 import datetime
+import os, secrets
+import base64
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -15,7 +17,7 @@ from ..deps import get_worker_pool
 from ..schemas._check_password import is_password_strong
 
 # Add a new reset token given an email address
-async def create_reset_token(db: AsyncSession, email: str, pool: ArqRedis = Depends(get_worker_pool)):
+async def create_reset_token(db: AsyncSession, email: str):
     # Attempt to find user with matching email
     stmt = select(models.Member).where(models.Member.login_email == email)
     result_member = (await db.execute(stmt)).fetchone()
@@ -23,13 +25,13 @@ async def create_reset_token(db: AsyncSession, email: str, pool: ArqRedis = Depe
         return None
     else:
         # Generate token & hash it
-        reset_token = str(uuid4())
-        hashed_reset_token = ph.hash(str(reset_token))
+        reset_token = base64.b64encode(bytes(os.urandom(32), 'ascii'))
+        hashed_reset_token = ph.hash(reset_token)
         # Stored hashed token and uuid
-        db.add_all([
-            PasswordReset(hashed_reset_token=str(hashed_reset_token), 
-                          user_id=str(result_member.Member.uuid)),
-        ])
+        db.add(
+            models.PasswordReset(hashed_reset_token=hashed_reset_token, 
+                          user_id=result_member.Member.uuid),
+        )
         return reset_token
     
 # Check for existing reset token, return uuid of matching user if a token exists
@@ -43,7 +45,7 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
 
     # Find hashed token. A user can create several tokens, fetch & check all of them
 
-    stmt = select(models.PasswordReset).where(str(models.PasswordReset.user_id) == member_uuid)
+    stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == str(member_uuid))
     reset_db_entries = (await db.execute(stmt)).fetchall()
     if reset_db_entries == []:
         raise KeyError(f'Invalid reset token1')
@@ -52,7 +54,7 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
     reset_db_entry = None
     for entry in reset_db_entries:
         res += f'\t{ph.verify(password=reset_token, hash=entry.PasswordReset.hashed_reset_token)}'
-        if ph.verify(password=reset_token, hash=entry.PasswordReset.hashed_reset_token):
+        if ph.verify(password=reset_token, hash=entry.PasswordReset.hashed_reset_token):   
             reset_db_entry = entry
     if reset_db_entry == None:
         raise KeyError(f'Invalid reset token2') # No matching hash
