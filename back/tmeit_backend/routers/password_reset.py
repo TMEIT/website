@@ -29,7 +29,8 @@ async def reset_password_request(
     # Create reset token & store in database
     reset_token = await create_reset_token(db = db, email=data.email)
     if reset_token == None:
-        return
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content=f'User with email {data.email} could not be found')
     # Send email to user
     await pool.enqueue_job('send_password_reset_email', email=data.email, reset_token=reset_token)
 

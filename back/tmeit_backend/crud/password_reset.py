@@ -16,20 +16,21 @@ from ..schemas._check_password import is_password_strong
 
 # Add a new reset token given an email address
 async def create_reset_token(db: AsyncSession, email: str):
-    # Attempt to find user with matching email
-    stmt = select(models.Member).where(models.Member.login_email == email)
-    result_member = (await db.execute(stmt)).fetchone()
-    if result_member == None:
-        return None
-    else:
-        # Generate token & hash it
-        reset_token = base64.urlsafe_b64encode(os.urandom(30)).decode()
-        # Stored hashed token and uuid
-        db.add_all([
-            PasswordReset(hashed_reset_token=reset_token, 
-                          user_id=result_member.Member.uuid),
-        ])
-        return reset_token
+    async with db.begin():
+        # Attempt to find user with matching email
+        stmt = select(models.Member).where(models.Member.login_email == email)
+        result_member = (await db.execute(stmt)).fetchone()
+        if result_member == None:
+            return None
+        else:
+            # Generate token & hash it
+            reset_token = base64.urlsafe_b64encode(os.urandom(30)).decode()
+            # Stored hashed token and uuid
+            db.add_all([
+                PasswordReset(hashed_reset_token=reset_token, 
+                            user_id=result_member.Member.uuid)
+            ])
+            return reset_token
     
 # Check for existing reset token, return uuid of matching user if a token exists
 async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
