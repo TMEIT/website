@@ -56,15 +56,15 @@ async def check_reset_token(db: AsyncSession, reset_token: str, email: str):
         raise KeyError(f'Invalid reset token') # No matching hash
     
     # Check if the time limit of the token is exceeded (24 h)
-    if (datetime.timedelta(func.now() - reset_db_entry.PasswordReset.time_created)) < datetime.timedelta(days = 1):
+    if ((reset_db_entry.PasswordReset.time_created - datetime.datetime.now(datetime.timezone.utc)) < datetime.timedelta(days=1)):
         # Delete all reset tokens for this user
-        stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == reset_db_entry.PasswordReset.uuid)
+        stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == reset_db_entry.PasswordReset.user_id)
         await db.execute(stmt).delete()
         # Return userid
         return member_uuid
     else:
         # Delete any remaining reset tokens
-        stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == reset_db_entry.PasswordReset.uuid)
+        stmt = select(models.PasswordReset).where(models.PasswordReset.user_id == reset_db_entry.PasswordReset.user_id)
         await db.execute(stmt).delete()
         # No valid reset key
         raise KeyError('Reset token expired') 
