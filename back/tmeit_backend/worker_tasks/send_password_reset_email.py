@@ -23,7 +23,7 @@ async def send_password_reset_email(ctx: WorkerContext, email: str, reset_token:
         f'Hi {full_name},\n\n'
         'You are receiving this email since a pasword reset has been requested for your tmeit account.\n\n'
         'If you did not make this request, please ignore this message.\n\n'
-        f'You can reset your password by visiting <a href=\"localhost:8080/reset/{reset_token}\" target="_blank" rel="noreferrer noopener">tmeit.se/reset/{reset_token}</a>\n\n'
+        f'You can reset your password by visiting <a href=\"tmeit.se/reset/{reset_token}\" target="_blank" rel="noreferrer noopener">tmeit.se/reset/{reset_token}</a>\n\n'
         "XOXO,\n"
         "A fucking computer\n"
     )
@@ -31,7 +31,7 @@ async def send_password_reset_email(ctx: WorkerContext, email: str, reset_token:
     send_email(
         sending_user="tmeit",
         to_display_name=full_name,
-        to_email='1@test.com',#to_email=email,
+        to_email=email,
         subject=f"Password reset requested - TMEIT - {str(datetime.now(timezone.utc))[0:16]}",
         message_text=body,
         message_html=(email_header + convert_body_to_html(body) + '</body></html>'),

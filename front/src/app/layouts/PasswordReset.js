@@ -63,7 +63,8 @@ function PasswordReset({className}) {
             xhr.onload = function () {
             if(xhr.status === 200){
                 setErrorMessage(1);
-                navigate(0);
+                alert("Password has been reset!");
+                navigate("/");
             }
             else{
                 alert(`error: ${xhr.status}: ${xhr.statusText}`);
