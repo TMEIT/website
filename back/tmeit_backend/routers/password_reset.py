@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..crud.password_reset import create_reset_token, check_reset_token, change_password_without_old_pw
 from ._database_deps import get_db
 from ..deps import get_worker_pool
+from ..schemas.members.schemas import base64url_length_32
 
 router = APIRouter()
 
@@ -28,7 +29,8 @@ async def reset_password_request(
     # Create reset token & store in database
     reset_token = await create_reset_token(db = db, email=data.email)
     if reset_token == None:
-        return
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content=f'User with email {data.email} could not be found')
     # Send email to user
     await pool.enqueue_job('send_password_reset_email', email=data.email, reset_token=reset_token)
 
