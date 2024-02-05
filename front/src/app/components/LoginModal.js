@@ -119,7 +119,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
 
     const ScreenIsWide = useIsScreenWide(950);
 
-    const setMessg = () => {setError(3);}
+    const Forgot = () => {setForgot(true);}
 
     function handleLogin(e) {
         e.preventDefault();
@@ -154,7 +154,28 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
     function handleForgot(e) {
         e.preventDefault();
 
-        setError(1);
+        const data = {
+            email : email
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", "/api/v1/reset");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.responseType = "json";
+        xhr.send(JSON.stringify(data));
+
+        xhr.onload = function () {
+            if (xhr.status == 200)
+            {
+                setError(1);
+                setLoginModalOpen(false);
+            }
+            else if (xhr.status == 500)
+                setError(2);
+            else {
+                alert(`Error ${xhr.status}: ${xhr.statusText}`);
+            }
+        }
     }
 
     console.log(forgot);
@@ -230,7 +251,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                 ></input>
                             <input type="submit" value="login"></input>
                         </form> 
-                        <Link onClick={setMessg}>forgot your password?</Link>
+                        <Link onClick={Forgot}>forgot your password?</Link>
                         <div className="errorMessage">
                             {(() => {
                                 switch (errorMessage) {
@@ -240,8 +261,6 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                         return <>Incorrect email or password</>;
                                     case 2:
                                         return <>Validation error</>;
-                                    case 3:
-                                        return <>Sorry, this is just a placeholder for the upcoming reset password-feature</>
                                 }
                             })()}
                         </div>
@@ -321,7 +340,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                             ></input>
                         <input type="submit" value="login"></input>
                     </form>
-                    <Link onClick={setMessg}>forgot your password?</Link>
+                    <Link onClick={Forgot}>forgot your password?</Link>
                     <div className="errorMessage">
                         {(() => {
                             switch (errorMessage) {
@@ -331,8 +350,6 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
                                     return <>Incorrect email or password</>;
                                 case 2:
                                     return <>Validation error</>;
-                                case 3:
-                                    return <>Sorry, this is just a placeholder for the upcoming reset password-feature</>
                             }
                         })()}
                     </div>

@@ -7,3 +7,4 @@ from .events import Event
 from .members.members import Member
 from .members.website_migration import MemberWebsiteMigration
 from .sign_up import SignUp
+from .password_reset import PasswordReset

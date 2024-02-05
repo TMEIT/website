@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Centered from "../components/Centered.js";
 import TextSummary from "../components/TextSummary.js";
 
-import {useLoaderData, useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useState} from "react";
 
 import { light_background_light } from "../palette.js";
@@ -32,8 +32,10 @@ const StyledPasswordReset = styled(PasswordReset)({
 
 function PasswordReset({className}) {
     const navigate = useNavigate();
-    const reset_token = useLoaderData();
+    const parameters = useParams();
+    const reset_token = parameters.reset_token;
 
+    const [email, setEmail] = useState("");
     const [newPass, setNewPass] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
 
@@ -47,17 +49,38 @@ function PasswordReset({className}) {
         else
         {
             const data = {
-                New_Password        : newPass,
-                Confirm_Password    : confirmPass,
-                Reset_Token         : reset_token,
+                password : newPass
             }
-            setErrorMessage(1);
-            navigate("/");
+
+            const address = "/api/v1/reset/" + reset_token + "?email=" + email;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", address, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(data)); 
+            xhr.responseType = "json";
+
+            xhr.onload = function () {
+            if(xhr.status === 200){
+                setErrorMessage(1);
+                alert("Password has been reset!");
+                navigate("/");
+            }
+            else{
+                alert(`error: ${xhr.status}: ${xhr.statusText}`);
+            }
+            };
+            xhr.onerror = function (){
+            console.log("Request failed");
+            }
         }
     };
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
+        if (id === "email") {
+        setEmail(value);
+        }
         if (id === "newPass") {
         setNewPass(value);
         }
@@ -71,6 +94,17 @@ function PasswordReset({className}) {
                 <h1>Password Reset</h1>
                 <Box component="form" onSubmit={submit} sx={{ mt: 3 }}>
                     <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center">
+                    <Grid item xs={12} sm={6} mb={2}>
+                            <TextField
+                                variant="filled"
+                                fullWidth
+                                id="email"
+                                label="Email"
+                                name="email"
+                                required
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
                         <Grid item xs={12} sm={6} mb={2}>
                             <TextField
                                 type="password"

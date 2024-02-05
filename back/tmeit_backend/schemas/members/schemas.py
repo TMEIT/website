@@ -69,7 +69,7 @@ member_fields: FieldDict = {
 
 # 8 character base64url string
 base64url_length_8 = constr(min_length=8, max_length=8, regex=r'[A-Za-z0-9\-_]{8}')
-
+base64url_length_32 = constr(min_length=32, max_length=32, regex=r'[A-Za-z0-9\-_]{32}')
 
 def build_member_schema_dict(
         permission_role: Literal["master"] | Literal["self"] | Literal["member"] | Literal["public"],
@@ -144,6 +144,12 @@ class ChangePassword(BaseModel):
     current_password: str
     new_password: str
 
+    @validator('new_password')
+    def check_password(cls, v):
+        return is_password_strong(v)
+
+class ResetPasswordChange(BaseModel):
+    new_password: str
     @validator('new_password')
     def check_password(cls, v):
         return is_password_strong(v)
