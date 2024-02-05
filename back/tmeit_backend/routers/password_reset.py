@@ -26,7 +26,7 @@ async def reset_password_request(
                                 pool: ArqRedis = Depends(get_worker_pool)
                                 ):
     # Create reset token & store in database
-    reset_token = await create_reset_token(db = db, pool=pool, email=data.email)
+    reset_token = await create_reset_token(db = db, email=data.email)
     if reset_token == None:
         return
     # Send email to user

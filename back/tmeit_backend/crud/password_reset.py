@@ -15,7 +15,7 @@ from ..deps import get_worker_pool
 from ..schemas._check_password import is_password_strong
 
 # Add a new reset token given an email address
-async def create_reset_token(db: AsyncSession, email: str, pool: ArqRedis = Depends(get_worker_pool)):
+async def create_reset_token(db: AsyncSession, email: str):
     # Attempt to find user with matching email
     stmt = select(models.Member).where(models.Member.login_email == email)
     result_member = (await db.execute(stmt)).fetchone()
