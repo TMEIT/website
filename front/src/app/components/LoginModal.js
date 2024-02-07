@@ -129,7 +129,7 @@ function LoginModal({className, loggedIn, setLoggedIn, setLoginModalOpen}) {
         token.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         token.responseType = "json";
         const data =
-        "username=" + e.target["0"].value + "&password=" + e.target["1"].value;
+        "username=" + encodeURIComponent(e.target["0"].value) + "&password=" + encodeURIComponent(e.target["1"].value);
         token.send(data);
 
         token.onload = function () {
