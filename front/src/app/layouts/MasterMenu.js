@@ -7,6 +7,7 @@ import useIsScreenWide from "../useIsScreenWide.js";
 
 import MasterSignups from "../components/MasterSignups";
 import AdminEvents from "../components/AdminEvents.js";
+import AdminMembers from "../components/AdminMembers.js";
 
 function MasterMenu() {
 
@@ -34,10 +35,12 @@ function MasterMenu() {
       <Centered>
         <Box mt={2} mb={2} mx={"Auto"} style={{display: "grid", gridAutoFlow: "row"}}>
           <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained"><Link to="/migrating">See Pending member migrations</Link></Button>
-        
+
           <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(2)}>Signups menu</Button>
       
           <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(3)}>Edit/Delete Events - ADMIN</Button>
+
+          <Button style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(4)}>Edit/Delete Members</Button>
 
           <Button hidden={menu==0} style={screenWide? styles.button : styles.buttonMobile} variant="contained" onClick={() => setMenu(0)}>Close</Button>
         </Box>
@@ -54,7 +57,7 @@ function MasterMenu() {
             case 3:
               return <AdminEvents></AdminEvents>;
             case 4:
-              return <></>;
+              return <AdminMembers></AdminMembers>;
             case 5:
               return <></>;
           }
