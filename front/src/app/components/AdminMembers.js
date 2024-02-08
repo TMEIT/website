@@ -38,7 +38,7 @@ membersMobile :{
 };
 
 if (memberArr == null)
-return <Loading/>;
+    return <Loading/>;
 
 
 function handleEdit(short_uuid, data) {
@@ -163,7 +163,7 @@ else
 
 return (
 <>
-    <Fragment>{memberssmap}</Fragment>{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
+    <Fragment>{membersmap}</Fragment>{/* <button onClick={() => console.log(currentData)}>Cum</button> who tf put this here? xD*/}
 </>
 )
 }
