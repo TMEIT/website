@@ -11,7 +11,7 @@ const StyledFooter = styled(Footer)({
     paddingTop: "0.5rem",
     paddingBottom: "0.5rem",
     gridRowStart: 2,
-    overflow: "scroll",
+    overflow: "hidden",
     color: "#bbbbbb",
 
     ul: {
