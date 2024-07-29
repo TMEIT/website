@@ -10,7 +10,7 @@ jobs:
     name: Are version numbers incremented
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.2.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Required due to get git tag list due to the way Git works
       - uses: actions/setup-python@v3
@@ -23,7 +23,7 @@ jobs:
     name: Lint GH Actions workflows
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.2.0
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-actionlint@v1
   plan-terraform: # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
     name: Run Terraform Validate and Plan
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: plan-terraform  # Needs kubeconfig from terraform
     steps:
-      - uses: actions/checkout@v2.2.0
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v3
         with:
           python-version: '3.10'
@@ -152,7 +152,7 @@ jobs:
     name: Build app containers
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.2.0
+      - uses: actions/checkout@v4
       - name: Build containers
         uses: redhat-actions/buildah-build@v2
         with:
@@ -167,7 +167,7 @@ jobs:
     name: Test app
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.2.0
+      - uses: actions/checkout@v4
       - name: Build test container
         uses: redhat-actions/buildah-build@v2
         with:
@@ -188,7 +188,7 @@ jobs:
             POSTGRES_DB: tmeit_backend
           options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
       steps:
-        - uses: actions/checkout@v2.2.0
+        - uses: actions/checkout@v4
         - name: Build tester container
           run: |
             docker build . -f containerfiles/create-test-db.Containerfile -t create-test-db
