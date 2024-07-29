@@ -27,7 +27,9 @@ jobs:
       - uses: actions/checkout@v3
 
       # https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation
-      - uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
       - name: Terraform Init
         run: terraform init
         working-directory: deploy/terraform
@@ -41,9 +43,10 @@ jobs:
         id: tf_ip_addr
         run: terraform output -raw ipv4_address
         working-directory: deploy/terraform
-      - uses: hashicorp/setup-terraform@v2  # Remove wrapper so that we can output directly to files
+      - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_wrapper: false
+          terraform_version: "1.7.5"
+          terraform_wrapper: false  # Remove wrapper so that we can output directly to files
       - name: Get Cloudflare token for Let's Encrypt
         id: tf_cf_le_token
         run: terraform output -raw cloudflare-le-token > ../kubernetes/tmeit-se/certificate/cloudflare-api-token

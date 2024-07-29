@@ -38,7 +38,9 @@ jobs:
       TF_VAR_pw_hash: ${{ secrets.NODE_ROOT_USER_PW_HASH }}
     steps:
       - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
       - id: fmt
         run: terraform fmt -check
       - id: init
@@ -91,8 +93,9 @@ jobs:
         id: tf_ip_addr
         run: terraform output -raw ipv4_address
         working-directory: deploy/terraform
-      - uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v3
         with:
+          terraform_version: "1.7.5"
           terraform_wrapper: false
       - name: Get SSH key
         run: terraform output -raw ssh_key > "$HOME/id_ed25519"
