@@ -10,10 +10,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ._database_deps import get_db, get_current_user
 from ._error_responses import NotFoundResponse, ForbiddenResponse, BadPatchResponse
-from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member, change_password
+from ..crud.members import get_members, get_member_by_short_uuid, create_member, update_member, change_password, delete_member
 from ..deps import get_worker_pool
 from ..schemas.members.schemas import base64url_length_8, MemberMemberView, MemberSelfView, MemberPublicView, \
-    MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch, ChangePassword
+    MemberMasterView, MemberMasterCreate, MemberViewResponse, MemberSelfPatch, MemberMasterPatch, MemberMasterDelete, ChangePassword
 
 router = APIRouter()
 me_router = APIRouter()
@@ -162,3 +162,20 @@ async def send_test_email(current_user: MemberSelfView = Depends(get_current_use
                             content={"error": f"Only masters can send test emails."})
     await pool.enqueue_job('send_test_email_to_member', current_user.uuid)
     return "Email job submitted."
+
+
+@router.delete("/{short_uuid}", responses={403: {"model": ForbiddenResponse}})
+async def remove_member (short_uuid: base64url_length_8,
+                         db: AsyncSession = Depends(get_db),
+                         current_user: MemberMasterDelete = Depends(get_current_user)):
+    
+    if current_user is None:
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN,
+                            content={"error": f"Only masters have the permission to delete members."})
+    try: 
+        await delete_member(db=db, short_uuid=short_uuid)
+    except KeyError:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={"error": f"No member with the ID {short_uuid=} was found."})
+    return JSONResponse(status_code=status.HTTP_200_OK,
+                        content={"Success": f"member with ID {short_uuid} has been deleted"})

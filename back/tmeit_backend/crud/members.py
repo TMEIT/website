@@ -120,3 +120,12 @@ async def update_member(db: AsyncSession,
     sql_member['workteams_leading'] = []
 
     return response_schema.parse_obj(sql_member)
+
+async def delete_member(db: AsyncSession,
+                        short_uuid: str) -> None:
+    async with db.begin():
+        stmt = select(models.Member).where(models.Member.uuid == short_uuid)
+        result = (await db.execute(stmt)).fetchone()
+        if result is None:
+            raise KeyError()
+        await db.delete(result.Member)

@@ -130,6 +130,9 @@ MemberMasterPatch = create_model('MemberMasterPatch',   __config__=PatchSchemaCo
 # Create schemas
 MemberMasterCreate = create_model('MemberMasterCreate', **build_member_schema_dict("master", edit))
 
+# Delete schemas
+MemberMasterDelete = create_model('MemberMasterDelete', **build_member_schema_dict("master", edit))
+
 
 # Union type for the read schemas
 MemberViewResponse = Union[MemberMasterView, MemberSelfView, MemberMemberView, MemberPublicView]
