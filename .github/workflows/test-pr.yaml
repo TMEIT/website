@@ -143,8 +143,8 @@ jobs:
         run: mkdir "$HOME/.kube/" && mv k3s.yaml "$HOME/.kube/config"
       - name: 'lint prod manifests' # NOTE: latest version of kubectl can be found here https://dl.k8s.io/release/stable.txt
         run: |
-          curl -LO "https://dl.k8s.io/release/v1.25.3/bin/linux/amd64/kubectl"
-          curl -LO "https://dl.k8s.io/v1.25.3/bin/linux/amd64/kubectl.sha256"
+          curl -LO "https://dl.k8s.io/release/v1.27.3/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/v1.27.3/bin/linux/amd64/kubectl.sha256"
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
           kubectl apply --dry-run=server --server-side=true --force-conflicts -f tmeit-rendered.yaml
