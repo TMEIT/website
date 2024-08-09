@@ -124,7 +124,7 @@ async def update_member(db: AsyncSession,
 async def delete_member(db: AsyncSession,
                         short_uuid: str) -> None:
     async with db.begin():
-        stmt = select(models.Member).where(models.Member.uuid == short_uuid)
+        stmt = select(models.Member).where(models.Member.short_uuid == short_uuid)
         result = (await db.execute(stmt)).fetchone()
         if result is None:
             raise KeyError()
