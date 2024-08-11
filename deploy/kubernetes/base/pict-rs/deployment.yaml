@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pict-rs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pict-rs
+  template:
+    metadata:
+      labels:
+        app: pict-rs
+    spec:
+      containers:
+      - name: pict-rs
+        image: asonix/pictrs:latest 
+        env:
+        - name: PICTRS__REPO__PATH
+          value: "/app/pict-rs/data"  #Adjust based on sled
+        - name: PICTRS__STORE__PATH
+          value: "/app/pict-rs/files" #Adjust based on sled
+        ports:
+        - containerPort: 8080  # Adjust based on the actual port
+        volumeMounts:
+        - name: pictrs-storage
+          mountPath: /app/pict-rs
+        securityContext:
+          runAsUser: 991 
+          runAsGroup: 991 
+      volumes:
+      - name: pictrs-storage
+        persistentVolumeClaim:
+          claimName: pictrs-storage

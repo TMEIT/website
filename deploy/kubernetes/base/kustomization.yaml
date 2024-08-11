@@ -11,3 +11,4 @@ resources:
 - postgres/poddisruptionbudget.yaml
 - postgres/kubegres-conf.yaml
 - redis/redis-failover.yaml
+- pict-rs/

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pict-rs-service
+spec:
+  selector:
+    app: pict-rs
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 8080  # Match this with the containerPort in the Deployment
+  type: NodePort  # Use LoadBalancer or NodePort if you want external access
